@@ -4,6 +4,8 @@
 //   rating, reviews, price ('$' | '$$' | '$$$'), blackOwned (bool), image
 // Premium also: bookingUrl, phone, address, lat, lng, menu[], offer?
 
+import { IMPORTED } from './spas-imported.js';
+
 export const CITIES = [
   { slug: 'atlanta',  name: 'Atlanta',  blurb: 'Buckhead, Midtown, Decatur, Sandy Springs' },
   { slug: 'savannah', name: 'Savannah', blurb: 'Historic district & midtown' },
@@ -272,6 +274,9 @@ export const SPAS = [
 
 // ZIP centroids for "search by ZIP". Static lookup — no geocoding backend.
 // Expand this table as coverage grows (this powers the SEO per-ZIP plan too).
+// Curated demo + scraped (all free) listings — the dynamic app reads this.
+export const ALL = [...SPAS, ...IMPORTED];
+
 export const ZIP_CENTROIDS = {
   '30305': { lat: 33.8390, lng: -84.3880, label: 'Buckhead' },
   '30326': { lat: 33.8484, lng: -84.3613, label: 'Buckhead' },
@@ -298,7 +303,7 @@ export function milesBetween(a, b) {
 
 // Spas sorted by distance from an {lat,lng} origin, nearest first.
 export function spasNear(origin, limit = 6) {
-  return SPAS
+  return ALL
     .filter(s => typeof s.lat === 'number' && typeof s.lng === 'number')
     .map(s => ({ spa: s, miles: milesBetween(origin, s) }))
     .sort((a, b) => a.miles - b.miles)
@@ -306,7 +311,7 @@ export function spasNear(origin, limit = 6) {
 }
 
 export function spasByCity(citySlug) {
-  return SPAS.filter(s => s.city === citySlug);
+  return ALL.filter(s => s.city === citySlug);
 }
 
 export function findCity(slug) {
@@ -314,11 +319,29 @@ export function findCity(slug) {
 }
 
 export function findSpa(id) {
-  return SPAS.find(s => s.id === id);
+  return ALL.find(s => s.id === id);
 }
 
 export function spaCountByCity(citySlug) {
-  return SPAS.filter(s => s.city === citySlug).length;
+  return ALL.filter(s => s.city === citySlug).length;
+}
+
+// Display name for any city slug (curated or imported).
+export function cityDisplayName(slug) {
+  const c = findCity(slug);
+  if (c) return c.name;
+  const s = ALL.find(x => x.city === slug);
+  return (s && s.cityName) || slug;
+}
+
+// All cities present in the data, with counts, busiest first.
+export function allCitySlugs() {
+  const m = new Map();
+  for (const s of ALL) if (s.city) m.set(s.city, cityDisplayName(s.city));
+  return [...m]
+    .filter(([, name]) => !/^private address/i.test(name))
+    .map(([slug, name]) => ({ slug, name, count: spaCountByCity(slug) }))
+    .sort((a, b) => b.count - a.count);
 }
 
 // Tier order premium → standard → free, then by rating.
@@ -330,5 +353,5 @@ export function sortListings(list) {
 }
 
 export function featuredSpas(limit = 3) {
-  return sortListings(SPAS.filter(s => s.tier === 'premium')).slice(0, limit);
+  return sortListings(ALL.filter(s => s.tier === 'premium')).slice(0, limit);
 }

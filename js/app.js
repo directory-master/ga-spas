@@ -1,6 +1,7 @@
 import {
-  CITIES, SPAS, findCity, findSpa, spasByCity, spaCountByCity,
+  CITIES, findCity, findSpa, spasByCity, spaCountByCity,
   sortListings, featuredSpas, spasNear, ZIP_CENTROIDS,
+  cityDisplayName, allCitySlugs,
 } from './data/spas.js';
 import './site.js'; // paints live open/closed status + countdown on cards
 
@@ -53,10 +54,10 @@ function badges(spa) {
 }
 
 function metaLine(spa) {
-  const bits = [spa.type, spa.neighborhood].filter(Boolean).join(' · ');
+  const bits = [spa.type, spa.neighborhood || spa.cityName].filter(Boolean).join(' · ');
   return el('div', { class: 'meta' }, [
     el('span', {}, bits),
-    el('span', { class: 'price' }, spa.price),
+    spa.price ? el('span', { class: 'price' }, spa.price) : null,
   ]);
 }
 
@@ -77,13 +78,13 @@ export function renderHome() {
     for (const spa of featuredSpas(3)) feat.appendChild(listingCard(spa));
   }
 
-  for (const city of CITIES) {
-    const count = spaCountByCity(city.slug);
+  for (const c of allCitySlugs()) {
+    const city = findCity(c.slug);
     grid.appendChild(
-      el('a', { href: `city.html?city=${city.slug}`, class: 'city-card' }, [
-        el('div', { class: 'city-name' }, city.name),
-        el('div', { class: 'city-blurb' }, city.blurb),
-        el('div', { class: 'city-count' }, `${count} ${count === 1 ? 'listing' : 'listings'} →`),
+      el('a', { href: `city.html?city=${c.slug}`, class: 'city-card' }, [
+        el('div', { class: 'city-name' }, c.name),
+        city && city.blurb ? el('div', { class: 'city-blurb' }, city.blurb) : null,
+        el('div', { class: 'city-count' }, `${c.count} ${c.count === 1 ? 'listing' : 'listings'} →`),
       ])
     );
   }
@@ -92,24 +93,23 @@ export function renderHome() {
 // ---------- City list ----------
 export function renderCity() {
   const slug = param('city');
-  const city = findCity(slug);
   const titleEl = document.getElementById('city-title');
   const blurbEl = document.getElementById('city-blurb');
   const results = document.getElementById('results');
   const empty = document.getElementById('empty');
   const toolbar = document.getElementById('toolbar');
 
-  if (!city) {
+  const all = spasByCity(slug);
+  if (!all.length) {
     titleEl.textContent = 'City not found';
     blurbEl.textContent = 'Pick a city from the home page.';
     return;
   }
 
-  document.title = `${city.name} — Georgia Spa Directory`;
-  titleEl.textContent = `Spas & salons in ${city.name}`;
-  blurbEl.textContent = city.blurb;
-
-  const all = spasByCity(slug);
+  const cityName = cityDisplayName(slug);
+  document.title = `${cityName} — Georgia Spa Directory`;
+  titleEl.textContent = `Spas & salons in ${cityName}`;
+  blurbEl.textContent = (findCity(slug) || {}).blurb || '';
   const categories = ['All', ...new Set(all.map(s => s.type))];
   const state = { q: '', cat: 'All', blackOwned: false };
 
@@ -188,8 +188,8 @@ function regularListingCard(spa, opts) {
       el('div', { class: 'body' }, [
         el('div', { class: 'name' }, spa.name),
         metaLine(spa),
-        stars(spa.rating),
-        el('span', { class: 'reviews' }, ` (${spa.reviews})`),
+        spa.rating ? stars(spa.rating) : null,
+        spa.rating ? el('span', { class: 'reviews' }, ` (${spa.reviews || 0})`) : null,
       ]),
     ]),
     cardActions(spa),
@@ -339,7 +339,7 @@ export function renderListing() {
       ]),
       el('h1', {}, spa.name),
       metaLine(spa),
-      el('div', { class: 'rating-row' }, [stars(spa.rating), el('span', { class: 'reviews' }, ` ${spa.reviews} reviews`)]),
+      spa.rating ? el('div', { class: 'rating-row' }, [stars(spa.rating), el('span', { class: 'reviews' }, ` ${spa.reviews || 0} reviews`)]) : null,
       spa.tier !== 'free' ? statusEl(spa) : null,
     ])
   );
