@@ -350,22 +350,37 @@ const live = [...cityReg]
 const liveSlugs = new Set(live.map(p => p.slug));
 const liveLinks = live.slice(0, 12).map(p => `<a href="/${p.slug}/">${esc(p.name)}</a>`).join(' · ');
 
-// Georgia home — featured spas + a browsable city directory
+// Georgia home — hero, category quick-links, featured, city directory
 {
   const featured = byRank(ACTIVE).slice(0, 6).map(card).join('\n      ');
   const cityCards = live.map(p =>
     `<a class="city-card" href="/${p.slug}/"><div class="city-name">${esc(p.name)}</div>` +
     `<div class="city-count">${p.listings.length} ${p.listings.length === 1 ? 'spa' : 'spas'} →</div></a>`
   ).join('\n      ');
+  const tc = (t) => ACTIVE.filter(s => s.type === t).length;
+  const boCount = ACTIVE.filter(s => s.blackOwned).length;
   write('', shell({
     title: 'Best Spas in Georgia | GA Spa Directory',
     desc: 'Find and book day spas, med spas, and massage across Georgia. Browse by city, category, and Black-owned businesses.',
     path: '/',
-    body: `    <section class="hero">
-      <h1>Spas across Georgia</h1>
-      <p>Browse day spas, med spas, and massage by city. Find <a href="/black-owned/">Black-owned wellness businesses</a> statewide.</p>
-      <p class="home-stat">${ACTIVE.length} spas listed across ${live.length} Georgia cities</p>
+    body: `    <section class="hero hero-home">
+      <div class="hero-eyebrow">Georgia spa &amp; wellness directory</div>
+      <h1>Find your next escape</h1>
+      <p>Day spas, med spas, and massage across ${live.length} Georgia cities — discover, compare, and book your moment of calm.</p>
+      <p class="home-stat">${ACTIVE.length} spas · ${live.length} cities${boCount ? ` · ${boCount} Black-owned` : ''}</p>
+      <div class="cat-cards">
+        <a class="cat-card" href="/category/day-spas/"><span class="ic">🌿</span>Day Spas<small>${tc('Day Spa')}</small></a>
+        <a class="cat-card" href="/category/med-spas/"><span class="ic">✨</span>Med Spas<small>${tc('Med Spa')}</small></a>
+        <a class="cat-card" href="/category/massage/"><span class="ic">🤲</span>Massage<small>${tc('Massage')}</small></a>
+        <a class="cat-card bo" href="/black-owned/"><span class="ic">✶</span>Black-Owned<small>${boCount}</small></a>
+      </div>
     </section>
+
+    ${boCount ? `<div class="bo-banner">
+      <div><h3>Support Black-owned wellness</h3><p>${boCount} Black-owned ${boCount === 1 ? 'spa' : 'spas'} across Georgia — easy to find, easy to book.</p></div>
+      <a class="btn" href="/black-owned/">Explore →</a>
+    </div>` : ''}
+
     <h2 class="section">Featured</h2>
     <div class="listing-grid">
       ${featured}

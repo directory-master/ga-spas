@@ -387,3 +387,43 @@ h2.section { font-size: 1.05rem; letter-spacing: .04em; text-transform: uppercas
 .site-footer .container { padding-top: 20px; padding-bottom: 28px; }
 .version { opacity: .7; font-variant-numeric: tabular-nums; }
 .home-stat { margin: 12px 0 0; color: var(--accent); font-weight: 700; font-size: 1.05rem; }
+
+/* ── home hero ── */
+.hero-home {
+  text-align: center; padding: 60px 26px 46px; margin-top: 8px;
+  background:
+    radial-gradient(150% 130% at 50% -25%, rgba(184,139,58,.22), transparent 60%),
+    radial-gradient(120% 120% at 100% 0%, rgba(91,58,122,.15), transparent 55%),
+    linear-gradient(180deg, #fff, #f7efe2);
+  border: 1px solid var(--line); border-radius: var(--radius);
+}
+.hero-eyebrow { text-transform: uppercase; letter-spacing: .18em; font-size: .78rem; font-weight: 700; color: var(--accent); margin-bottom: 14px; }
+.hero-home h1 { font-size: clamp(2.2rem, 6vw, 3.4rem); letter-spacing: -.03em; line-height: 1.05; margin: 0 0 14px; }
+.hero-home > p { max-width: 56ch; margin: 0 auto; color: var(--muted); font-size: 1.1rem; }
+.hero-home .home-stat { display: inline-block; }
+.hero-home .locate { justify-content: center; }
+
+/* category quick-links */
+.cat-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; max-width: 760px; margin: 30px auto 0; }
+.cat-card {
+  display: flex; flex-direction: column; align-items: center; gap: 6px;
+  padding: 20px 14px; border-radius: 14px; background: var(--surface);
+  border: 1px solid var(--line); color: var(--ink); font-weight: 700;
+  transition: transform .12s ease, box-shadow .12s ease, border-color .12s ease;
+}
+.cat-card:hover { transform: translateY(-3px); box-shadow: var(--shadow); border-color: #d8d0c4; text-decoration: none; }
+.cat-card .ic { font-size: 1.9rem; line-height: 1; }
+.cat-card small { color: var(--muted); font-weight: 500; font-size: .82rem; }
+.cat-card.bo { background: linear-gradient(180deg, #fff, #f3ecf8); border-color: #d8c6ea; color: var(--bo); }
+.cat-card.bo small { color: #8a6aa8; }
+
+/* Black-owned spotlight banner */
+.bo-banner {
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between;
+  gap: 16px; margin: 30px 0; padding: 24px 28px; border-radius: var(--radius);
+  background: linear-gradient(120deg, #1c1a17 0%, #3a2c4a 100%); color: #f3ece0;
+}
+.bo-banner h3 { margin: 0 0 4px; font-size: 1.25rem; color: #fff; }
+.bo-banner p { margin: 0; color: rgba(255,255,255,.7); font-size: .95rem; }
+.bo-banner .btn { background: var(--pc-gold); color: #1c1a17; white-space: nowrap; }
+.bo-banner .btn:hover { background: #d8b85a; filter: none; }
