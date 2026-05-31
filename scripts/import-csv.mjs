@@ -1,18 +1,23 @@
-// One-off importer: Bing Maps scraper CSV → clean listing data.
+// Importer: Bing Maps scraper CSV(s) → clean listing data.
 //
-//   node scripts/import-csv.mjs "<path-to.csv>"
+//   node scripts/import-csv.mjs                 # all ~/Downloads/Bing_Maps_Scraper_*.csv
+//   node scripts/import-csv.mjs a.csv b.csv     # specific files
 //
-// Filters to Georgia + spa categories (incl. "Beauty & spa"), de-dupes, maps
-// fields to our model, groups by city, sorts by rating. Writes
-// js/data/spas-imported.js (export const IMPORTED = [...]).
+// Merges every scraper export, de-dupes (by ID then name+address), filters to
+// Georgia + spa categories (incl. "Beauty & spa"), maps fields to our model,
+// groups by city, sorts by rating. Writes js/data/spas-imported.js.
 //
-// NOTE: the scraper only has a single relative "Open Hours" string (not a weekly
-// schedule), so imported spas get `hoursText` (display only) — NOT the weekly
-// `hours` the live status needs. No black-owned / price data either.
+// NOTE: the scraper only has a relative "Open Hours" string (not a weekly
+// schedule) → imported spas get `hoursText` (display), NOT the weekly `hours`
+// the live status needs. No black-owned / price data either.
 
-import { readFileSync, writeFileSync } from 'node:fs';
+import { readFileSync, writeFileSync, readdirSync } from 'node:fs';
+import { join } from 'node:path';
 
-const SRC = process.argv[2] || `${process.env.HOME}/Downloads/Bing_Maps_Scraper_224__20260531043644.csv`;
+const DOWNLOADS = `${process.env.HOME}/Downloads`;
+const SRCS = process.argv.slice(2).length
+  ? process.argv.slice(2)
+  : readdirSync(DOWNLOADS).filter(f => /^Bing_Maps_Scraper_.*\.csv$/i.test(f)).sort().map(f => join(DOWNLOADS, f));
 
 // included spa categories → our type
 const TYPE_MAP = {
@@ -22,8 +27,8 @@ const TYPE_MAP = {
   'Medical spa': 'Med Spa',
   'Massage therapy': 'Massage',
 };
-const JUNK_EMAIL = /(stripe|zoca|chargebee|yelp|vagaro|twilio|microsoft|mixpanel|uxcam|moengage|imagekit|styleseat|clarity|@handandstone)/i;
-const JUNK_LOCAL = /^(privacy|unsubscribe|webmaster|legal|info@stripe|people|hello@zoca|help|ir|support|dataprotection|quality|clarityms)/i;
+const JUNK_EMAIL = /(stripe|zoca|chargebee|yelp|vagaro|twilio|microsoft|mixpanel|uxcam|moengage|imagekit|styleseat|clarity|hilton|birdeye|@handandstone|wix\.)/i;
+const JUNK_LOCAL = /^(privacy|unsubscribe|webmaster|legal|info@stripe|people|hello@zoca|help|ir|support|dataprotection|quality|clarityms|web)/i;
 
 const kebab = (s) => s.toLowerCase().replace(/&/g, 'and').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
 
@@ -46,64 +51,78 @@ function parseCSV(text) {
   return rows;
 }
 
-const raw = parseCSV(readFileSync(SRC, 'utf8')).filter(r => r.length > 5);
-const header = raw.shift();
-const idx = Object.fromEntries(header.map((h, i) => [h.trim(), i]));
-const get = (r, k) => (r[idx[k]] || '').trim();
+function rowsOf(path) {
+  const raw = parseCSV(readFileSync(path, 'utf8')).filter(r => r.length > 5);
+  const header = raw.shift().map(h => h.trim());
+  return raw.map(r => Object.fromEntries(header.map((h, i) => [h, (r[i] || '').trim()])));
+}
 
-const stats = { total: raw.length, nonGA: 0, nonSpa: 0, dupes: 0 };
-const seen = new Set();
+const allRows = SRCS.flatMap(rowsOf);
+
+const stats = { files: SRCS.length, total: allRows.length, nonGA: 0, nonSpa: 0, dupes: 0 };
+const seenId = new Set();
+const seenKey = new Set();
 const out = [];
 
-for (const r of raw) {
-  const addr = get(r, 'Address');
+for (const r of allRows) {
+  const id = r['ID'];
+  if (id && seenId.has(id)) { stats.dupes++; continue; }
+  if (id) seenId.add(id);
+
+  const addr = r['Address'] || '';
   const state = addr.split(',').pop().trim().split(/\s+/)[0];
   if (state !== 'GA' && state !== 'Georgia') { stats.nonGA++; continue; }
 
-  const cat = get(r, 'Category');
-  const type = TYPE_MAP[cat];
+  const type = TYPE_MAP[(r['Category'] || '').trim()];
   if (!type) { stats.nonSpa++; continue; }
 
-  const key = (get(r, 'Name') + '|' + addr).toLowerCase();
-  if (seen.has(key)) { stats.dupes++; continue; }
-  seen.add(key);
+  const key = `${r['Name']}|${addr}`.toLowerCase();
+  if (seenKey.has(key)) { stats.dupes++; continue; }
+  seenKey.add(key);
 
   const parts = addr.split(',').map(s => s.trim());
   const cityName = parts.length >= 2 ? parts[parts.length - 2] : '';
   const zip = (addr.match(/\b(\d{5})\b/) || [])[1] || null;
 
-  const rating = parseFloat(get(r, 'Rating')) || null;
-  const reviews = parseInt((get(r, 'Rating Info').match(/\((\d+)\)/) || [])[1], 10) || null;
+  const rating = parseFloat(r['Rating']) || null;
+  const reviews = parseInt(((r['Rating Info'] || '').match(/\((\d+)\)/) || [])[1], 10) || null;
 
   let email = null;
-  for (const e of get(r, 'Emails').split(',').map(s => s.trim())) {
+  for (const e of (r['Emails'] || '').split(',').map(s => s.trim())) {
     if (!e || e.includes('###') || JUNK_EMAIL.test(e) || JUNK_LOCAL.test(e)) continue;
     email = e; break;
   }
 
   out.push({
-    id: kebab(get(r, 'Name') + '-' + cityName).slice(0, 60),
-    name: get(r, 'Name'),
+    id: kebab(`${r['Name']}-${cityName}`).slice(0, 60),
+    name: r['Name'],
     city: kebab(cityName),
     cityName,
     type,
     tier: 'free',
     blackOwned: false,
     rating, reviews, zip,
-    lat: parseFloat(get(r, 'Latitude')) || null,
-    lng: parseFloat(get(r, 'Longitude')) || null,
+    lat: parseFloat(r['Latitude']) || null,
+    lng: parseFloat(r['Longitude']) || null,
     address: addr,
-    phone: get(r, 'Phone') || null,
-    website: get(r, 'Website') || null,
+    phone: r['Phone'] || null,
+    website: r['Website'] || null,
     email,
-    image: get(r, 'Featured image') || null,
-    hoursText: get(r, 'Open Hours') || null,
-    facebook: get(r, 'Facebook') || null,
-    instagram: get(r, 'Instagram') || null,
+    image: r['Featured image'] || null,
+    hoursText: r['Open Hours'] || null,
+    facebook: r['Facebook'] || null,
+    instagram: r['Instagram'] || null,
   });
 }
 
-// sort: city asc, then rating desc (nulls last), then reviews desc
+// guard against id collisions (same name+city in different rows) → suffix
+const ids = new Set();
+for (const s of out) {
+  let id = s.id, n = 2;
+  while (ids.has(id)) id = `${s.id}-${n++}`;
+  s.id = id; ids.add(id);
+}
+
 out.sort((a, b) =>
   a.cityName.localeCompare(b.cityName) ||
   (b.rating ?? -1) - (a.rating ?? -1) ||
@@ -118,9 +137,9 @@ writeFileSync(
 // report
 const byCity = {}, byType = {};
 for (const s of out) { byCity[s.cityName] = (byCity[s.cityName] || 0) + 1; byType[s.type] = (byType[s.type] || 0) + 1; }
-console.log(`Imported ${out.length} spas (of ${stats.total}).`);
+console.log(`Imported ${out.length} spas from ${stats.files} file(s) (${stats.total} rows).`);
 console.log(`  dropped: ${stats.nonGA} non-GA, ${stats.nonSpa} non-spa, ${stats.dupes} dupes`);
 console.log(`  types:`, byType);
-console.log(`  cities:`);
-for (const [c, n] of Object.entries(byCity).sort((a, b) => b[1] - a[1])) console.log(`    ${String(n).padStart(3)}  ${c}`);
+console.log(`  cities: ${Object.keys(byCity).length}`);
+for (const [c, n] of Object.entries(byCity).sort((a, b) => b[1] - a[1]).slice(0, 18)) console.log(`    ${String(n).padStart(3)}  ${c}`);
 console.log(`\nwrote js/data/spas-imported.js`);
