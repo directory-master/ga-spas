@@ -78,16 +78,6 @@ export const SPAS = [
     ],
   },
   {
-    id: 'atl-decatur-nails',
-    name: 'Decatur Nails & Lash',
-    city: 'atlanta',
-    neighborhood: 'Decatur',
-    type: 'Nail Salon',
-    tier: 'free',
-    rating: 4.5, reviews: 96, price: '$', blackOwned: true, image: IMG.nails,
-    lat: 33.7748, lng: -84.2963,
-  },
-  {
     id: 'atl-sandy-skin',
     name: 'Sandy Springs Skin Bar',
     city: 'atlanta',
@@ -109,16 +99,6 @@ export const SPAS = [
     ],
   },
   {
-    id: 'atl-glow-brow',
-    name: 'Glow Brow Studio',
-    city: 'atlanta',
-    neighborhood: 'Buckhead',
-    type: 'Brow & Lash',
-    tier: 'free',
-    rating: 4.6, reviews: 73, price: '$$', blackOwned: true, image: IMG.brow,
-    lat: 33.8484, lng: -84.3781,
-  },
-  {
     id: 'atl-crown-glow',
     name: 'Crown & Glow Spa',
     city: 'atlanta',
@@ -138,16 +118,6 @@ export const SPAS = [
       { service: 'Body Wrap',        price: '$120' },
       { service: 'Cupping Therapy',   price: '$70' },
     ],
-  },
-  {
-    id: 'atl-royal-fade',
-    name: 'Royal Fade Studio',
-    city: 'atlanta',
-    neighborhood: 'East Atlanta',
-    type: 'Hair Salon',
-    tier: 'free',
-    rating: 4.5, reviews: 64, price: '$$', blackOwned: true, image: IMG.hair,
-    lat: 33.7400, lng: -84.3400,
   },
   {
     id: 'atl-tranquil-massage',
@@ -197,30 +167,7 @@ export const SPAS = [
       { service: 'Hydrating Facial', price: '$110' },
     ],
   },
-  {
-    id: 'sav-marsh-nails',
-    name: 'Marsh Street Nails',
-    city: 'savannah',
-    neighborhood: 'Midtown',
-    type: 'Nail Salon',
-    tier: 'free',
-    rating: 4.3, reviews: 51, price: '$', blackOwned: false, image: IMG.nails,
-    lat: 32.0500, lng: -81.1000,
-  },
 
-  // --- Augusta ---
-  {
-    id: 'aug-riverwalk-spa',
-    name: 'Riverwalk Spa & Salon',
-    city: 'augusta',
-    neighborhood: 'Downtown',
-    type: 'Day Spa',
-    tier: 'free',
-    rating: 4.4, reviews: 88, price: '$$', blackOwned: true, image: IMG.hair,
-    lat: 33.4735, lng: -81.9624,
-    hours: std('9:00-18:00', '10:00-15:00', null),
-    phone: '(706) 555-0245', email: 'hello@riverwalkspa.example',
-  },
 
   // --- Athens ---
   {
@@ -243,33 +190,7 @@ export const SPAS = [
     ],
   },
 
-  // --- Columbus ---
-  {
-    id: 'col-uptown-skin',
-    name: 'Uptown Skin Co.',
-    city: 'columbus',
-    neighborhood: 'Uptown',
-    type: 'Med Spa',
-    tier: 'free',
-    rating: 4.5, reviews: 62, price: '$$', blackOwned: false, image: IMG.medspa,
-    lat: 32.4610, lng: -84.9877,
-    hours: std('9:00-17:00', null, null),
-    phone: '(706) 555-0258', email: 'hello@uptownskinco.example',
-  },
 
-  // --- Macon ---
-  {
-    id: 'mac-ingleside-spa',
-    name: 'Ingleside Day Spa',
-    city: 'macon',
-    neighborhood: 'Ingleside',
-    type: 'Day Spa',
-    tier: 'free',
-    rating: 4.6, reviews: 77, price: '$$', blackOwned: true, image: IMG.dayspa,
-    lat: 32.8633, lng: -83.6610,
-    hours: std('10:00-19:00', '10:00-17:00', '11:00-16:00'),
-    phone: '(478) 555-0261', email: 'hello@inglesidedayspa.example',
-  },
 ];
 
 // ZIP centroids for "search by ZIP". Static lookup — no geocoding backend.
