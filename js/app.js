@@ -5,6 +5,12 @@ import {
 } from './data/spas.js';
 import './site.js'; // paints live open/closed status + countdown on cards
 
+// tiny localStorage wrapper so a refresh restores filters / "near me" state
+const store = {
+  get(k, def) { try { const v = localStorage.getItem(k); return v == null ? def : JSON.parse(v); } catch { return def; } },
+  set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch { /* private mode */ } },
+};
+
 function el(tag, attrs = {}, kids = []) {
   const node = document.createElement(tag);
   for (const [k, v] of Object.entries(attrs)) {
@@ -78,7 +84,12 @@ export function renderHome() {
     for (const spa of featuredSpas(3)) feat.appendChild(listingCard(spa));
   }
 
-  for (const c of allCitySlugs()) {
+  const cities = allCitySlugs();
+  const total = cities.reduce((n, c) => n + c.count, 0);
+  const statEl = document.getElementById('home-stat');
+  if (statEl) statEl.textContent = `${total} spas listed across ${cities.length} Georgia cities`;
+
+  for (const c of cities) {
     const city = findCity(c.slug);
     grid.appendChild(
       el('a', { href: `city.html?city=${c.slug}`, class: 'city-card' }, [
@@ -111,7 +122,12 @@ export function renderCity() {
   titleEl.textContent = `Spas & salons in ${cityName}`;
   blurbEl.textContent = (findCity(slug) || {}).blurb || '';
   const categories = ['All', ...new Set(all.map(s => s.type))];
-  const state = { q: '', cat: 'All', blackOwned: false };
+
+  // restore this city's filters from a previous visit (refresh-safe)
+  const fkey = `spas:filters:${slug}`;
+  const saved = store.get(fkey, { q: '', cat: 'All', blackOwned: false });
+  if (!categories.includes(saved.cat)) saved.cat = 'All';
+  const state = { q: saved.q || '', cat: saved.cat || 'All', blackOwned: !!saved.blackOwned };
 
   // category chips
   const chipBox = document.getElementById('cat-chips');
@@ -125,20 +141,23 @@ export function renderCity() {
     return chip;
   });
 
-  document.getElementById('search').addEventListener('input', (e) => {
-    state.q = e.target.value.trim().toLowerCase(); apply();
-  });
-  document.getElementById('bo-filter').addEventListener('change', (e) => {
-    state.blackOwned = e.target.checked; apply();
-  });
+  const searchEl = document.getElementById('search');
+  searchEl.value = state.q;
+  searchEl.addEventListener('input', (e) => { state.q = e.target.value.trim(); apply(); });
+
+  const boEl = document.getElementById('bo-filter');
+  boEl.checked = state.blackOwned;
+  boEl.addEventListener('change', (e) => { state.blackOwned = e.target.checked; apply(); });
 
   function apply() {
+    store.set(fkey, state);
+    const q = state.q.toLowerCase();
     const list = all.filter(s => {
       if (state.cat !== 'All' && s.type !== state.cat) return false;
       if (state.blackOwned && !s.blackOwned) return false;
-      if (state.q) {
-        const hay = `${s.name} ${s.type} ${s.neighborhood}`.toLowerCase();
-        if (!hay.includes(state.q)) return false;
+      if (q) {
+        const hay = `${s.name} ${s.type} ${s.neighborhood || ''} ${s.cityName || ''}`.toLowerCase();
+        if (!hay.includes(q)) return false;
       }
       return true;
     });
@@ -274,7 +293,7 @@ function setupNearMe() {
     msg.classList.toggle('error', !!isError);
   }
 
-  function showNear(origin, label) {
+  function showNear(origin, label, scroll = true) {
     const section = document.getElementById('near-section');
     const row = document.getElementById('near-row');
     row.innerHTML = '';
@@ -282,7 +301,8 @@ function setupNearMe() {
     for (const { spa, miles } of results) row.appendChild(listingCard(spa, { miles }));
     section.hidden = false;
     say(`Showing the ${results.length} closest spas${label ? ` to ${label}` : ''}.`);
-    section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    store.set('spas:near', { lat: origin.lat, lng: origin.lng, label });
+    if (scroll) section.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
 
   locateBtn.addEventListener('click', () => {
@@ -304,6 +324,10 @@ function setupNearMe() {
   }
   zipGo.addEventListener('click', goZip);
   zipInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') goZip(); });
+
+  // restore the last "near me" view on refresh (no auto-scroll)
+  const last = store.get('spas:near', null);
+  if (last && typeof last.lat === 'number') showNear({ lat: last.lat, lng: last.lng }, last.label, false);
 }
 
 // ---------- Detail ----------

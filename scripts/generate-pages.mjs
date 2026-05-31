@@ -363,7 +363,8 @@ const liveLinks = live.slice(0, 12).map(p => `<a href="/${p.slug}/">${esc(p.name
     path: '/',
     body: `    <section class="hero">
       <h1>Spas across Georgia</h1>
-      <p>Browse ${ACTIVE.length} spas across ${live.length} Georgia cities — day spas, med spas, and massage. Find <a href="/black-owned/">Black-owned wellness businesses</a> statewide.</p>
+      <p>Browse day spas, med spas, and massage by city. Find <a href="/black-owned/">Black-owned wellness businesses</a> statewide.</p>
+      <p class="home-stat">${ACTIVE.length} spas listed across ${live.length} Georgia cities</p>
     </section>
     <h2 class="section">Featured</h2>
     <div class="listing-grid">

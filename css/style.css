@@ -386,3 +386,4 @@ h2.section { font-size: 1.05rem; letter-spacing: .04em; text-transform: uppercas
 .site-footer { margin-top: 40px; border-top: 1px solid var(--line); color: var(--muted); font-size: .9rem; }
 .site-footer .container { padding-top: 20px; padding-bottom: 28px; }
 .version { opacity: .7; font-variant-numeric: tabular-nums; }
+.home-stat { margin: 12px 0 0; color: var(--accent); font-weight: 700; font-size: 1.05rem; }
