@@ -41,6 +41,7 @@ const VERSION = JSON.parse(readFileSync(join(ROOT, 'package.json'), 'utf8')).ver
 let SHA = '';
 try { SHA = execSync('git rev-parse --short HEAD', { cwd: ROOT, stdio: ['ignore', 'pipe', 'ignore'] }).toString().trim(); } catch { /* not a git repo */ }
 const BUILD = `v${VERSION}${SHA ? ` · ${SHA}` : ''}`;
+const ASSET_VER = encodeURIComponent(`${VERSION}${SHA ? `.${SHA}` : ''}`); // cache-bust ?v=
 let footerCities = ''; // set once `live` cities are known, used in every footer
 
 // SPAS ONLY for now. Salons (Nail Salon, Hair Salon, Brow & Lash) come later —
@@ -209,8 +210,8 @@ function shell({ title, desc, path, jsonLd = '', body, noindex = false }) {
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/css/style.css">
-  <script type="module" src="/js/site.js"></script>
+  <link rel="stylesheet" href="/css/style.css?v=${ASSET_VER}">
+  <script type="module" src="/js/site.js?v=${ASSET_VER}"></script>
   ${jsonLd}
 </head>
 <body>
@@ -495,7 +496,7 @@ const cityRow = (p) => `<a class="city-row" href="/${p.slug}/">
     </div>
 
     <script type="application/json" id="spa-index">${index}</script>
-    <script type="module" src="/js/home.js"></script>`,
+    <script type="module" src="/js/home.js?v=${ASSET_VER}"></script>`,
   }));
 }
 
