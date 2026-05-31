@@ -22,7 +22,8 @@
 //
 // Run after editing js/data/spas.js:   npm run build:pages
 
-import { writeFileSync, mkdirSync, rmSync, cpSync } from 'node:fs';
+import { writeFileSync, readFileSync, mkdirSync, rmSync, cpSync } from 'node:fs';
+import { execSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 
@@ -34,6 +35,12 @@ const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const GA_DIR = join(ROOT, 'ga');
 const MIN_LISTINGS = 1;                               // raise to ~3 before launch
 const BASE_URL = 'https://ga.spas.artivicolab.com';   // for canonical + sitemap
+
+// Build version for the footer: package.json version + git short SHA.
+const VERSION = JSON.parse(readFileSync(join(ROOT, 'package.json'), 'utf8')).version;
+let SHA = '';
+try { SHA = execSync('git rev-parse --short HEAD', { cwd: ROOT, stdio: ['ignore', 'pipe', 'ignore'] }).toString().trim(); } catch { /* not a git repo */ }
+const BUILD = `v${VERSION}${SHA ? ` · ${SHA}` : ''}`;
 
 // SPAS ONLY for now. Salons (Nail Salon, Hair Salon, Brow & Lash) come later —
 // their listings stay in spas.js but aren't generated until added here.
@@ -222,7 +229,7 @@ function shell({ title, desc, path, jsonLd = '', body, noindex = false }) {
 ${body}
   </main>
   <footer class="site-footer">
-    <div class="container">© 2026 Spas · Georgia. A simple directory.</div>
+    <div class="container">© 2026 Spas · Georgia · <span class="version">${BUILD}</span></div>
   </footer>
 </body>
 </html>

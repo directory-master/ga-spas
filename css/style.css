@@ -385,3 +385,4 @@ h2.section { font-size: 1.05rem; letter-spacing: .04em; text-transform: uppercas
 /* footer */
 .site-footer { margin-top: 40px; border-top: 1px solid var(--line); color: var(--muted); font-size: .9rem; }
 .site-footer .container { padding-top: 20px; padding-bottom: 28px; }
+.version { opacity: .7; font-variant-numeric: tabular-nums; }
