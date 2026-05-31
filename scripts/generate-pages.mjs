@@ -263,11 +263,10 @@ ${body}
       </div>
     </div>
     <div class="container footer-base">
-      <span>© 2026 GA Spas · Georgia's spa directory · Built in Atlanta</span>
+      <span>© 2026 GA Spas · Built in Atlanta · <span class="version">${BUILD}</span></span>
       <a class="btn btn-secondary" href="mailto:hello@example.com?subject=List%20my%20spa">List your spa →</a>
     </div>
   </footer>
-  <!-- ${BUILD} -->
 </body>
 </html>
 `;

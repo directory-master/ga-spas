@@ -2,6 +2,17 @@
 
 Guidance for working in this repo.
 
+## ⚠️ Versioning — bump it every change
+
+**Always bump `version` in `package.json` for any change before committing.**
+Use semver: patch (`0.2.0 → 0.2.1`) for fixes/tweaks, minor (`0.2.x → 0.3.0`)
+for features. The site footer shows `v<version> · <git short SHA>` — the static
+generator (`scripts/generate-pages.mjs`) reads the version from `package.json`
+and the SHA from git at build time (the `BUILD` constant). If you forget to
+bump, the visible version won't change and the footer will look stale. The
+legacy `index.html`/`city.html`/`listing.html` footers hard-code the version —
+update those to match when you bump.
+
 ## What this is
 
 **spas** (code name) — a zero-backend, static directory of spas & salons across
