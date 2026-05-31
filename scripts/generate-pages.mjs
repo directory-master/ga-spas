@@ -41,6 +41,7 @@ const VERSION = JSON.parse(readFileSync(join(ROOT, 'package.json'), 'utf8')).ver
 let SHA = '';
 try { SHA = execSync('git rev-parse --short HEAD', { cwd: ROOT, stdio: ['ignore', 'pipe', 'ignore'] }).toString().trim(); } catch { /* not a git repo */ }
 const BUILD = `v${VERSION}${SHA ? ` · ${SHA}` : ''}`;
+let footerCities = ''; // set once `live` cities are known, used in every footer
 
 // SPAS ONLY for now. Salons (Nail Salon, Hair Salon, Brow & Lash) come later —
 // their listings stay in spas.js but aren't generated until added here.
@@ -228,7 +229,28 @@ function shell({ title, desc, path, jsonLd = '', body, noindex = false }) {
 ${body}
   </main>
   <footer class="site-footer">
-    <div class="container">© 2026 Spas · Georgia · <span class="version">${BUILD}</span></div>
+    <div class="container footer-grid">
+      <div class="footer-brand">
+        <div class="brand"><a href="/" style="color:inherit;text-decoration:none;">Spas<small>· Georgia</small></a></div>
+        <p>Georgia's curated spa &amp; wellness directory — vetted, local, and easy to book.</p>
+        <a class="btn btn-secondary" href="mailto:hello@example.com?subject=List%20my%20spa">List your spa</a>
+      </div>
+      <div class="footer-col">
+        <h4>Browse</h4>
+        <a href="/category/day-spas/">Day spas</a>
+        <a href="/category/med-spas/">Med spas</a>
+        <a href="/category/massage/">Massage</a>
+        <a href="/black-owned/">Black-owned spas</a>
+      </div>
+      <div class="footer-col">
+        <h4>Top cities</h4>
+        ${footerCities}
+      </div>
+    </div>
+    <div class="container footer-base">
+      <span>© 2026 Spas · Georgia</span>
+      <span class="version">${BUILD}</span>
+    </div>
   </footer>
 </body>
 </html>
@@ -349,25 +371,50 @@ const live = [...cityReg]
   .sort((a, b) => b.listings.length - a.listings.length);
 const liveSlugs = new Set(live.map(p => p.slug));
 const liveLinks = live.slice(0, 12).map(p => `<a href="/${p.slug}/">${esc(p.name)}</a>`).join(' · ');
+footerCities = live.slice(0, 6).map(p => `<a href="/${p.slug}/">${esc(p.name)}</a>`).join('\n        ');
 
-// Georgia home — hero, category quick-links, featured, city directory
+// Local-flavor subtext per city (our brand edge); fall back to nothing.
+const CITY_BLURBS = {
+  atlanta: 'Buckhead, Midtown & Decatur', roswell: 'Canton Street & Historic district',
+  alpharetta: 'Avalon & downtown', marietta: 'The Square & East Cobb',
+  duluth: 'Pleasant Hill & Sugarloaf', 'sandy-springs': 'City Springs & Roswell Rd',
+  decatur: 'Downtown & Oakhurst', 'johns-creek': 'Medlock Bridge & Newtown',
+  tucker: 'Main Street & Northlake', norcross: 'Historic downtown & Forum',
+  chamblee: 'Peachtree Blvd & downtown', dunwoody: 'Perimeter & the Village',
+  brookhaven: 'Dresden Dr & Town Brookhaven', 'peachtree-corners': 'The Forum & Town Center',
+  woodstock: 'Downtown & Towne Lake', conyers: 'Olde Town & GA-138',
+  'stone-mountain': 'Main Street & Memorial Dr', stonecrest: 'Mall area & Turner Hill',
+  snellville: 'Scenic Hwy & Towne Center', doraville: 'Buford Hwy & Assembly',
+  lilburn: 'Old Town & Mountain Park', lithonia: 'Stonecrest & Panola Rd',
+  suwanee: 'Town Center & Old Town', milton: 'Crabapple & downtown',
+  loganville: 'Town Center & Hwy 78', lawrenceville: 'Historic downtown',
+  savannah: 'Historic district & midtown', ellenwood: 'Fairview & I-675',
+};
+const NON_METRO = new Set(['savannah', 'augusta', 'columbus', 'macon', 'athens']);
+const cityCard = (p) => `<a class="city-card" href="/${p.slug}/">
+        <div class="city-name">${esc(p.name)}</div>
+        ${CITY_BLURBS[p.slug] ? `<div class="city-blurb">${esc(CITY_BLURBS[p.slug])}</div>` : ''}
+        <div class="city-count">${p.listings.length} ${p.listings.length === 1 ? 'spa' : 'spas'} →</div>
+      </a>`;
+
+// Georgia home — hero, category links, featured showcase, Black-owned strip, grouped cities
 {
-  const featured = byRank(ACTIVE).slice(0, 6).map(card).join('\n      ');
-  const cityCards = live.map(p =>
-    `<a class="city-card" href="/${p.slug}/"><div class="city-name">${esc(p.name)}</div>` +
-    `<div class="city-count">${p.listings.length} ${p.listings.length === 1 ? 'spa' : 'spas'} →</div></a>`
-  ).join('\n      ');
+  const featured = byRank(ACTIVE.filter(s => s.tier !== 'free')).slice(0, 6).map(card).join('\n      ');
   const tc = (t) => ACTIVE.filter(s => s.type === t).length;
   const boCount = ACTIVE.filter(s => s.blackOwned).length;
+  const metro = live.filter(p => !NON_METRO.has(p.slug));
+  const other = live.filter(p => NON_METRO.has(p.slug));
+  const grid = (list) => `<div class="city-grid">\n      ${list.map(cityCard).join('\n      ')}\n    </div>`;
+
   write('', shell({
-    title: 'Best Spas in Georgia | GA Spa Directory',
-    desc: 'Find and book day spas, med spas, and massage across Georgia. Browse by city, category, and Black-owned businesses.',
+    title: 'Best Spas in Georgia | Curated GA Spa Directory',
+    desc: `Find your perfect spa day in Georgia — ${ACTIVE.length} vetted day spas, med spas, and massage studios across ${live.length} cities. Browse by city, category, and Black-owned.`,
     path: '/',
     body: `    <section class="hero hero-home">
       <div class="hero-eyebrow">Georgia spa &amp; wellness directory</div>
-      <h1>Find your next escape</h1>
-      <p>Day spas, med spas, and massage across ${live.length} Georgia cities — discover, compare, and book your moment of calm.</p>
+      <h1>Find your perfect spa day in Georgia</h1>
       <p class="home-stat">${ACTIVE.length} spas · ${live.length} cities${boCount ? ` · ${boCount} Black-owned` : ''}</p>
+      <p class="hero-editorial">We've vetted every spa on this list — these are the ones worth your time.</p>
       <div class="cat-cards">
         <a class="cat-card" href="/category/day-spas/"><span class="ic">🌿</span>Day Spas<small>${tc('Day Spa')}</small></a>
         <a class="cat-card" href="/category/med-spas/"><span class="ic">✨</span>Med Spas<small>${tc('Med Spa')}</small></a>
@@ -376,19 +423,19 @@ const liveLinks = live.slice(0, 12).map(p => `<a href="/${p.slug}/">${esc(p.name
       </div>
     </section>
 
-    ${boCount ? `<div class="bo-banner">
-      <div><h3>Support Black-owned wellness</h3><p>${boCount} Black-owned ${boCount === 1 ? 'spa' : 'spas'} across Georgia — easy to find, easy to book.</p></div>
-      <a class="btn" href="/black-owned/">Explore →</a>
-    </div>` : ''}
-
-    <h2 class="section">Featured</h2>
+    <h2 class="section gold-rule">Featured spas</h2>
     <div class="listing-grid">
       ${featured}
     </div>
-    <h2 class="section">Browse by city</h2>
-    <div class="city-grid">
-      ${cityCards}
-    </div>`,
+
+    ${boCount ? `<div class="bo-banner">
+      <div><h3><strong>${ACTIVE.length} spas listed.</strong> ${boCount} ${boCount === 1 ? 'is' : 'are'} Black-owned.</h3><p>We made them easy to find — discover and support Black-owned wellness across Georgia.</p></div>
+      <a class="btn" href="/black-owned/">See Black-owned spas →</a>
+    </div>` : ''}
+
+    <h2 class="section">Metro Atlanta</h2>
+    ${grid(metro)}
+    ${other.length ? `<h2 class="section">Across Georgia</h2>\n    ${grid(other)}` : ''}`,
   }));
 }
 

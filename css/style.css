@@ -427,3 +427,19 @@ h2.section { font-size: 1.05rem; letter-spacing: .04em; text-transform: uppercas
 .bo-banner p { margin: 0; color: rgba(255,255,255,.7); font-size: .95rem; }
 .bo-banner .btn { background: var(--pc-gold); color: #1c1a17; white-space: nowrap; }
 .bo-banner .btn:hover { background: #d8b85a; filter: none; }
+.bo-banner strong { color: var(--pc-gold-light); }
+
+.hero-editorial { max-width: 54ch; margin: 14px auto 0; font-style: italic; color: var(--ink); font-size: 1.02rem; }
+
+/* featured section accent + hero treatment for the cards */
+h2.section.gold-rule { border-top: 2px solid var(--gold); padding-top: 16px; }
+
+/* brand footer */
+.footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 28px; padding-top: 38px; padding-bottom: 24px; }
+.footer-brand .brand { font-size: 1.2rem; }
+.footer-brand p { color: var(--muted); font-size: .92rem; max-width: 36ch; margin: 10px 0 14px; }
+.footer-col h4 { font-size: .78rem; text-transform: uppercase; letter-spacing: .1em; color: var(--muted); margin: 2px 0 12px; }
+.footer-col a { display: block; color: var(--ink); font-size: .92rem; margin-bottom: 8px; }
+.footer-col a:hover { color: var(--accent); text-decoration: none; }
+.footer-base { border-top: 1px solid var(--line); padding-top: 16px; padding-bottom: 30px; color: var(--muted); font-size: .85rem; display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+@media (max-width: 640px) { .footer-grid { grid-template-columns: 1fr 1fr; } .footer-brand { grid-column: 1 / -1; } }
