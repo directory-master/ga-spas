@@ -200,6 +200,7 @@ function shell({ title, desc, path, jsonLd = '', body, noindex = false }) {
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Cache-Control" content="no-cache">
   <title>${esc(title)}</title>
   <meta name="description" content="${esc(desc)}">${noindex ? '\n  <meta name="robots" content="noindex,follow">' : ''}
   <link rel="canonical" href="${canonical}">
