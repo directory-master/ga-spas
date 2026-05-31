@@ -216,12 +216,12 @@ function shell({ title, desc, path, jsonLd = '', body, noindex = false }) {
 <body>
   <header class="site-header">
     <div class="container">
-      <div class="brand"><a href="/" style="color:inherit;text-decoration:none;">Spas<small>· Georgia</small></a></div>
+      <div class="brand"><a href="/">GA<span>Spas</span></a></div>
       <nav class="nav">
         <a href="/">Cities</a>
-        <a href="/black-owned/">Black-owned</a>
+        <a href="/black-owned/">Black-Owned</a>
         <a href="/blog/">Blog</a>
-        <a href="mailto:hello@example.com?subject=List%20my%20business">List your business</a>
+        <a class="nav-cta" href="mailto:hello@example.com?subject=List%20my%20spa">List your spa</a>
       </nav>
     </div>
   </header>
@@ -231,27 +231,43 @@ ${body}
   <footer class="site-footer">
     <div class="container footer-grid">
       <div class="footer-brand">
-        <div class="brand"><a href="/" style="color:inherit;text-decoration:none;">Spas<small>· Georgia</small></a></div>
-        <p>Georgia's curated spa &amp; wellness directory — vetted, local, and easy to book.</p>
-        <a class="btn btn-secondary" href="mailto:hello@example.com?subject=List%20my%20spa">List your spa</a>
+        <div class="brand"><a href="/">GA<span>Spas</span></a></div>
+        <p>Georgia's hyper-local spa and wellness directory. Curated, not algorithmic. Every listing visited, verified, and written about by people who live here.</p>
+        <div class="footer-social">
+          <a href="https://instagram.com/" target="_blank" rel="noopener">Instagram</a>
+          <a href="https://facebook.com/" target="_blank" rel="noopener">Facebook</a>
+        </div>
       </div>
       <div class="footer-col">
-        <h4>Browse</h4>
-        <a href="/category/day-spas/">Day spas</a>
-        <a href="/category/med-spas/">Med spas</a>
-        <a href="/category/massage/">Massage</a>
+        <h4>Explore</h4>
+        <a href="/atlanta/">Atlanta spas</a>
         <a href="/black-owned/">Black-owned spas</a>
+        <a href="/category/med-spas/">Med spas in GA</a>
+        <a href="/category/day-spas/">Day spas near me</a>
+        <a href="/cities/">All Georgia cities</a>
       </div>
       <div class="footer-col">
-        <h4>Top cities</h4>
-        ${footerCities}
+        <h4>For spa owners</h4>
+        <a href="mailto:hello@example.com?subject=List%20my%20spa">List your spa — Free</a>
+        <a href="mailto:hello@example.com?subject=Standard%20listing">Standard listing — $49/mo</a>
+        <a href="mailto:hello@example.com?subject=Premium%20listing">Premium listing — $149/mo</a>
+        <a href="mailto:hello@example.com?subject=Featured%20placement">Featured placement — $99/mo</a>
+        <a href="mailto:hello@example.com?subject=Hello">Contact us</a>
+      </div>
+      <div class="footer-col">
+        <h4>Company</h4>
+        <a href="/blog/">Blog</a>
+        <a href="mailto:hello@example.com?subject=About">About GA Spas</a>
+        <a href="#">Privacy policy</a>
+        <a href="#">Terms of service</a>
       </div>
     </div>
     <div class="container footer-base">
-      <span>© 2026 Spas · Georgia</span>
-      <span class="version">${BUILD}</span>
+      <span>© 2026 GA Spas · Georgia's spa directory · Built in Atlanta</span>
+      <a class="btn btn-secondary" href="mailto:hello@example.com?subject=List%20my%20spa">List your spa →</a>
     </div>
   </footer>
+  <!-- ${BUILD} -->
 </body>
 </html>
 `;
@@ -356,6 +372,7 @@ cpSync(join(ROOT, 'css'), join(GA_DIR, 'css'), { recursive: true }); // self-con
 mkdirSync(join(GA_DIR, 'js'), { recursive: true });                  // only the client bits
 cpSync(join(ROOT, 'js/hours.js'), join(GA_DIR, 'js/hours.js'));
 cpSync(join(ROOT, 'js/site.js'), join(GA_DIR, 'js/site.js'));
+cpSync(join(ROOT, 'js/home.js'), join(GA_DIR, 'js/home.js'));
 
 const counts = { cities: 0, comingSoon: 0, category: 0, cityBO: 0, statewide: 0, profiles: 0 };
 
@@ -373,71 +390,136 @@ const liveSlugs = new Set(live.map(p => p.slug));
 const liveLinks = live.slice(0, 12).map(p => `<a href="/${p.slug}/">${esc(p.name)}</a>`).join(' · ');
 footerCities = live.slice(0, 6).map(p => `<a href="/${p.slug}/">${esc(p.name)}</a>`).join('\n        ');
 
-// Local-flavor subtext per city (our brand edge); fall back to nothing.
+// Local-flavor subtext per city (our brand edge).
 const CITY_BLURBS = {
-  atlanta: 'Buckhead, Midtown & Decatur', roswell: 'Canton Street & Historic district',
-  alpharetta: 'Avalon & downtown', marietta: 'The Square & East Cobb',
-  duluth: 'Pleasant Hill & Sugarloaf', 'sandy-springs': 'City Springs & Roswell Rd',
-  decatur: 'Downtown & Oakhurst', 'johns-creek': 'Medlock Bridge & Newtown',
-  tucker: 'Main Street & Northlake', norcross: 'Historic downtown & Forum',
-  chamblee: 'Peachtree Blvd & downtown', dunwoody: 'Perimeter & the Village',
-  brookhaven: 'Dresden Dr & Town Brookhaven', 'peachtree-corners': 'The Forum & Town Center',
-  woodstock: 'Downtown & Towne Lake', conyers: 'Olde Town & GA-138',
+  atlanta: 'Buckhead, Midtown, West End, Decatur', roswell: 'Canton Street district',
+  alpharetta: 'Avalon area, Old Milton', duluth: 'Sugarloaf, Gwinnett Place',
+  marietta: 'Downtown square, East Cobb', tucker: 'Main Street corridor',
+  conyers: 'Rockdale County hub', 'johns-creek': 'Technology Corridor',
+  decatur: 'Downtown, Oakhurst, Avondale', 'sandy-springs': 'Roswell Rd, Hammond Dr',
+  savannah: 'Historic district, Ardsley Park', smyrna: 'Village Green, Vinings',
+  norcross: 'Historic downtown & the Forum', chamblee: 'Peachtree Blvd & downtown',
+  dunwoody: 'Perimeter & the Village', brookhaven: 'Dresden Dr & Town Brookhaven',
+  'peachtree-corners': 'The Forum & Town Center', woodstock: 'Downtown & Towne Lake',
   'stone-mountain': 'Main Street & Memorial Dr', stonecrest: 'Mall area & Turner Hill',
   snellville: 'Scenic Hwy & Towne Center', doraville: 'Buford Hwy & Assembly',
   lilburn: 'Old Town & Mountain Park', lithonia: 'Stonecrest & Panola Rd',
   suwanee: 'Town Center & Old Town', milton: 'Crabapple & downtown',
-  loganville: 'Town Center & Hwy 78', lawrenceville: 'Historic downtown',
-  savannah: 'Historic district & midtown', ellenwood: 'Fairview & I-675',
 };
-const NON_METRO = new Set(['savannah', 'augusta', 'columbus', 'macon', 'athens']);
-const cityCard = (p) => `<a class="city-card" href="/${p.slug}/">
-        <div class="city-name">${esc(p.name)}</div>
-        ${CITY_BLURBS[p.slug] ? `<div class="city-blurb">${esc(CITY_BLURBS[p.slug])}</div>` : ''}
-        <div class="city-count">${p.listings.length} ${p.listings.length === 1 ? 'spa' : 'spas'} →</div>
+const cityRow = (p) => `<a class="city-row" href="/${p.slug}/">
+        <span class="city-row-name">${esc(p.name)}</span>
+        <span class="city-row-blurb">${esc(CITY_BLURBS[p.slug] || '')}</span>
+        <span class="city-row-count">${p.listings.length} spas →</span>
       </a>`;
 
-// Georgia home — hero, category links, featured showcase, Black-owned strip, grouped cities
+// Georgia home — full landing page
 {
-  const featured = byRank(ACTIVE.filter(s => s.tier !== 'free')).slice(0, 6).map(card).join('\n      ');
   const tc = (t) => ACTIVE.filter(s => s.type === t).length;
   const boCount = ACTIVE.filter(s => s.blackOwned).length;
-  const metro = live.filter(p => !NON_METRO.has(p.slug));
-  const other = live.filter(p => NON_METRO.has(p.slug));
-  const grid = (list) => `<div class="city-grid">\n      ${list.map(cityCard).join('\n      ')}\n    </div>`;
+
+  const claimCard = `<div class="listing-card premium-card claim-card">
+        <div class="pc-link" style="cursor:default">
+          <div class="pc-top">
+            <div class="pc-top-row"><div><div class="pc-cat">Your Spa Here</div><div class="pc-name">This spot is available</div></div></div>
+            <div class="pc-badges"><span class="pc-badge gold">✦ Featured</span><span class="pc-badge open status-open"><span class="dot"></span>Available</span></div>
+          </div>
+          <div class="pc-body">
+            <div class="pc-nbhd">Buckhead · Atlanta</div>
+            <div class="pc-desc">The featured spot for Buckhead day spas is unclaimed. Be the first spa in your neighborhood at the top of every search result.</div>
+            <div class="pc-promo">✦ Featured placement · $99/month · top of all Buckhead results · gold border treatment</div>
+          </div>
+        </div>
+        <div class="pc-actions"><a class="pc-btn gold" href="mailto:hello@example.com?subject=Claim%20featured%20spot">Claim this spot →</a></div>
+      </div>`;
+  const featured = byRank(ACTIVE.filter(s => s.tier !== 'free')).slice(0, 2).map(card).join('\n      ') + '\n      ' + claimCard;
+
+  const quote = (stars, text, name, detail) =>
+    `<figure class="quote"><div class="stars"><span class="star-fill">${stars}</span></div>` +
+    `<blockquote>${text}</blockquote><figcaption><strong>${name}</strong><span>${detail}</span></figcaption></figure>`;
+  const testimonials = `<h2 class="section">What Atlanta is saying</h2>
+    <div class="quotes">
+      ${quote('★★★★★', '“Found my go-to facial spot in Buckhead in five minutes — and she’s Black-owned. This directory is exactly what Atlanta needed.”', 'Jasmine W.', 'Buckhead · Day Spa')}
+      ${quote('★★★★★', '“Finally a site that actually knows Atlanta neighborhoods. Not just ‘Atlanta’ — Decatur, West End, Midtown. Real local knowledge.”', 'Marcus R.', 'Decatur · Massage Studio')}
+      ${quote('★★★★★', '“Booked a couples massage through GA Spas for our anniversary. The promo deal saved us $60. Zero stress, 10 minutes flat.”', 'Tanya N.', 'Midtown · Couples Massage')}
+    </div>`;
+
+  const cityRows = live.slice(0, 12).map(cityRow).join('\n      ') +
+    (live.length > 12 ? `\n      <a class="city-row city-row-all" href="/cities/">view all ${live.length} cities →</a>` : '');
+
+  const index = JSON.stringify(ACTIVE.map(s => ({ n: s.name, u: spaUrl(s), c: cityNameOf(s), t: s.type, a: s.lat, o: s.lng })));
 
   write('', shell({
-    title: 'Best Spas in Georgia | Curated GA Spa Directory',
-    desc: `Find your perfect spa day in Georgia — ${ACTIVE.length} vetted day spas, med spas, and massage studios across ${live.length} cities. Browse by city, category, and Black-owned.`,
+    title: 'Best Spas in Atlanta & Georgia | GA Spas Directory',
+    desc: `Find your perfect spa day in Atlanta. ${ACTIVE.length} vetted day spas, med spas, and massage studios across ${live.length} Georgia cities — including the best Black-owned wellness businesses.`,
     path: '/',
     body: `    <section class="hero hero-home">
-      <div class="hero-eyebrow">Georgia spa &amp; wellness directory</div>
-      <h1>Find your perfect spa day in Georgia</h1>
-      <p class="home-stat">${ACTIVE.length} spas · ${live.length} cities${boCount ? ` · ${boCount} Black-owned` : ''}</p>
-      <p class="hero-editorial">We've vetted every spa on this list — these are the ones worth your time.</p>
-      <div class="cat-cards">
-        <a class="cat-card" href="/category/day-spas/"><span class="ic">🌿</span>Day Spas<small>${tc('Day Spa')}</small></a>
-        <a class="cat-card" href="/category/med-spas/"><span class="ic">✨</span>Med Spas<small>${tc('Med Spa')}</small></a>
-        <a class="cat-card" href="/category/massage/"><span class="ic">🤲</span>Massage<small>${tc('Massage')}</small></a>
-        <a class="cat-card bo" href="/black-owned/"><span class="ic">✶</span>Black-Owned<small>${boCount}</small></a>
+      <div class="hero-eyebrow">Georgia's spa &amp; wellness directory</div>
+      <h1>Find your perfect spa day in Atlanta</h1>
+      <p class="hero-body">We've visited, vetted, and written about every spa on this list. Day spas, med spas, massage studios — and Georgia's best Black-owned wellness businesses, all in one place.</p>
+      <p class="home-stat">${ACTIVE.length} spas listed across ${live.length} Georgia cities — updated weekly</p>
+      <form class="home-search" id="home-search" autocomplete="off">
+        <input id="home-q" class="home-search-input" type="search" placeholder="Search by city, neighborhood, or service…" aria-label="Search spas">
+        <button class="btn" type="submit">Find spas</button>
+        <button class="btn btn-secondary" type="button" id="home-near">📍 Near me</button>
+        <div id="home-results" class="home-results" hidden></div>
+      </form>
+      <div class="pill-row">
+        <a class="pill active" href="/">All</a>
+        <a class="pill" href="/category/day-spas/">Day Spas</a>
+        <a class="pill" href="/category/med-spas/">Med Spas</a>
+        <a class="pill" href="/category/massage/">Massage</a>
+        <a class="pill" href="/category/hair-salons/">Hair Salons</a>
+        <a class="pill bo-pill" href="/black-owned/">✦ Black-Owned</a>
       </div>
     </section>
 
     <h2 class="section gold-rule">Featured spas</h2>
-    <div class="listing-grid">
+    <div class="listing-grid featured-grid">
       ${featured}
     </div>
 
-    ${boCount ? `<div class="bo-banner">
-      <div><h3><strong>${ACTIVE.length} spas listed.</strong> ${boCount} ${boCount === 1 ? 'is' : 'are'} Black-owned.</h3><p>We made them easy to find — discover and support Black-owned wellness across Georgia.</p></div>
-      <a class="btn" href="/black-owned/">See Black-owned spas →</a>
-    </div>` : ''}
+    ${boCount ? `<section class="bo-strip">
+      <div class="bo-strip-text">
+        <div class="hero-eyebrow">Community first</div>
+        <h2>We made Black-owned spas easy to find</h2>
+        <p>Atlanta's Black professional community deserves a directory built for them. Every Black-owned spa is verified, featured prominently, and never buried in an algorithm.</p>
+        <a class="btn" href="/black-owned/">Browse Black-Owned Spas →</a>
+      </div>
+      <div class="bo-strip-num"><span class="big">${boCount}</span><span>Black-owned ${boCount === 1 ? 'spa' : 'spas'} listed across Georgia</span></div>
+    </section>` : ''}
 
-    <h2 class="section">Metro Atlanta</h2>
-    ${grid(metro)}
-    ${other.length ? `<h2 class="section">Across Georgia</h2>\n    ${grid(other)}` : ''}`,
+    ${testimonials}
+
+    <h2 class="section">Browse by city</h2>
+    <div class="city-list">
+      ${cityRows}
+    </div>
+
+    <script type="application/json" id="spa-index">${index}</script>
+    <script type="module" src="/js/home.js"></script>`,
   }));
 }
+
+// "all cities" index (the home's "view all" link)
+write('cities', shell({
+  title: 'All Georgia spa cities | GA Spas',
+  desc: `Browse spas in all ${live.length} Georgia cities — day spas, med spas, and massage from Atlanta to Savannah.`,
+  path: '/cities/',
+  body: `    <section class="hero"><h1>All Georgia cities</h1><p>${ACTIVE.length} spas across ${live.length} cities — pick yours.</p></section>
+    <div class="city-list">
+      ${live.map(cityRow).join('\n      ')}
+    </div>`,
+}));
+
+// hair salons — coming soon (keeps the homepage pill from 404ing)
+write('category/hair-salons', shell({
+  title: 'Hair salons in Georgia | GA Spas',
+  desc: 'Hair salons are coming soon to GA Spas.',
+  path: '/category/hair-salons/', noindex: true,
+  body: `    <section class="hero"><h1>Hair salons — coming soon</h1>
+      <p>We're a spa directory first; hair salons are next. <a href="/">Browse spas</a> in the meantime.</p></section>`,
+}));
+noindexed.add('/category/hair-salons/');
 
 for (const { slug, name, listings } of live) {
   counts.cities++;
