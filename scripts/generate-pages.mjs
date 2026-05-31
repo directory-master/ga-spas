@@ -117,7 +117,6 @@ function regularCard(spa) {
         ${spa.rating ? `${stars(spa.rating)}<span class="reviews"> (${spa.reviews || 0})</span>` : ''}
       </div>
     </a>
-    ${actions(spa)}
   </div>`;
 }
 

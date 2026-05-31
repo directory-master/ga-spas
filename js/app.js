@@ -192,7 +192,6 @@ function regularListingCard(spa, opts) {
         spa.rating ? el('span', { class: 'reviews' }, ` (${spa.reviews || 0})`) : null,
       ]),
     ]),
-    cardActions(spa),
   ]);
 }
 
