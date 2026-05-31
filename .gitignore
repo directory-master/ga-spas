@@ -1,0 +1,9 @@
+# Generated static site (rebuild with `npm run build:pages`)
+/ga/
+
+# Dependencies
+node_modules/
+
+# OS / editor / logs
+.DS_Store
+*.log

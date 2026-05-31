@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Georgia Spa & Salon Directory</title>
+  <meta name="description" content="Find nail salons, day spas, and med spas across Georgia — Atlanta, Savannah, Augusta, Athens, Columbus, Macon.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="container">
+      <div class="brand">Spas<small>· Georgia</small></div>
+      <nav class="nav">
+        <a href="index.html">Cities</a>
+        <a href="mailto:hello@example.com?subject=List%20my%20business">List your business</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="hero">
+      <h1>Spas & salons across Georgia</h1>
+      <p>Browse nail salons, day spas, and med spas by city. Search, filter by category, and find Black-owned wellness businesses near you.</p>
+
+      <div class="locate">
+        <button id="locate-btn" class="btn" type="button">📍 Use my location</button>
+        <span class="or">or</span>
+        <input id="zip" class="zip-input" type="text" inputmode="numeric" maxlength="5" placeholder="ZIP code" aria-label="ZIP code">
+        <button id="zip-go" class="btn btn-secondary" type="button">Find spas</button>
+      </div>
+      <p id="locate-msg" class="locate-msg" hidden></p>
+    </section>
+
+    <section id="near-section" hidden>
+      <h2 class="section">Spas near you</h2>
+      <div id="near-row" class="listing-grid"></div>
+    </section>
+
+    <h2 class="section">Featured spas</h2>
+    <div id="featured-row" class="listing-grid"></div>
+
+    <h2 class="section">Browse by city</h2>
+    <div id="city-grid" class="city-grid"></div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">© 2026 Spas · Georgia. A simple directory.</div>
+  </footer>
+
+  <script type="module">
+    import { renderHome } from './js/app.js';
+    renderHome();
+  </script>
+</body>
+</html>

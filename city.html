@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>City — Georgia Spa Directory</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="container">
+      <div class="brand"><a href="index.html" style="color:inherit; text-decoration:none;">Spas<small>· Georgia</small></a></div>
+      <nav class="nav">
+        <a href="index.html">Cities</a>
+        <a href="mailto:hello@example.com?subject=List%20my%20business">List your business</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="hero">
+      <h1 id="city-title">City</h1>
+      <p id="city-blurb"></p>
+    </section>
+
+    <div id="toolbar" class="toolbar" hidden>
+      <input id="search" class="search" type="search" placeholder="Search spas, services, neighborhoods…" aria-label="Search spas">
+      <div id="cat-chips" class="chips"></div>
+      <label class="bo-toggle">
+        <input type="checkbox" id="bo-filter">
+        <span>✶ Black-owned</span>
+      </label>
+    </div>
+
+    <div id="results"></div>
+    <p id="empty" class="empty" hidden>No spas match your filters.</p>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">© 2026 Spas · Georgia. A simple directory.</div>
+  </footer>
+
+  <script type="module">
+    import { renderCity } from './js/app.js';
+    renderCity();
+  </script>
+</body>
+</html>
