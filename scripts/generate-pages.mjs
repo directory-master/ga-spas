@@ -60,6 +60,21 @@ const PWA_HEAD = `<link rel="manifest" href="/manifest.webmanifest"/>
 <meta name="apple-mobile-web-app-title" content="GA.Spas"/>
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
 <script defer src="/js/pwa.js?v=${ASSET_VER}"></script>`;
+
+// Google Analytics 4 (GA4). Injected immediately after <head> on EVERY page, so
+// every page view is tracked. js/analytics.js adds event tracking for every spa
+// card interaction (call / website / directions / save / claim / open) and every
+// button & outbound link click.
+const GA_ID = 'G-Y842GGLJVN';
+const GA_HEAD = `<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=${GA_ID}"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', '${GA_ID}');
+</script>
+<script defer src="/js/analytics.js?v=${ASSET_VER}"></script>`;
 let footerCities = ''; // set once `live` cities are known, used in every footer
 
 // SPAS ONLY for now. Salons (Nail Salon, Hair Salon, Brow & Lash) come later —
@@ -157,6 +172,7 @@ function shell({ title, desc, path, jsonLd = '', body, noindex = false }) {
 <html lang="en">
 <head>
   <meta charset="utf-8">
+  ${GA_HEAD}
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta http-equiv="Cache-Control" content="no-cache">
   <title>${esc(title)}</title>
@@ -488,6 +504,7 @@ function homeStylePage({ relPath, canonical, pool, title, desc, heroEyebrow, her
 <html lang="en">
 <head>
 <meta charset="UTF-8"/>
+${GA_HEAD}
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
 <meta http-equiv="Cache-Control" content="no-cache">
 <title>${title}</title>
@@ -736,6 +753,7 @@ write('cities', `<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8"/>
+${GA_HEAD}
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
 <meta http-equiv="Cache-Control" content="no-cache">
 <title>All Georgia spa cities | GA Spas</title>
@@ -885,6 +903,7 @@ write('pricing', `<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8"/>
+${GA_HEAD}
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
 <meta http-equiv="Cache-Control" content="no-cache">
 <title>Pricing — list your spa | GA Spas</title>
@@ -1274,6 +1293,7 @@ write('liked', `<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8"/>
+${GA_HEAD}
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
 <meta name="robots" content="noindex,follow">
 <title>Your saved spas | GA Spas</title>
@@ -1476,6 +1496,7 @@ writeFileSync(join(GA_DIR, '404.html'), `<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8"/>
+${GA_HEAD}
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
 <meta name="robots" content="noindex,follow"/>
 <title>Page not found | GA Spas</title>

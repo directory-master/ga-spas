@@ -77,8 +77,9 @@ export function renderCard(spa, opts = {}) {
           ${ratingMeta}
           <div class="card-nbhd">${nbhd}</div>`;
 
-  // stable id per store + sortable data (rating / reviews / name / distance)
-  const dataAttrs = ` data-id="${esc(spa.id || '')}" data-rating="${spa.rating || 0}" data-reviews="${spa.reviews || 0}" data-name="${esc((spa.name || '').toLowerCase())}"${spa.lat ? ` data-lat="${spa.lat}"` : ''}${spa.lng ? ` data-lng="${spa.lng}"` : ''}`;
+  // stable id per store + sortable data (rating / reviews / name / distance).
+  // data-spa/-city/-tier feed analytics (js/analytics.js) with clean store identity.
+  const dataAttrs = ` data-id="${esc(spa.id || '')}" data-spa="${esc(spa.name || '')}" data-city="${esc(cityName || '')}" data-tier="${tier}" data-rating="${spa.rating || 0}" data-reviews="${spa.reviews || 0}" data-name="${esc((spa.name || '').toLowerCase())}"${spa.lat ? ` data-lat="${spa.lat}"` : ''}${spa.lng ? ` data-lng="${spa.lng}"` : ''}`;
 
   // Every card is packed: Call is the on-card action. Directions live on the
   // photo's distance chip (.card-dist) once a location is saved — no separate
