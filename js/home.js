@@ -604,31 +604,5 @@ document.querySelectorAll('.card-tags-wrap').forEach((wrap, idx) => {
 // PWA install + app-feel now lives in the shared, reusable js/pwa.js (loaded on
 // every page via PWA_HEAD).
 
-// ---- protect the listing data from casual copy / scrape ----------------------
-// CSS already disables selection on cards; this blocks right-click (context menu
-// → "Copy"/"Save image") and the copy/cut events when the selection sits inside
-// a listing. Form fields (search box, claim-modal inputs) stay fully usable.
-(() => {
-  const LIST = '.card, [data-all-grid], .feat-grid, .cities-grid, .city-list';
-  const FIELD = 'input, textarea, select, [contenteditable=""], [contenteditable=true]';
-  const inList = (el) => el && el.closest && el.closest(LIST);
-  const inField = (el) => el && el.closest && el.closest(FIELD);
-
-  document.addEventListener('contextmenu', (e) => {
-    if (inField(e.target)) return;
-    if (inList(e.target) || e.target.closest('.card-photo, img')) e.preventDefault();
-  });
-
-  const blockIfListSelection = (e) => {
-    const sel = document.getSelection && document.getSelection();
-    if (!sel || sel.rangeCount === 0) return;
-    let node = sel.anchorNode;
-    if (node && node.nodeType !== 1) node = node.parentElement;
-    if (node && node.closest && node.closest(LIST) && !inField(node)) {
-      e.preventDefault();
-    }
-  };
-  document.addEventListener('copy', blockIfListSelection);
-  document.addEventListener('cut', blockIfListSelection);
-  document.addEventListener('dragstart', (e) => { if (inList(e.target) || e.target.tagName === 'IMG') e.preventDefault(); });
-})();
+// Listing text is intentionally selectable/copyable — no copy or right-click
+// blocking. Open, shareable content is better for users and for SEO.

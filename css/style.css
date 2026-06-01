@@ -512,9 +512,7 @@ h2.section.gold-rule { border-top: 2px solid var(--gold); padding-top: 16px; }
 .city-row-all { justify-content: center; color: var(--accent); font-weight: 700; }
 @media (max-width: 560px) { .city-row { flex-wrap: wrap; gap: 4px 14px; } .city-row-blurb { flex-basis: 100%; order: 3; } }
 
-/* disable text selection site-wide (shell pages) — form fields stay usable */
-body{-webkit-user-select:none;-moz-user-select:none;user-select:none}
-input,textarea,select,[contenteditable]{-webkit-user-select:text;-moz-user-select:text;user-select:text}
+/* text is selectable/copyable site-wide — better for sharing + SEO */
 
 /* /areas/ hub — neighborhood & zip index links */
 .area-links{display:flex;flex-wrap:wrap;gap:10px;margin:8px 0 28px}

@@ -124,11 +124,7 @@ nav{
 .btn-go{background:var(--sage-deep);color:#fff;padding:13px 26px}
 .btn-go:hover{background:var(--forest)}
 
-/* disable text selection site-wide (deterrent vs casual copy/scrape).
-   form fields stay selectable so the search box + claim form work. */
-body{-webkit-user-select:none;-moz-user-select:none;user-select:none}
-input,textarea,select,[contenteditable]{-webkit-user-select:text;-moz-user-select:text;user-select:text}
-.card a,.card,.city,.city-row{-webkit-touch-callout:none}
+/* text is selectable/copyable site-wide — better for sharing + SEO */
 .card img{-webkit-user-drag:none;user-drag:none;pointer-events:none}
 
 .loc-note{margin-top:14px;font-size:13px;font-weight:500;color:var(--sage-deep);background:rgba(110,126,97,.12);border:1px solid rgba(110,126,97,.22);border-radius:100px;padding:9px 16px;display:inline-block}
