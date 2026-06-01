@@ -21,7 +21,7 @@
 <meta name="geo.region" content="US-GA"/>
 <meta name="geo.placename" content="Dawsonville, Georgia"/>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
-<link rel="stylesheet" href="/css/home.css?v=0.9.10.fa09b37"/>
+<link rel="stylesheet" href="/css/home.css?v=0.9.10.95d64e9"/>
 <link rel="manifest" href="/manifest.webmanifest"/>
 <meta name="theme-color" content="#2E3A2E"/>
 <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png"/>
@@ -32,8 +32,8 @@
 <meta name="mobile-web-app-capable" content="yes"/>
 <meta name="apple-mobile-web-app-title" content="GA.Spas"/>
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
-<script defer src="/js/pwa.js?v=0.9.10.fa09b37"></script>
-<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Georgia Spas","item":"https://ga.spas.artivicolab.com/"},{"@type":"ListItem","position":2,"name":"Dawsonville","item":"https://ga.spas.artivicolab.com/dawsonville/day-spas/"}]},{"@type":"ItemList","itemListElement":[{"@type":"ListItem","position":1,"item":{"@type":"DaySpa","name":"A Divine Beauty Boutique & Spa","address":{"@type":"PostalAddress","streetAddress":"169 GA-9 Suite 120","addressLocality":"Dawsonville","addressRegion":"GA","postalCode":"30534"},"telephone":"+17064294528","geo":{"@type":"GeoCoordinates","latitude":34.41870117,"longitude":-84.11828613},"url":"http://www.adivinebeauty.com/"}}]}]}</script>
+<script defer src="/js/pwa.js?v=0.9.10.95d64e9"></script>
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Georgia Spas","item":"https://ga.spas.artivicolab.com/"},{"@type":"ListItem","position":2,"name":"Dawsonville","item":"https://ga.spas.artivicolab.com/dawsonville/day-spas/"}]},{"@type":"ItemList","itemListElement":[{"@type":"ListItem","position":1,"item":{"@type":"DaySpa","name":"Clearly Aesthetics","address":{"@type":"PostalAddress","streetAddress":"3651 Dawson Forest Rd E Suite 120","addressLocality":"Dawsonville","addressRegion":"GA","postalCode":"30534"},"telephone":"+16789192270","geo":{"@type":"GeoCoordinates","latitude":34.35502625,"longitude":-84.05205536},"aggregateRating":{"@type":"AggregateRating","ratingValue":5,"reviewCount":4},"url":"https://www.clearlyaesthetics.com/"}},{"@type":"ListItem","position":2,"item":{"@type":"DaySpa","name":"A Divine Beauty Boutique & Spa","address":{"@type":"PostalAddress","streetAddress":"169 GA-9 Suite 120","addressLocality":"Dawsonville","addressRegion":"GA","postalCode":"30534"},"telephone":"+17064294528","geo":{"@type":"GeoCoordinates","latitude":34.41870117,"longitude":-84.11828613},"url":"http://www.adivinebeauty.com/"}},{"@type":"ListItem","position":3,"item":{"@type":"DaySpa","name":"CeKaela Beauty","address":{"@type":"PostalAddress","streetAddress":"Marketplace Blvd","addressLocality":"Dawsonville","addressRegion":"GA","postalCode":"30534"},"telephone":"+14046540247","geo":{"@type":"GeoCoordinates","latitude":34.34962463,"longitude":-84.05487061},"url":"https://cekaelabeauty.glossgenius.com/"}}]}]}</script>
 </head>
 <body>
 
@@ -58,7 +58,7 @@
     <div class="eyebrow">Day spas · Dawsonville, Georgia</div>
     <h1><em>Day spas</em><br>in Dawsonville</h1>
     <p class="hero-sub">Every day spas listing in Dawsonville, Georgia — with ratings, hours, and directions.</p>
-    <p class="hero-proof"><strong>1</strong> day spas listed in Dawsonville</p>
+    <p class="hero-proof"><strong>3</strong> day spas listed in Dawsonville</p>
     <form class="search" id="home-search" action="/cities/" method="get" autocomplete="off">
       <div class="search-box">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#A39D8E" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
@@ -129,9 +129,31 @@
   <div class="wrap">
     <div class="sec-head">
       <div><div class="eyebrow">The full list</div><h2 class="serif">All day spas in Dawsonville</h2></div>
-      
+      <label class="sort-ctrl">Sort
+        <select data-sort>
+          <option value="rating">Top rated</option>
+          <option value="reviews">Most reviewed</option>
+          <option value="name">Name (A–Z)</option>
+          <option value="distance">Nearest</option>
+        </select>
+      </label>
     </div>
     <div class="feat-grid all-grid" data-all-grid>
+      <article class="card is-free" data-id="clearly-aesthetics-dawsonville" data-rating="5" data-reviews="4" data-name="clearly aesthetics" data-lat="34.35502625" data-lng="-84.05205536">
+        <div class="card-pad">
+          <button class="like-btn" type="button" data-like="clearly-aesthetics-dawsonville" aria-label="Save to your liked spas" title="Save to liked"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg></button>
+          
+          <div class="card-cat">Day Spa</div>
+          <h3 class="card-name"><a href="https://www.clearlyaesthetics.com/" target="_blank" rel="noopener nofollow">Clearly Aesthetics</a></h3>
+          <div class="card-meta"><span class="stars"><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span></span> <span class="rate-num">5.0</span> · 4 reviews</div>
+          <div class="card-nbhd">3651 Dawson Forest Rd E Suite 120, Dawsonville, GA 30534</div>
+          <div class="card-foot">
+            <button class="card-dist" type="button" data-lat="34.35502625" data-lng="-84.05205536" hidden></button>
+            <div class="card-actions"><a class="card-btn solid card-btn-wide" href="tel:6789192270"><span class="ph-ic">📞</span> Call</a></div>
+            <a class="card-claim" href="mailto:artivicolab@gmail.com?subject=GASpas%20Claiming%20Listing%3A%20Clearly%20Aesthetics" data-claim="Clearly Aesthetics" data-claim-city="Dawsonville">💲 Own this spa? Add your prices &amp; deals →</a>
+          </div>
+        </div>
+      </article>
       <article class="card is-free" data-id="a-divine-beauty-boutique-and-spa-dawsonville" data-rating="0" data-reviews="0" data-name="a divine beauty boutique &amp; spa" data-lat="34.41870117" data-lng="-84.11828613">
         <div class="card-pad">
           <button class="like-btn" type="button" data-like="a-divine-beauty-boutique-and-spa-dawsonville" aria-label="Save to your liked spas" title="Save to liked"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg></button>
@@ -144,6 +166,21 @@
             <button class="card-dist" type="button" data-lat="34.41870117" data-lng="-84.11828613" hidden></button>
             <div class="card-actions"><a class="card-btn solid card-btn-wide" href="tel:7064294528"><span class="ph-ic">📞</span> Call</a></div>
             <a class="card-claim" href="mailto:artivicolab@gmail.com?subject=GASpas%20Claiming%20Listing%3A%20A%20Divine%20Beauty%20Boutique%20%26%20Spa" data-claim="A Divine Beauty Boutique &amp; Spa" data-claim-city="Dawsonville">💲 Own this spa? Add your prices &amp; deals →</a>
+          </div>
+        </div>
+      </article>
+      <article class="card is-free" data-id="cekaela-beauty-dawsonville" data-rating="0" data-reviews="0" data-name="cekaela beauty" data-lat="34.34962463" data-lng="-84.05487061">
+        <div class="card-pad">
+          <button class="like-btn" type="button" data-like="cekaela-beauty-dawsonville" aria-label="Save to your liked spas" title="Save to liked"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg></button>
+          
+          <div class="card-cat">Day Spa</div>
+          <h3 class="card-name"><a href="https://cekaelabeauty.glossgenius.com/" target="_blank" rel="noopener nofollow">CeKaela Beauty</a></h3>
+          <div class="card-meta card-meta--new">New · no reviews yet</div>
+          <div class="card-nbhd">Marketplace Blvd, Dawsonville, GA 30534</div>
+          <div class="card-foot">
+            <button class="card-dist" type="button" data-lat="34.34962463" data-lng="-84.05487061" hidden></button>
+            <div class="card-actions"><a class="card-btn solid card-btn-wide" href="tel:4046540247"><span class="ph-ic">📞</span> Call</a></div>
+            <a class="card-claim" href="mailto:artivicolab@gmail.com?subject=GASpas%20Claiming%20Listing%3A%20CeKaela%20Beauty" data-claim="CeKaela Beauty" data-claim-city="Dawsonville">💲 Own this spa? Add your prices &amp; deals →</a>
           </div>
         </div>
       </article>
@@ -195,6 +232,6 @@
 </footer>
 
 <script type="application/json" id="zip-centroids">{"30030":{"lat":33.7748,"lng":-84.2963,"label":"Decatur"},"30305":{"lat":33.839,"lng":-84.388,"label":"Buckhead"},"30308":{"lat":33.771,"lng":-84.378,"label":"Midtown"},"30309":{"lat":33.798,"lng":-84.387,"label":"Midtown"},"30326":{"lat":33.8484,"lng":-84.3613,"label":"Buckhead"},"30328":{"lat":33.9304,"lng":-84.3733,"label":"Sandy Springs"},"30342":{"lat":33.887,"lng":-84.378,"label":"Sandy Springs"},"30606":{"lat":33.9337,"lng":-83.3771,"label":"Athens"},"30901":{"lat":33.4735,"lng":-81.9624,"label":"Augusta"},"31201":{"lat":32.8633,"lng":-83.661,"label":"Macon"},"31401":{"lat":32.0809,"lng":-81.0912,"label":"Savannah"},"31901":{"lat":32.461,"lng":-84.9877,"label":"Columbus"}}</script>
-<script type="module" src="/js/home.js?v=0.9.10.fa09b37"></script>
+<script type="module" src="/js/home.js?v=0.9.10.95d64e9"></script>
 </body>
 </html>
