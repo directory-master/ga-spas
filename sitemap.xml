@@ -73,6 +73,10 @@
   <url><loc>https://ga.spas.artivicolab.com/lawrenceville/med-spas/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/lawrenceville/day-spas/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/lawrenceville/massage/</loc></url>
+  <url><loc>https://ga.spas.artivicolab.com/newnan/</loc></url>
+  <url><loc>https://ga.spas.artivicolab.com/newnan/day-spas/</loc></url>
+  <url><loc>https://ga.spas.artivicolab.com/newnan/massage/</loc></url>
+  <url><loc>https://ga.spas.artivicolab.com/newnan/med-spas/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/conyers/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/conyers/massage/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/conyers/day-spas/</loc></url>
@@ -81,10 +85,10 @@
   <url><loc>https://ga.spas.artivicolab.com/douglasville/day-spas/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/douglasville/massage/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/douglasville/med-spas/</loc></url>
-  <url><loc>https://ga.spas.artivicolab.com/newnan/</loc></url>
-  <url><loc>https://ga.spas.artivicolab.com/newnan/day-spas/</loc></url>
-  <url><loc>https://ga.spas.artivicolab.com/newnan/massage/</loc></url>
-  <url><loc>https://ga.spas.artivicolab.com/newnan/med-spas/</loc></url>
+  <url><loc>https://ga.spas.artivicolab.com/peachtree-city/</loc></url>
+  <url><loc>https://ga.spas.artivicolab.com/peachtree-city/day-spas/</loc></url>
+  <url><loc>https://ga.spas.artivicolab.com/peachtree-city/massage/</loc></url>
+  <url><loc>https://ga.spas.artivicolab.com/peachtree-city/med-spas/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/johns-creek/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/johns-creek/day-spas/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/johns-creek/massage/</loc></url>
@@ -97,10 +101,6 @@
   <url><loc>https://ga.spas.artivicolab.com/kennesaw/med-spas/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/kennesaw/day-spas/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/kennesaw/massage/</loc></url>
-  <url><loc>https://ga.spas.artivicolab.com/peachtree-city/</loc></url>
-  <url><loc>https://ga.spas.artivicolab.com/peachtree-city/day-spas/</loc></url>
-  <url><loc>https://ga.spas.artivicolab.com/peachtree-city/massage/</loc></url>
-  <url><loc>https://ga.spas.artivicolab.com/peachtree-city/med-spas/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/st-simons-island/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/st-simons-island/massage/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/st-simons-island/day-spas/</loc></url>
@@ -344,6 +344,8 @@
   <url><loc>https://ga.spas.artivicolab.com/ellijay/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/ellijay/med-spas/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/ellijay/day-spas/</loc></url>
+  <url><loc>https://ga.spas.artivicolab.com/fairburn/</loc></url>
+  <url><loc>https://ga.spas.artivicolab.com/fairburn/day-spas/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/greensboro/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/greensboro/day-spas/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/locust-grove/</loc></url>
@@ -353,8 +355,14 @@
   <url><loc>https://ga.spas.artivicolab.com/marble-hill/massage/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/maysville/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/maysville/day-spas/</loc></url>
+  <url><loc>https://ga.spas.artivicolab.com/palmetto/</loc></url>
+  <url><loc>https://ga.spas.artivicolab.com/palmetto/day-spas/</loc></url>
+  <url><loc>https://ga.spas.artivicolab.com/palmetto/med-spas/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/toccoa/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/toccoa/day-spas/</loc></url>
+  <url><loc>https://ga.spas.artivicolab.com/tyrone/</loc></url>
+  <url><loc>https://ga.spas.artivicolab.com/tyrone/massage/</loc></url>
+  <url><loc>https://ga.spas.artivicolab.com/tyrone/day-spas/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/ashburn/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/ashburn/med-spas/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/bethlehem/</loc></url>
@@ -371,8 +379,6 @@
   <url><loc>https://ga.spas.artivicolab.com/cordele/day-spas/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/demorest/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/demorest/med-spas/</loc></url>
-  <url><loc>https://ga.spas.artivicolab.com/fairburn/</loc></url>
-  <url><loc>https://ga.spas.artivicolab.com/fairburn/day-spas/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/fitzgerald/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/fitzgerald/day-spas/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/forsyth/</loc></url>
@@ -395,8 +401,6 @@
   <url><loc>https://ga.spas.artivicolab.com/midway/day-spas/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/molena/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/molena/day-spas/</loc></url>
-  <url><loc>https://ga.spas.artivicolab.com/palmetto/</loc></url>
-  <url><loc>https://ga.spas.artivicolab.com/palmetto/day-spas/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/pine-mountain/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/pine-mountain/day-spas/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/sea-island/</loc></url>
@@ -417,8 +421,8 @@
   <url><loc>https://ga.spas.artivicolab.com/temple/massage/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/tifton/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/tifton/day-spas/</loc></url>
-  <url><loc>https://ga.spas.artivicolab.com/tyrone/</loc></url>
-  <url><loc>https://ga.spas.artivicolab.com/tyrone/day-spas/</loc></url>
+  <url><loc>https://ga.spas.artivicolab.com/union-city/</loc></url>
+  <url><loc>https://ga.spas.artivicolab.com/union-city/day-spas/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/west-point/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/west-point/day-spas/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/zebulon/</loc></url>
