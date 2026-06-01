@@ -2,15 +2,21 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <!-- Google tag (gtag.js) -->
+  <!-- Google tag (gtag.js) + Consent Mode v2 (GDPR) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-Y842GGLJVN"></script>
 <script>
 window.dataLayer = window.dataLayer || [];
 function gtag(){dataLayer.push(arguments);}
+// Consent Mode v2: deny storage by default in the EEA/UK/CH until the visitor
+// opts in (GDPR); allow it elsewhere. A stored choice (js/consent.js) overrides.
+gtag('consent','default',{ad_storage:'denied',ad_user_data:'denied',ad_personalization:'denied',analytics_storage:'denied',wait_for_update:500,region:['AT','BE','BG','HR','CY','CZ','DK','EE','FI','FR','DE','GR','HU','IE','IT','LV','LT','LU','MT','NL','PL','PT','RO','SK','SI','ES','SE','IS','LI','NO','GB','CH']});
+gtag('consent','default',{ad_storage:'granted',ad_user_data:'granted',ad_personalization:'granted',analytics_storage:'granted'});
+try{var _c=localStorage.getItem('ga-consent');if(_c==='granted'){gtag('consent','update',{ad_storage:'granted',ad_user_data:'granted',ad_personalization:'granted',analytics_storage:'granted'});}else if(_c==='denied'){gtag('consent','update',{ad_storage:'denied',ad_user_data:'denied',ad_personalization:'denied',analytics_storage:'denied'});}}catch(e){}
 gtag('js', new Date());
 gtag('config', 'G-Y842GGLJVN');
 </script>
-<script defer src="/js/analytics.js?v=0.10.3.0d8bfca"></script>
+<script defer src="/js/analytics.js?v=0.11.0.b4cc75d"></script>
+<script defer src="/js/consent.js?v=0.11.0.b4cc75d"></script>
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta http-equiv="Cache-Control" content="no-cache">
   <title>Spas in Warner Robins GA | GA Spa Directory</title>
@@ -31,7 +37,7 @@ gtag('config', 'G-Y842GGLJVN');
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/css/style.css?v=0.10.3.0d8bfca">
+  <link rel="stylesheet" href="/css/style.css?v=0.11.0.b4cc75d">
   <link rel="manifest" href="/manifest.webmanifest"/>
 <meta name="theme-color" content="#2E3A2E"/>
 <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png"/>
@@ -42,8 +48,8 @@ gtag('config', 'G-Y842GGLJVN');
 <meta name="mobile-web-app-capable" content="yes"/>
 <meta name="apple-mobile-web-app-title" content="GA.Spas"/>
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
-<script defer src="/js/pwa.js?v=0.10.3.0d8bfca"></script>
-  <script type="module" src="/js/site.js?v=0.10.3.0d8bfca"></script>
+<script defer src="/js/pwa.js?v=0.11.0.b4cc75d"></script>
+  <script type="module" src="/js/site.js?v=0.11.0.b4cc75d"></script>
   
 </head>
 <body>

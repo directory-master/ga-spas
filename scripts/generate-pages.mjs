@@ -66,15 +66,21 @@ const PWA_HEAD = `<link rel="manifest" href="/manifest.webmanifest"/>
 // card interaction (call / website / directions / save / claim / open) and every
 // button & outbound link click.
 const GA_ID = 'G-Y842GGLJVN';
-const GA_HEAD = `<!-- Google tag (gtag.js) -->
+const GA_HEAD = `<!-- Google tag (gtag.js) + Consent Mode v2 (GDPR) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=${GA_ID}"></script>
 <script>
 window.dataLayer = window.dataLayer || [];
 function gtag(){dataLayer.push(arguments);}
+// Consent Mode v2: deny storage by default in the EEA/UK/CH until the visitor
+// opts in (GDPR); allow it elsewhere. A stored choice (js/consent.js) overrides.
+gtag('consent','default',{ad_storage:'denied',ad_user_data:'denied',ad_personalization:'denied',analytics_storage:'denied',wait_for_update:500,region:['AT','BE','BG','HR','CY','CZ','DK','EE','FI','FR','DE','GR','HU','IE','IT','LV','LT','LU','MT','NL','PL','PT','RO','SK','SI','ES','SE','IS','LI','NO','GB','CH']});
+gtag('consent','default',{ad_storage:'granted',ad_user_data:'granted',ad_personalization:'granted',analytics_storage:'granted'});
+try{var _c=localStorage.getItem('ga-consent');if(_c==='granted'){gtag('consent','update',{ad_storage:'granted',ad_user_data:'granted',ad_personalization:'granted',analytics_storage:'granted'});}else if(_c==='denied'){gtag('consent','update',{ad_storage:'denied',ad_user_data:'denied',ad_personalization:'denied',analytics_storage:'denied'});}}catch(e){}
 gtag('js', new Date());
 gtag('config', '${GA_ID}');
 </script>
-<script defer src="/js/analytics.js?v=${ASSET_VER}"></script>`;
+<script defer src="/js/analytics.js?v=${ASSET_VER}"></script>
+<script defer src="/js/consent.js?v=${ASSET_VER}"></script>`;
 let footerCities = ''; // set once `live` cities are known, used in every footer
 
 // SPAS ONLY for now. Salons (Nail Salon, Hair Salon, Brow & Lash) come later —
