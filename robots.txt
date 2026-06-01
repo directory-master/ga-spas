@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://ga.spas.artivicolab.com/sitemap.xml

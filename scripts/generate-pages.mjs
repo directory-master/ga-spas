@@ -226,8 +226,8 @@ ${body}
         <a href="/pricing/">Pricing</a>
         <a href="/blog/">Blog</a>
         <a href="https://artivicolab.com/#contact" target="_blank" rel="noopener">Contact us</a>
-        <a href="#">Privacy policy</a>
-        <a href="#">Terms of service</a>
+        <a href="/privacy/">Privacy policy</a>
+        <a href="/terms/">Terms of service</a>
       </div>
     </div>
     <div class="container footer-base">
@@ -675,8 +675,8 @@ ${showTesti ? `<section class="band testi-band">
         <a href="/pricing/">Pricing</a>
         <a href="/blog/">Blog</a>
         <a href="https://artivicolab.com/#contact" target="_blank" rel="noopener">Contact us</a>
-        <a href="#">Privacy</a>
-        <a href="#">Terms</a>
+        <a href="/privacy/">Privacy</a>
+        <a href="/terms/">Terms</a>
       </div>
     </div>
     <div class="foot-bot">
@@ -829,8 +829,8 @@ ${PWA_HEAD}
         <a href="/pricing/">Pricing</a>
         <a href="/blog/">Blog</a>
         <a href="https://artivicolab.com/#contact" target="_blank" rel="noopener">Contact us</a>
-        <a href="#">Privacy</a>
-        <a href="#">Terms</a>
+        <a href="/privacy/">Privacy</a>
+        <a href="/terms/">Terms</a>
       </div>
     </div>
     <div class="foot-bot">
@@ -989,8 +989,8 @@ ${PWA_HEAD}
         <a href="/pricing/">Pricing</a>
         <a href="/blog/">Blog</a>
         <a href="https://artivicolab.com/#contact" target="_blank" rel="noopener">Contact us</a>
-        <a href="#">Privacy</a>
-        <a href="#">Terms</a>
+        <a href="/privacy/">Privacy</a>
+        <a href="/terms/">Terms</a>
       </div>
     </div>
     <div class="foot-bot">
@@ -1369,6 +1369,86 @@ write('blog/best-spas-atlanta', shell({
     <p><a href="/atlanta/">See all Atlanta spas →</a></p>`,
 }));
 
+// ---------------------------------------------------------------------------
+// Legal: /privacy/ and /terms/. Static content pages on the shell template, so
+// they pick up the standard header/footer. Footer links across the site point
+// here (was href="#"). Plain-language and accurate to what the site does: a
+// zero-backend static directory with no accounts; the only data we receive is
+// what people email us when they claim/contact about a listing.
+// ---------------------------------------------------------------------------
+const LEGAL_UPDATED = 'June 1, 2026';
+write('privacy', shell({
+  title: 'Privacy Policy | GA Spas',
+  desc: 'How GA.Spas handles information — a static spa directory with no accounts and no backend.',
+  path: '/privacy/',
+  body: `    <section class="legal">
+      <h1>Privacy Policy</h1>
+      <p class="legal-date">Last updated ${LEGAL_UPDATED}</p>
+
+      <h2>The short version</h2>
+      <p>GA.Spas is a static directory of spas across Georgia. There are no user accounts, no login, and no server collecting data about you as you browse. We don't run ad networks or sell data.</p>
+
+      <h2>Information we receive</h2>
+      <ul>
+        <li><strong>When you contact or claim a listing.</strong> Our "claim this listing" and contact actions open your own email app with a pre-filled message. If you choose to send it, we receive what you write — typically your name, business, email address, and any details you add. We use it only to respond and to manage your listing.</li>
+        <li><strong>Listing data.</strong> Spa names, addresses, phone numbers, ratings, and hours come from publicly available business listings and directories. If you own a business and want a correction or removal, contact us and we'll handle it.</li>
+      </ul>
+
+      <h2>Stored only in your browser</h2>
+      <p>Some features use your device locally and never send data to us:</p>
+      <ul>
+        <li><strong>Saved spas</strong> are kept in your browser's local storage on your device.</li>
+        <li><strong>"Near me"</strong> uses your browser's location only to sort results in your browser. Your location is not transmitted to or stored by us.</li>
+        <li><strong>Install / offline.</strong> Installing the app or visiting offline uses a service worker that caches pages on your device.</li>
+      </ul>
+
+      <h2>Third parties</h2>
+      <p>The site is served as static files by our hosting provider, which may log standard request data (such as IP address) for security and reliability. Map and "directions" links open Google or Bing Maps, and "Book"/website links open the spa's own site — those services have their own privacy policies.</p>
+
+      <h2>Children</h2>
+      <p>GA.Spas is intended for adults and is not directed to children under 13.</p>
+
+      <h2>Contact</h2>
+      <p>Questions, corrections, or removal requests: reach us via <a href="https://artivicolab.com/#contact" target="_blank" rel="noopener">Artivicolab</a>. This policy may be updated; the date above reflects the latest version.</p>
+    </section>`,
+}));
+
+write('terms', shell({
+  title: 'Terms of Use | GA Spas',
+  desc: 'The terms for using GA.Spas, a static directory of spas across Georgia.',
+  path: '/terms/',
+  body: `    <section class="legal">
+      <h1>Terms of Use</h1>
+      <p class="legal-date">Last updated ${LEGAL_UPDATED}</p>
+
+      <p>By using GA.Spas (the "Site"), you agree to these terms. If you don't agree, please don't use the Site.</p>
+
+      <h2>What GA.Spas is</h2>
+      <p>The Site is an informational directory of spas, med spas, and massage studios across Georgia. It's provided for convenience to help people discover businesses. We are not a spa, do not provide spa services, and do not book or process payments on behalf of the businesses listed.</p>
+
+      <h2>Accuracy</h2>
+      <p>Listing details (names, addresses, phone numbers, hours, ratings) come from third-party and public sources and may be incomplete, out of date, or incorrect. We make no warranty as to accuracy. Always confirm details directly with the business before visiting or booking. Ratings and reviews originate with third-party platforms and reflect their users' opinions, not ours.</p>
+
+      <h2>Not an endorsement or affiliation</h2>
+      <p>A listing is not an endorsement. Unless a business has a paid listing it claimed, inclusion does not imply any relationship between GA.Spas and that business. Business names and marks belong to their respective owners.</p>
+
+      <h2>Listings for business owners</h2>
+      <p>Free listings exist to make the directory useful. Paid listings (Standard and Premium) and what each includes are described on our <a href="/pricing/">pricing page</a>. Claiming or paying for a listing means you represent the business or are authorized to act for it. We may edit or remove any listing at our discretion, including for inaccurate or inappropriate content.</p>
+
+      <h2>Acceptable use</h2>
+      <p>Don't scrape, copy, or republish the directory in bulk, attempt to disrupt the Site, or use it to send unsolicited messages to listed businesses.</p>
+
+      <h2>Disclaimer &amp; liability</h2>
+      <p>The Site is provided "as is," without warranties of any kind. To the fullest extent allowed by law, GA.Spas and Artivicolab are not liable for any damages arising from your use of the Site or reliance on its information, including dealings with any business you find here.</p>
+
+      <h2>Governing law</h2>
+      <p>These terms are governed by the laws of the State of Georgia, USA.</p>
+
+      <h2>Contact</h2>
+      <p>GA.Spas is made by <a href="https://artivicolab.com" target="_blank" rel="noopener">Artivicolab</a>. Questions about these terms? <a href="https://artivicolab.com/#contact" target="_blank" rel="noopener">Get in touch</a>. We may update these terms; the date above reflects the latest version.</p>
+    </section>`,
+}));
+
 // sitemap.xml at the publish root (excludes noindex "coming soon" pages)
 const indexed = [...new Set(urls)].filter(u => !noindexed.has(u));
 writeFileSync(join(GA_DIR, 'sitemap.xml'),
@@ -1376,6 +1456,70 @@ writeFileSync(join(GA_DIR, 'sitemap.xml'),
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 ${indexed.map(u => `  <url><loc>${BASE_URL}${u}</loc></url>`).join('\n')}
 </urlset>
+`);
+
+// robots.txt at the publish root — allow everything, point crawlers at the sitemap
+writeFileSync(join(GA_DIR, 'robots.txt'),
+  `User-agent: *
+Allow: /
+
+Sitemap: ${BASE_URL}/sitemap.xml
+`);
+
+// CNAME — GitHub Pages reads this to serve the site at the custom subdomain.
+writeFileSync(join(GA_DIR, 'CNAME'), 'ga.spas.artivicolab.com\n');
+
+// Branded 404 at the publish root. Standalone (loads home.css so the hero +
+// search box are fully styled); static hosts / GitHub Pages serve /404.html for
+// unknown paths. noindex so it never lands in search.
+writeFileSync(join(GA_DIR, '404.html'), `<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+<meta name="robots" content="noindex,follow"/>
+<title>Page not found | GA Spas</title>
+<meta name="description" content="That page wandered off. Search Georgia spas or head back to the directory."/>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="/css/home.css?v=${ASSET_VER}"/>
+${PWA_HEAD}
+</head>
+<body>
+<nav>
+  <a class="logo" href="/">GA<span>.Spas</span></a>
+  <ul class="nav-links">
+    <li><a href="/cities/">Cities</a></li>
+    <li><a href="/black-owned/">Black-Owned</a></li>
+    <li><a href="/blog/">Blog</a></li>
+  </ul>
+  <a class="nav-cta" href="/pricing/">List your spa</a>
+</nav>
+
+<header class="hero hero--photo" style="min-height:72vh;display:flex;align-items:center">
+  <div class="hero-bg" data-hero-bg>
+    <div class="hero-slide hslide-1 on"></div>
+  </div>
+  <div class="wrap hero-inner">
+    <div class="eyebrow">404 · Page not found</div>
+    <h1><em>This page</em><br>took a day off</h1>
+    <p class="hero-sub">We couldn't find that one. Search for a city, neighborhood, or service — or head back to the directory.</p>
+    <form class="search" action="/cities/" method="get" autocomplete="off">
+      <div class="search-box">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#A39D8E" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        <input name="q" type="search" placeholder="Search by city, neighborhood, or service…" aria-label="Search spas"/>
+        <button class="btn btn-go" type="submit">Find spas</button>
+      </div>
+    </form>
+    <div class="pills">
+      <a class="pill" href="/">Home</a>
+      <a class="pill" href="/cities/">All Georgia cities</a>
+      <a class="pill bo" href="/black-owned/">✦ Black-Owned</a>
+      <a class="pill" href="/blog/">Blog</a>
+    </div>
+  </div>
+</header>
+</body>
+</html>
 `);
 
 // report

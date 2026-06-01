@@ -2,10 +2,12 @@
 
 Tracking work for **spas** — the Atlanta-area / Georgia spa & salon directory.
 
-> **Scope: FREE for now.** Monetization is deferred — ignore paid/premium work
-> (listing fees, featured-placement upsell, lead-gen charges, ads, payment).
-> Build directory value as if everything is free. The `tier` field can stay in
-> the data, but don't build the premium upgrade/payment flow yet.
+> **Scope: monetization is LIVE.** Freemium is on — Free / Standard ($49/mo) /
+> Premium ($149/mo), with plans on [/pricing/](pricing/). Free listings exist to
+> make the directory useful and rank; paid tiers buy placement and the commercial
+> actions (booking, prices, featured position). Every card carries `tier`; keep
+> free/premium parity consistent across surfaces. Claim/contact runs over
+> `mailto:` (no payment backend yet — that's the next commerce step).
 
 ## Next — "find a spot & get there" (priority)
 
