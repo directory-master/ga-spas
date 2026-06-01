@@ -1489,6 +1489,11 @@ Sitemap: ${BASE_URL}/sitemap.xml
 // CNAME — GitHub Pages reads this to serve the site at the custom subdomain.
 writeFileSync(join(GA_DIR, 'CNAME'), 'ga.spas.artivicolab.com\n');
 
+// Google Search Console — HTML-file verification. Google fetches this exact file
+// at the site root; keep it emitted on every build so it's never dropped.
+writeFileSync(join(GA_DIR, 'google6684b3e744e7932a.html'),
+  'google-site-verification: google6684b3e744e7932a.html');
+
 // Branded 404 at the publish root. Standalone (loads home.css so the hero +
 // search box are fully styled); static hosts / GitHub Pages serve /404.html for
 // unknown paths. noindex so it never lands in search.
