@@ -1125,50 +1125,57 @@ const withinArea = (c) => ACTIVE
   .sort((a, b) => a.mi - b.mi)
   .map(o => o.s);
 
-// High-value Georgia zip codes (centroids are zip-area centers).
-const ZIP_AREAS = [
-  { zip: '30305', area: 'Buckhead', city: 'Atlanta', lat: 33.8380, lng: -84.3790 },
-  { zip: '30308', area: 'Midtown', city: 'Atlanta', lat: 33.7710, lng: -84.3800 },
-  { zip: '30309', area: 'Midtown / Arts Center', city: 'Atlanta', lat: 33.7930, lng: -84.3870 },
-  { zip: '30326', area: 'Lenox / Buckhead', city: 'Atlanta', lat: 33.8470, lng: -84.3620 },
-  { zip: '30328', area: 'Sandy Springs', city: 'Atlanta', lat: 33.9350, lng: -84.3780 },
-  { zip: '30342', area: 'Buckhead / Sandy Springs', city: 'Atlanta', lat: 33.8860, lng: -84.3780 },
-  { zip: '30033', area: 'Decatur', city: 'Decatur', lat: 33.8150, lng: -84.2790 },
-  { zip: '30030', area: 'Downtown Decatur', city: 'Decatur', lat: 33.7740, lng: -84.2960 },
-  { zip: '30022', area: 'Alpharetta / Johns Creek', city: 'Alpharetta', lat: 34.0270, lng: -84.2430 },
-  { zip: '30005', area: 'Alpharetta', city: 'Alpharetta', lat: 34.0750, lng: -84.2220 },
-  { zip: '30076', area: 'Roswell', city: 'Roswell', lat: 34.0340, lng: -84.3020 },
-  { zip: '30009', area: 'Downtown Alpharetta', city: 'Alpharetta', lat: 34.0730, lng: -84.2950 },
-  { zip: '30024', area: 'Suwanee', city: 'Suwanee', lat: 34.0520, lng: -84.0690 },
-  { zip: '30092', area: 'Peachtree Corners', city: 'Peachtree Corners', lat: 33.9690, lng: -84.2210 },
-  { zip: '30096', area: 'Duluth', city: 'Duluth', lat: 33.9620, lng: -84.1490 },
-  { zip: '30097', area: 'Duluth / Johns Creek', city: 'Duluth', lat: 34.0260, lng: -84.1510 },
-  { zip: '30062', area: 'East Cobb, Marietta', city: 'Marietta', lat: 33.9980, lng: -84.4750 },
-  { zip: '30068', area: 'East Cobb, Marietta', city: 'Marietta', lat: 33.9650, lng: -84.4520 },
-  { zip: '30067', area: 'Marietta / Vinings', city: 'Marietta', lat: 33.9380, lng: -84.4800 },
-  { zip: '30080', area: 'Smyrna', city: 'Smyrna', lat: 33.8650, lng: -84.5130 },
-  { zip: '30082', area: 'Smyrna', city: 'Smyrna', lat: 33.8630, lng: -84.5530 },
-  { zip: '30060', area: 'Downtown Marietta', city: 'Marietta', lat: 33.9260, lng: -84.5300 },
-];
+// Curated labels make the busiest metro zips read like neighborhoods ("Buckhead"
+// instead of just "Atlanta"). Every other zip is derived straight from the data.
+const ZIP_LABELS = {
+  '30305': 'Buckhead', '30308': 'Midtown', '30309': 'Midtown / Arts Center', '30326': 'Lenox / Buckhead',
+  '30328': 'Sandy Springs', '30342': 'Buckhead / Sandy Springs', '30030': 'Downtown Decatur',
+  '30022': 'Alpharetta / Johns Creek', '30009': 'Downtown Alpharetta', '30092': 'Peachtree Corners',
+  '30097': 'Duluth / Johns Creek', '30062': 'East Cobb, Marietta', '30068': 'East Cobb, Marietta',
+  '30067': 'Marietta / Vinings', '30060': 'Downtown Marietta', '30024': 'Suwanee',
+};
+const ZIP_MIN_ANCHOR = 3; // need >= this many spas physically IN the zip to warrant a page
+const dominant = (arr, key) => {
+  const c = {};
+  for (const s of arr) { const v = s[key]; if (v) c[v] = (c[v] || 0) + 1; }
+  return Object.entries(c).sort((a, b) => b[1] - a[1])[0]?.[0] || '';
+};
+// group every active spa by its own zip → one page per zip-area, statewide
+const byZipRaw = {};
+for (const s of ACTIVE) {
+  const z = String(s.zip || '');
+  if (s.lat && s.lng && /^\d{5}$/.test(z)) (byZipRaw[z] ||= []).push(s);
+}
+const ZIP_AREAS = Object.entries(byZipRaw)
+  .filter(([, arr]) => arr.length >= ZIP_MIN_ANCHOR)
+  .map(([zip, arr]) => {
+    const city = dominant(arr, 'cityName') || 'Georgia';
+    return {
+      zip, city, area: ZIP_LABELS[zip] || city,
+      lat: arr.reduce((a, s) => a + s.lat, 0) / arr.length,
+      lng: arr.reduce((a, s) => a + s.lng, 0) / arr.length,
+    };
+  })
+  .sort((a, b) => a.zip.localeCompare(b.zip));
 
 const zipPages = [];
 for (const z of ZIP_AREAS) {
   const pool = withinArea(z);
   if (!pool.length) continue;
   const ni = pool.length < AREA_INDEX_MIN;
-  const place = `${z.area} (${z.zip})`;
+  const loc = z.area === z.city ? `${z.city}, GA` : `${z.area}, ${z.city} GA`;
   counts.zip = (counts.zip || 0) + 1;
   zipPages.push({ ...z, count: pool.length, ni });
   homeStylePage({
     relPath: `zip/${z.zip}`, canonical: `/zip/${z.zip}/`, pool, activePill: 'all',
     noindex: ni, geoPoint: { lat: z.lat, lng: z.lng },
-    title: `Spas near ${z.zip} — ${z.area}, ${z.city} GA | GA Spas`,
-    desc: `Day spas, med spas & massage near zip code ${z.zip} (${z.area}, ${z.city}, GA) — ratings, hours, and directions, sorted by distance.`,
+    title: `Spas near ${z.zip} — ${loc} | GA Spas`,
+    desc: `Day spas, med spas & massage near zip code ${z.zip} (${loc}) — ratings, hours, and directions, sorted by distance.`,
     heroEyebrow: `Spas near ${z.zip} · ${z.city}, Georgia`,
     heroH1: `<em>Spas near</em><br>${z.zip}`,
     heroSub: `Day spas, med spas, and massage within ${AREA_RADIUS} miles of ${z.area} (${z.zip}), ${z.city}, GA — ratings, hours, and directions.`,
     heroProof: `<strong>${pool.length} ${pool.length === 1 ? 'spa' : 'spas'}</strong> near ${z.zip} · ${z.area}`,
-    featEyebrow: 'Closest to you', featH2: `Top spas near ${z.zip}`, spotPlace: place,
+    featEyebrow: 'Closest to you', featH2: `Top spas near ${z.zip}`, spotPlace: `${z.area} (${z.zip})`,
     showBoBand: false, showCities: false, showTesti: false,
     showAll: true, allEyebrow: 'The full list', allH2: `All spas near ${z.zip}`,
   });
@@ -1221,8 +1228,15 @@ for (const h of ATL_HOODS) {
 {
   const hoodLinks = hoodPages.map(h =>
     `<a class="area-link" href="/atlanta/${h.slug}/">${esc(h.name)} <span>${h.count}</span></a>`).join('\n        ');
-  const zipLinks = zipPages.map(z =>
-    `<a class="area-link" href="/zip/${z.zip}/">${z.zip} · ${esc(z.area)} <span>${z.count}</span></a>`).join('\n        ');
+  // group the zip pages by their dominant city so the hub stays browsable
+  const zipByCity = {};
+  for (const z of zipPages) (zipByCity[z.city] ||= []).push(z);
+  const zipLinks = Object.entries(zipByCity)
+    .sort((a, b) => b[1].length - a[1].length || a[0].localeCompare(b[0]))
+    .map(([city, zs]) => `<div class="area-group"><h3 class="area-city">${esc(city)}</h3>
+        <div class="area-links">${zs.sort((a, b) => a.zip.localeCompare(b.zip)).map(z =>
+          `<a class="area-link" href="/zip/${z.zip}/">${z.zip}${z.area !== z.city ? ` · ${esc(z.area)}` : ''} <span>${z.count}</span></a>`).join('')}</div></div>`)
+    .join('\n      ');
   write('areas', shell({
     title: 'Spas near you — by neighborhood & zip code in Georgia | GA Spas',
     desc: 'Find spas near you in Georgia by neighborhood (Buckhead, Midtown, Sandy Springs) or by zip code. Day spas, med spas & massage sorted by distance.',

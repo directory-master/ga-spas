@@ -521,3 +521,8 @@ input,textarea,select,[contenteditable]{-webkit-user-select:text;-moz-user-selec
 .area-link{display:inline-flex;align-items:center;gap:8px;padding:10px 14px;border:1px solid var(--line,rgba(46,58,46,.14));border-radius:100px;background:#fff;color:var(--forest,#2E3A2E);font-weight:500;text-decoration:none;transition:border-color .15s,transform .15s}
 .area-link:hover{border-color:var(--terracotta,#A9663F);transform:translateY(-1px)}
 .area-link span{font-size:12px;color:#fff;background:var(--sage-deep,#6E7C5E);border-radius:100px;padding:2px 8px;min-width:20px;text-align:center}
+
+/* /areas/ hub — per-city zip groups */
+.area-group{margin:0 0 18px}
+.area-city{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:600;margin:0 0 8px;color:var(--forest,#2E3A2E)}
+.area-group .area-links{margin:0 0 4px}
