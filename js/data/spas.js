@@ -16,13 +16,15 @@ export const CITIES = [
 ];
 
 // Stock photos (Unsplash). Rendering falls back to a gradient if these fail.
+// Local dummy photos (drop generated files into /images/ — see images/README.md).
+// Missing files degrade gracefully to the card's sage gradient.
 const IMG = {
-  nails:   'https://images.unsplash.com/photo-1604654894610-df63bc536371?auto=format&fit=crop&w=800&q=60',
-  dayspa:  'https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=800&q=60',
-  medspa:  'https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?auto=format&fit=crop&w=800&q=60',
-  massage: 'https://images.unsplash.com/photo-1544161515-4ab6ce6db874?auto=format&fit=crop&w=800&q=60',
-  brow:    'https://images.unsplash.com/photo-1583001931096-959e9a1a6223?auto=format&fit=crop&w=800&q=60',
-  hair:    'https://images.unsplash.com/photo-1560066984-138dadb4c035?auto=format&fit=crop&w=800&q=60',
+  nails:   '/images/spa-nails.jpg',
+  dayspa:  '/images/spa-dayspa.jpg',
+  medspa:  '/images/spa-medspa.jpg',
+  massage: '/images/spa-massage.jpg',
+  brow:    '/images/spa-brow.jpg',
+  hair:    '/images/spa-hair.jpg',
 };
 
 // Weekly hours → array[7] (Sun..Sat) of [openMin, closeMin] | null (closed).
@@ -35,11 +37,12 @@ export const SPAS = [
   // --- Atlanta ---
   {
     id: 'atl-luxe-nail-studio',
-    name: 'Luxe Nail Studio',
+    name: 'Goldleaf Nail Atelier',
     city: 'atlanta',
     neighborhood: 'Buckhead',
     type: 'Nail Salon',
     tier: 'premium',
+    example: true,
     rating: 4.8, reviews: 212, price: '$$', blackOwned: false, image: IMG.nails,
     bookingUrl: 'https://booksy.com/en-us/example-luxe-nail-studio',
     phone: '(404) 555-0142',
@@ -55,12 +58,14 @@ export const SPAS = [
   },
   {
     id: 'atl-serenity-day-spa',
-    name: 'Serenity Day Spa',
+    name: 'Hush Day Spa',
     city: 'atlanta',
     neighborhood: 'Midtown',
     type: 'Day Spa',
     tier: 'premium',
+    example: true,
     rating: 4.9, reviews: 388, price: '$$$', blackOwned: true, image: IMG.dayspa,
+    images: [IMG.dayspa, IMG.massage, IMG.medspa],
     bookingUrl: 'https://vagaro.com/example-serenity-day-spa',
     phone: '(404) 555-0188',
     email: 'hello@serenitydayspa.example',
@@ -68,6 +73,11 @@ export const SPAS = [
     lat: 33.7849, lng: -84.3839,
     hours: std('9:00-20:00', '9:00-18:00', '10:00-17:00'),
     offer: 'Couples massage package — $199 (reg. $260)',
+    perks: [
+      '✦ New client offer: 20% off your first facial — mention GA Spas when booking',
+      '✦ Couples massage ritual — $199 (reg. $260) through this month',
+      '✦ Free aromatherapy upgrade on any 60-minute massage',
+    ],
     description: 'A Midtown sanctuary for deep relaxation — Swedish and deep-tissue massage, signature facials, and couples rituals in a calm, modern space.',
     amenities: ['🚗 Parking', '🛁 Private rooms', '👫 Couples', '🎁 Gift cards', '💻 Online booking'],
     menu: [
@@ -79,12 +89,14 @@ export const SPAS = [
   },
   {
     id: 'atl-sandy-skin',
-    name: 'Sandy Springs Skin Bar',
+    name: 'Glasshouse Skin Bar',
     city: 'atlanta',
     neighborhood: 'Sandy Springs',
     type: 'Med Spa',
     tier: 'standard',
+    example: true,
     rating: 4.7, reviews: 154, price: '$$$', blackOwned: false, image: IMG.medspa,
+    images: [IMG.medspa, IMG.brow, IMG.dayspa],
     lat: 33.9304, lng: -84.3733,
     address: '6300 Powers Ferry Rd, Sandy Springs, GA 30339',
     hours: std('10:00-19:00', '10:00-16:00', null),
@@ -100,12 +112,14 @@ export const SPAS = [
   },
   {
     id: 'atl-crown-glow',
-    name: 'Crown & Glow Spa',
+    name: 'Halo & Stone Spa',
     city: 'atlanta',
     neighborhood: 'West End',
     type: 'Day Spa',
     tier: 'standard',
+    example: true,
     rating: 4.7, reviews: 118, price: '$$', blackOwned: true, image: IMG.dayspa,
+    images: [IMG.dayspa, IMG.brow, IMG.massage],
     lat: 33.7400, lng: -84.4220,
     address: '1085 Ralph David Abernathy Blvd SW, Atlanta, GA 30310',
     hours: wk({ tue: '10:00-19:00', wed: '10:00-19:00', thu: '10:00-19:00', fri: '10:00-19:00', sat: '9:00-17:00' }),
@@ -121,12 +135,14 @@ export const SPAS = [
   },
   {
     id: 'atl-tranquil-massage',
-    name: 'Tranquil Hands Massage',
+    name: 'Stillpoint Massage',
     city: 'atlanta',
     neighborhood: 'Midtown',
     type: 'Massage',
     tier: 'premium',
+    example: true,
     rating: 4.8, reviews: 201, price: '$$', blackOwned: false, image: IMG.massage,
+    images: [IMG.massage, IMG.dayspa, IMG.brow],
     bookingUrl: 'https://vagaro.com/example-tranquil-hands',
     phone: '(404) 555-0173',
     email: 'hello@tranquilhands.example',
@@ -134,6 +150,11 @@ export const SPAS = [
     lat: 33.7820, lng: -84.3835,
     hours: std('8:00-21:00', '9:00-19:00', '10:00-18:00'),
     offer: 'First session: 20% off any 60-min massage',
+    perks: [
+      '✦ First session: 20% off any 60-minute massage — mention GA Spas',
+      '✦ Refer a friend — you both get $15 off your next visit',
+      '✦ Free hot-towel + scalp add-on on 90-minute sessions',
+    ],
     description: 'Boutique therapeutic massage in Midtown — Swedish, deep tissue, and hot stone by licensed therapists, with zero upsell pressure.',
     amenities: ['👫 Couples', '🛁 Private rooms', '💻 Online booking'],
     menu: [
@@ -146,11 +167,12 @@ export const SPAS = [
   // --- Savannah ---
   {
     id: 'sav-tidewater-spa',
-    name: 'Tidewater Spa',
+    name: 'Saltair Spa',
     city: 'savannah',
     neighborhood: 'Historic District',
     type: 'Day Spa',
     tier: 'premium',
+    example: true,
     rating: 4.8, reviews: 167, price: '$$', blackOwned: false, image: IMG.massage,
     bookingUrl: 'https://vagaro.com/example-tidewater-spa',
     phone: '(912) 555-0119',
@@ -172,11 +194,12 @@ export const SPAS = [
   // --- Athens ---
   {
     id: 'ath-fivepoints-nails',
-    name: 'Five Points Nail Lounge',
+    name: 'Petal & Polish Nail Lounge',
     city: 'athens',
     neighborhood: 'Five Points',
     type: 'Nail Salon',
     tier: 'premium',
+    example: true,
     rating: 4.7, reviews: 129, price: '$', blackOwned: false, image: IMG.nails,
     bookingUrl: 'https://booksy.com/en-us/example-five-points-nail-lounge',
     phone: '(706) 555-0166',

@@ -269,7 +269,7 @@ h2.section { font-size: 1.05rem; letter-spacing: .04em; text-transform: uppercas
 
 .card-photo { position: relative; aspect-ratio: 3 / 2; background: linear-gradient(135deg, #e3ddd2, #f1ebde); }
 .card-img { width: 100%; height: 100%; object-fit: cover; display: block; }
-.card-img.img-failed { background: linear-gradient(135deg, #e3ddd2, #f1ebde); }
+.card-img.img-failed { background: url('/images/noimageprovided.jpg') center / cover no-repeat, linear-gradient(135deg, #e3ddd2, #f1ebde); }
 .badges { position: absolute; top: 10px; left: 10px; display: flex; gap: 6px; flex-wrap: wrap; }
 
 .listing-card .body { padding: 14px 16px 16px; flex: 1; }
@@ -319,7 +319,7 @@ h2.section { font-size: 1.05rem; letter-spacing: .04em; text-transform: uppercas
 /* --- detail page --- */
 .detail-hero { position: relative; border-radius: var(--radius); overflow: hidden; margin: 8px 0 18px; aspect-ratio: 16 / 7; background: linear-gradient(135deg, #e3ddd2, #f1ebde); }
 .detail-img { width: 100%; height: 100%; object-fit: cover; display: block; }
-.detail-img.img-failed { background: linear-gradient(135deg, #e3ddd2, #f1ebde); }
+.detail-img.img-failed { background: url('/images/noimageprovided.jpg') center / cover no-repeat, linear-gradient(135deg, #e3ddd2, #f1ebde); }
 .detail-hero .badges { top: 14px; left: 14px; }
 
 .detail-header { margin: 0 0 22px; }
@@ -383,8 +383,10 @@ h2.section { font-size: 1.05rem; letter-spacing: .04em; text-transform: uppercas
 .similar { margin-top: 30px; }
 
 /* footer */
-.site-footer { margin-top: 40px; border-top: 1px solid var(--line); color: var(--muted); font-size: .9rem; }
-.site-footer .container { padding-top: 20px; padding-bottom: 28px; }
+.site-footer { margin-top: 40px; border-top: 1px solid var(--line); color: var(--muted); font-size: .9rem; position: relative; overflow: hidden; }
+/* faint allover vein texture */
+.site-footer::before { content:""; position:absolute; inset:0; background:url('/images/vein-texture.svg') repeat; background-size:240px 240px; opacity:.07; pointer-events:none; z-index:0; }
+.site-footer .container { padding-top: 20px; padding-bottom: 28px; position: relative; z-index: 1; }
 .version { opacity: .7; font-variant-numeric: tabular-nums; }
 .home-stat { margin: 12px 0 0; color: var(--accent); font-weight: 700; font-size: 1.05rem; }
 
@@ -441,7 +443,7 @@ h2.section.gold-rule { border-top: 2px solid var(--gold); padding-top: 16px; }
 .footer-col h4 { font-size: .78rem; text-transform: uppercase; letter-spacing: .1em; color: var(--muted); margin: 2px 0 12px; }
 .footer-col a { display: block; color: var(--ink); font-size: .92rem; margin-bottom: 8px; }
 .footer-col a:hover { color: var(--accent); text-decoration: none; }
-.footer-base { border-top: 1px solid var(--line); padding-top: 16px; padding-bottom: 30px; color: var(--muted); font-size: .85rem; display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.footer-base { border-top: 1px solid var(--line); padding-top: 16px; padding-bottom: 30px; color: var(--forest-soft); font-size: .85rem; display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
 @media (max-width: 640px) { .footer-grid { grid-template-columns: 1fr 1fr; } .footer-brand { grid-column: 1 / -1; } }
 .footer-social { display: flex; gap: 14px; margin-top: 4px; }
 .footer-social a { color: var(--accent); font-size: .9rem; }
@@ -509,3 +511,13 @@ h2.section.gold-rule { border-top: 2px solid var(--gold); padding-top: 16px; }
 .city-row-count { color: var(--accent); font-weight: 600; white-space: nowrap; }
 .city-row-all { justify-content: center; color: var(--accent); font-weight: 700; }
 @media (max-width: 560px) { .city-row { flex-wrap: wrap; gap: 4px 14px; } .city-row-blurb { flex-basis: 100%; order: 3; } }
+
+/* disable text selection site-wide (shell pages) — form fields stay usable */
+body{-webkit-user-select:none;-moz-user-select:none;user-select:none}
+input,textarea,select,[contenteditable]{-webkit-user-select:text;-moz-user-select:text;user-select:text}
+
+/* /areas/ hub — neighborhood & zip index links */
+.area-links{display:flex;flex-wrap:wrap;gap:10px;margin:8px 0 28px}
+.area-link{display:inline-flex;align-items:center;gap:8px;padding:10px 14px;border:1px solid var(--line,rgba(46,58,46,.14));border-radius:100px;background:#fff;color:var(--forest,#2E3A2E);font-weight:500;text-decoration:none;transition:border-color .15s,transform .15s}
+.area-link:hover{border-color:var(--terracotta,#A9663F);transform:translateY(-1px)}
+.area-link span{font-size:12px;color:#fff;background:var(--sage-deep,#6E7C5E);border-radius:100px;padding:2px 8px;min-width:20px;text-align:center}

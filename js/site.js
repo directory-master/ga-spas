@@ -53,3 +53,4 @@ new MutationObserver(muts => {
     paint(n);
   }
 }).observe(document.documentElement, { childList: true, subtree: true });
+

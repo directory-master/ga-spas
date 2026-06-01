@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="320" height="214" viewBox="0 0 320 214" role="img" aria-label="No image provided">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#EFE7DA"/>
+      <stop offset="1" stop-color="#F6F1E9"/>
+    </linearGradient>
+  </defs>
+  <rect width="320" height="214" fill="url(#bg)"/>
+  <!-- stacked zen stones -->
+  <ellipse cx="160" cy="118" rx="46" ry="15" fill="#B7AC97"/>
+  <ellipse cx="160" cy="92"  rx="35" ry="13" fill="#9FA98C"/>
+  <ellipse cx="160" cy="70"  rx="25" ry="11" fill="#8B9A7E"/>
+  <ellipse cx="160" cy="52"  rx="16" ry="8"  fill="#6E7E61"/>
+  <!-- little eucalyptus sprig -->
+  <g fill="#8B9A7E" opacity="0.8">
+    <path d="M196 96c8-3 16-2 22 3-7 3-15 2-22-3z"/>
+    <path d="M200 86c8-2 16 0 21 6-8 2-16 0-21-6z"/>
+  </g>
+  <text x="160" y="162" text-anchor="middle" font-family="'Inter',system-ui,sans-serif"
+        font-size="13" font-weight="600" letter-spacing="1.5" fill="#9A9384">No image provided</text>
+</svg>

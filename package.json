@@ -1,12 +1,12 @@
 {
   "name": "spas",
-  "version": "0.2.2",
+  "version": "0.9.10",
   "private": true,
   "type": "module",
   "description": "Static Georgia spa & salon directory.",
   "scripts": {
     "build:pages": "node scripts/generate-pages.mjs",
-    "serve": "python3 -m http.server 8000 --directory ga",
+    "serve": "python3 -m http.server 8000",
     "dev": "npm run build:pages && npm run serve"
   }
 }

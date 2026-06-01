@@ -1,0 +1,17 @@
+{
+  "name": "GA.Spas — Georgia Spa Directory",
+  "short_name": "GA.Spas",
+  "description": "Find day spas, med spas & massage across Georgia. Scan, compare, call.",
+  "start_url": "/?source=pwa",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#F6F1E9",
+  "theme_color": "#2E3A2E",
+  "categories": ["lifestyle", "health", "shopping"],
+  "icons": [
+    { "src": "/android-icon-192x192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/android-icon-512x512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "/android-icon-512-maskable.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
