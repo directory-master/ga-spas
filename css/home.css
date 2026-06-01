@@ -85,6 +85,13 @@ nav{
   .hslide-1{background-image:url('/images/hero-mobile-1.jpg')}
   .hslide-2{background-image:url('/images/hero-mobile-2.jpg')}
   .hslide-3{background-image:url('/images/hero-mobile-3.jpg')}
+  /* on phones the text spans full width over the photo — use a stronger, more
+     even cream veil (top→bottom) so the hero copy + "updated weekly" stay legible */
+  .hero--photo::after{
+    background:
+      linear-gradient(180deg, rgba(246,241,233,.80) 0%, rgba(246,241,233,.62) 42%, rgba(246,241,233,.74) 100%),
+      linear-gradient(95deg, rgba(246,241,233,.78) 0%, rgba(246,241,233,.5) 60%, rgba(246,241,233,.34) 100%);
+  }
 }
 /* scrim: opaque cream on the left (under the text), clearing to the photo on the right */
 .hero--photo::after{
@@ -109,7 +116,7 @@ nav{
 }
 .hero h1 em{font-style:italic;color:var(--sage-deep)}
 .hero-sub{font-size:18px;color:var(--forest-soft);max-width:540px;margin:26px 0 0;font-weight:300}
-.hero-proof{font-size:14px;color:var(--muted);margin-top:18px}
+.hero-proof{font-size:14px;color:var(--forest-soft);margin-top:18px;text-shadow:0 1px 3px rgba(246,241,233,.92)}
 .hero-proof strong{color:var(--forest);font-weight:600}
 
 .search{margin-top:34px;display:flex;gap:10px;flex-wrap:wrap;max-width:620px}
