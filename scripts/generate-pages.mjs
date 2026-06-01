@@ -11,7 +11,6 @@
 //   ga/category/<category>/index.html  → /category/nail-salons/  (statewide cat)
 //   ga/black-owned/index.html          → /black-owned/           (statewide BO)
 //   ga/spas/<slug>/index.html          → /spas/<slug>/           (profile)
-//   ga/blog/index.html, ga/blog/<post>/index.html
 //   ga/css/style.css                   (copied in — publish root must be self-contained)
 //   sitemap.xml
 //
@@ -210,7 +209,6 @@ function shell({ title, desc, path, jsonLd = '', body, noindex = false }) {
       <nav class="nav">
         <a href="/">Cities</a>
         <a href="/black-owned/">Black-Owned</a>
-        <a href="/blog/">Blog</a>
         <a class="nav-cta" href="/pricing/">List your spa</a>
       </nav>
     </div>
@@ -246,8 +244,7 @@ ${body}
       <div class="footer-col">
         <h4>Company</h4>
         <a href="/pricing/">Pricing</a>
-        <a href="/blog/">Blog</a>
-        <a href="https://artivicolab.com/#contact" target="_blank" rel="noopener">Contact us</a>
+        <a href="mailto:artivicolab@gmail.com?subject=GA.Spas%20enquiry">Contact us</a>
         <a href="/privacy/">Privacy policy</a>
         <a href="/terms/">Terms of service</a>
       </div>
@@ -269,7 +266,7 @@ ${body}
 // the repo root or any source dir.
 rmSync(join(ROOT, 'ga'), { recursive: true, force: true }); // retire the old /ga subfolder output
 for (const f of ['city.html', 'listing.html', 'js/app.js']) rmSync(join(ROOT, f), { force: true });
-const GENERATED_ROOTS = new Set(['spas', 'cities', 'category', 'black-owned', 'blog']);
+const GENERATED_ROOTS = new Set(['spas', 'cities', 'category', 'black-owned']);
 for (const e of GA_CITIES) GENERATED_ROOTS.add(e.slug);
 for (const s of ACTIVE) if (s.city) GENERATED_ROOTS.add(s.city);
 for (const d of GENERATED_ROOTS) rmSync(join(ROOT, d), { recursive: true, force: true });
@@ -531,7 +528,6 @@ ${ldJson}
     <li><a href="/cities/">Cities</a></li>
     <li><a href="/black-owned/">Black-Owned</a></li>
     <li><a href="/liked/">♥ Saved <span class="like-count" hidden></span></a></li>
-    <li><a href="/blog/">Blog</a></li>
   </ul>
   <a class="nav-cta" href="/pricing/">List your spa</a>
 </nav>
@@ -696,8 +692,7 @@ ${showTesti ? `<section class="band testi-band">
       <div class="foot-col">
         <div class="foot-col-h">Company</div>
         <a href="/pricing/">Pricing</a>
-        <a href="/blog/">Blog</a>
-        <a href="https://artivicolab.com/#contact" target="_blank" rel="noopener">Contact us</a>
+        <a href="mailto:artivicolab@gmail.com?subject=GA.Spas%20enquiry">Contact us</a>
         <a href="/privacy/">Privacy</a>
         <a href="/terms/">Terms</a>
       </div>
@@ -777,7 +772,6 @@ ${PWA_HEAD}
     <li><a href="/cities/">Cities</a></li>
     <li><a href="/black-owned/">Black-Owned</a></li>
     <li><a href="/liked/">♥ Saved <span class="like-count" hidden></span></a></li>
-    <li><a href="/blog/">Blog</a></li>
   </ul>
   <a class="nav-cta" href="/pricing/">List your spa</a>
 </nav>
@@ -851,8 +845,7 @@ ${PWA_HEAD}
       <div class="foot-col">
         <div class="foot-col-h">Company</div>
         <a href="/pricing/">Pricing</a>
-        <a href="/blog/">Blog</a>
-        <a href="https://artivicolab.com/#contact" target="_blank" rel="noopener">Contact us</a>
+        <a href="mailto:artivicolab@gmail.com?subject=GA.Spas%20enquiry">Contact us</a>
         <a href="/privacy/">Privacy</a>
         <a href="/terms/">Terms</a>
       </div>
@@ -927,7 +920,6 @@ ${PWA_HEAD}
     <li><a href="/cities/">Cities</a></li>
     <li><a href="/black-owned/">Black-Owned</a></li>
     <li><a href="/liked/">♥ Saved <span class="like-count" hidden></span></a></li>
-    <li><a href="/blog/">Blog</a></li>
   </ul>
   <a class="nav-cta" href="/pricing/">List your spa</a>
 </nav>
@@ -983,7 +975,7 @@ ${PWA_HEAD}
 
     </div>
     <div class="bo-free">✦ <strong>The Black-owned badge is free on every plan</strong> — even Free. Just message us from your business email and we'll verify and add it. <a href="mailto:artivicolab@gmail.com?subject=GASpas%20Black-owned%20verification">Verify your spa →</a></div>
-    <p class="pricing-note">Three tiers. One card. The difference is visible at a glance — free cards look thin, standard cards look solid, premium cards look like the place you want to book. Questions? <a href="https://artivicolab.com/#contact" target="_blank" rel="noopener">Contact us</a>.</p>
+    <p class="pricing-note">Three tiers. One card. The difference is visible at a glance — free cards look thin, standard cards look solid, premium cards look like the place you want to book. Questions? <a href="mailto:artivicolab@gmail.com?subject=GA.Spas%20enquiry">Contact us</a>.</p>
   </div>
 </section>
 
@@ -1012,8 +1004,7 @@ ${PWA_HEAD}
       <div class="foot-col">
         <div class="foot-col-h">Company</div>
         <a href="/pricing/">Pricing</a>
-        <a href="/blog/">Blog</a>
-        <a href="https://artivicolab.com/#contact" target="_blank" rel="noopener">Contact us</a>
+        <a href="mailto:artivicolab@gmail.com?subject=GA.Spas%20enquiry">Contact us</a>
         <a href="/privacy/">Privacy</a>
         <a href="/terms/">Terms</a>
       </div>
@@ -1316,7 +1307,6 @@ ${PWA_HEAD}
     <li><a href="/cities/">Cities</a></li>
     <li><a href="/black-owned/">Black-Owned</a></li>
     <li><a href="/liked/">♥ Saved <span class="like-count" hidden></span></a></li>
-    <li><a href="/blog/">Blog</a></li>
   </ul>
   <a class="nav-cta" href="/pricing/">List your spa</a>
 </nav>
@@ -1370,166 +1360,6 @@ ${PWA_HEAD}
 `);
 noindexed.add('/liked/');
 
-// ---------------------------------------------------------------------------
-// Blog — real local guides + roundups, pre-rendered as static HTML so crawlers
-// get the full article. "Best of" picks are ranked by the SAME stars×review-
-// volume score as Georgia's Top 10 (scripts/top-spas.mjs) and drawn from REAL
-// scraped listings only (curated demo seeds excluded), so the lists are honest.
-// Editorial prose is hand-written; per-spa lines stay factual (name, area, type,
-// rating) — we never fabricate claims about a specific business.
-// ---------------------------------------------------------------------------
-const REAL_RATED = ACTIVE.filter(s => !s.example && s.rating > 0);
-const bestPicks = (pred, n = 8) =>
-  REAL_RATED.filter(s => pred(s) && s.rating >= 4.5)
-    .sort((a, b) => score(b) - score(a)).slice(0, n);
-
-const pickLine = (s) => {
-  const meta = [s.neighborhood, cityNameOf(s), catLabel(s.type).replace(/s$/, '')]
-    .filter(Boolean).join(' · ');
-  const stars = s.rating ? ` · ${s.rating}★${s.reviews ? ` (${s.reviews})` : ''}` : '';
-  return `<li><a class="pick-name" href="${spaLink(s)}" target="_blank" rel="noopener nofollow">${esc(s.name)}</a>`
-    + `<span class="pick-meta">${esc(meta)}${stars}</span></li>`;
-};
-const picksList = (spas) => `<ol class="blog-picks">
-      ${spas.map(pickLine).join('\n      ')}
-    </ol>`;
-
-const BLOG_DATE = '2026-06-01';
-const BLOG_DATE_LABEL = 'June 2026';
-const blogPosts = [];
-function blogArticle({ slug, title, desc, card, h1, lead, sections }) {
-  const path = `/blog/${slug}/`;
-  const jsonLd = `<script type="application/ld+json">${JSON.stringify({
-    '@context': 'https://schema.org', '@type': 'Article',
-    headline: title, description: desc,
-    datePublished: BLOG_DATE, dateModified: BLOG_DATE,
-    author: { '@type': 'Organization', name: 'GA.Spas', url: BASE_URL },
-    publisher: { '@type': 'Organization', name: 'GA.Spas', url: BASE_URL },
-    mainEntityOfPage: BASE_URL + path,
-    image: `${BASE_URL}/images/og-cover.jpg`,
-  })}</script>`;
-  write(`blog/${slug}`, shell({
-    title, desc, path, jsonLd,
-    body: `    <article class="blog-post">
-      <p class="blog-eyebrow"><a href="/blog/">← The Georgia Spa Blog</a> · ${BLOG_DATE_LABEL}</p>
-      <h1>${esc(h1)}</h1>
-      <p class="blog-lead">${lead}</p>
-${sections}
-      <p class="blog-foot">Ratings and listings come from public business data and are refreshed as we re-verify them. Own one of these spas? <a href="/pricing/">Claim or upgrade your listing →</a></p>
-    </article>`,
-  }));
-  blogPosts.push({ slug, card: card || title, desc });
-}
-
-// 1 — Atlanta city roundup
-blogArticle({
-  slug: 'best-spas-atlanta',
-  title: 'The Best Spas in Atlanta (2026) | GA Spa Directory',
-  card: 'The Best Spas in Atlanta (2026)',
-  desc: 'Our 2026 roundup of the best spas in Atlanta — top day spas, med spas, and massage across Buckhead, Midtown, Decatur, and beyond, ranked by real ratings and reviews.',
-  h1: 'The best spas in Atlanta (2026)',
-  lead: 'Atlanta has more spas than any other city in Georgia — which is great until you’re trying to pick one. We ranked the city’s top-rated day spas, med spas, and massage studios by the same measure we trust everywhere on this site: star rating <em>and</em> how many people backed it up, so a polished 5.0 with a handful of reviews can’t leapfrog a proven favorite with hundreds.',
-  sections: `      <h2>How we ranked them</h2>
-      <p>Every pick below is a real, currently-listed Atlanta business. We don’t take payment to move a spa up this list — the order is purely a stars-times-review-volume score. Sponsored placements live elsewhere on the site and are always labelled. If two spas are close, the one more Atlantans have actually reviewed wins.</p>
-
-      <h2>The picks</h2>
-      ${picksList(bestPicks(s => s.city === 'atlanta', 8))}
-
-      <h2>Browse by treatment</h2>
-      <p>Looking for something specific? Jump straight to <a href="/atlanta/day-spas/">day spas in Atlanta</a> for massages and facials, <a href="/atlanta/med-spas/">med spas in Atlanta</a> for injectables and skin treatments, or <a href="/atlanta/massage/">massage in Atlanta</a>. You can also see <a href="/black-owned/">Black-owned spas across Georgia</a>.</p>
-
-      <p><a href="/atlanta/">See all Atlanta spas →</a></p>`,
-});
-
-// 2 — statewide med spa roundup
-blogArticle({
-  slug: 'best-med-spas-georgia',
-  title: 'The Best Med Spas in Georgia (2026) | GA Spa Directory',
-  card: 'The Best Med Spas in Georgia (2026)',
-  desc: 'The top-rated medical spas in Georgia for 2026 — Botox, fillers, laser, and medical-grade skincare — ranked by real patient ratings and review counts.',
-  h1: 'The best med spas in Georgia (2026)',
-  lead: 'A med spa sits between a day spa and a doctor’s office: medical-grade treatments — Botox and fillers, laser hair removal, microneedling, chemical peels, IV therapy — delivered under clinical oversight. Because the results (and the risks) are higher, who you book matters more than at a relaxation spa. These are the highest-rated med spas across Georgia right now.',
-  sections: `      <h2>What makes a good med spa</h2>
-      <p>Look for a licensed medical director on site, clear before-and-after expectations, and a consult before any injectable. Strong, consistent reviews are the best public signal that a clinic delivers — which is exactly what this ranking rewards.</p>
-
-      <h2>The picks</h2>
-      ${picksList(bestPicks(s => s.type === 'Med Spa', 10))}
-
-      <h2>Find one near you</h2>
-      <p>See <a href="/category/med-spas/">every med spa in Georgia</a>, or start in <a href="/atlanta/med-spas/">Atlanta</a>, <a href="/alpharetta/med-spas/">Alpharetta</a>, or <a href="/cities/">your own city</a>. Prefer a relaxation-first visit instead? Read <a href="/blog/day-spa-vs-med-spa/">day spa vs. med spa</a>.</p>`,
-});
-
-// 3 — Marietta / East Cobb roundup
-blogArticle({
-  slug: 'best-spas-marietta',
-  title: 'The Best Spas in Marietta & East Cobb (2026) | GA Spa Directory',
-  card: 'The Best Spas in Marietta & East Cobb (2026)',
-  desc: 'The best spas in Marietta and East Cobb for 2026 — top day spas, massage, and med spas around the Marietta Square, ranked by real ratings and reviews.',
-  h1: 'The best spas in Marietta & East Cobb (2026)',
-  lead: 'You don’t have to drive into Atlanta for a great spa day. Marietta — from the historic Square out through East Cobb — has a quietly excellent set of day spas, massage studios, and med spas. Here are the top-rated spots, ranked by stars and the number of people who backed them up.',
-  sections: `      <h2>The picks</h2>
-      ${picksList(bestPicks(s => s.city === 'marietta', 8))}
-
-      <h2>Nearby</h2>
-      <p>Just outside Marietta? Browse spas in <a href="/smyrna/">Smyrna</a>, <a href="/kennesaw/">Kennesaw</a>, <a href="/roswell/">Roswell</a>, or <a href="/atlanta/">Atlanta</a>. You can also filter the whole metro by <a href="/category/day-spas/">day spas</a>, <a href="/category/massage/">massage</a>, or <a href="/category/med-spas/">med spas</a>.</p>
-
-      <p><a href="/marietta/">See all Marietta spas →</a></p>`,
-});
-
-// 4 — evergreen explainer
-blogArticle({
-  slug: 'day-spa-vs-med-spa',
-  title: 'Day Spa vs. Med Spa: Which One Do You Actually Need? | GA.Spas',
-  card: 'Day Spa vs. Med Spa: Which Do You Need?',
-  desc: 'Day spa or med spa? A plain-language guide to the difference — relaxation and bodywork vs. medical-grade aesthetic treatments — so you book the right place the first time.',
-  h1: 'Day spa vs. med spa: which one do you actually need?',
-  lead: 'People use “spa” for two pretty different things, and booking the wrong one is how you end up disappointed (or surprised at the bill). Here’s the difference in plain language.',
-  sections: `      <h2>Day spa: relaxation and bodywork</h2>
-      <p>A day spa is about feeling good and looking refreshed: massage, facials, body scrubs and wraps, manicures, saunas. No needles, no downtime, no medical oversight required. It’s what you book for a birthday, a couples afternoon, sore shoulders, or simply to decompress. Browse <a href="/category/day-spas/">day spas in Georgia</a> or <a href="/category/massage/">massage studios</a>.</p>
-
-      <h2>Med spa: medical-grade aesthetics</h2>
-      <p>A medical spa (“med spa” or “medspa”) offers treatments that need clinical oversight: Botox and dermal fillers, laser hair removal, microneedling, chemical peels, body contouring, IV therapy. There’s a medical director behind the scenes, usually a consultation first, and sometimes a little downtime after. It’s what you book for lines, pigmentation, acne scarring, or hair removal. See <a href="/category/med-spas/">med spas in Georgia</a>.</p>
-
-      <h2>Quick rule of thumb</h2>
-      <p>If you want to <em>relax or relieve tension</em>, that’s a day spa. If you want to <em>change something about your skin or body with a clinical treatment</em>, that’s a med spa. Plenty of places do both — when in doubt, call ahead and ask whether the treatment you want is performed under medical supervision.</p>
-
-      <p>Ready to book? Find the right one in <a href="/cities/">your city</a>, or read our <a href="/blog/best-med-spas-georgia/">best med spas in Georgia</a> roundup.</p>`,
-});
-
-// 5 — evergreen first-visit guide
-blogArticle({
-  slug: 'first-spa-day-guide',
-  title: 'Your First Spa Day in Georgia: What to Expect (and How to Book) | GA.Spas',
-  card: 'Your First Spa Day: What to Expect',
-  desc: 'New to spas? A simple guide to your first spa day in Georgia — what to book, what to wear, tipping, and how to get the most out of your visit.',
-  h1: 'Your first spa day in Georgia: what to expect',
-  lead: 'Never been to a spa, or just never sure what you’re supposed to do once you’re there? It’s genuinely easy. Here’s everything a first-timer wants to know.',
-  sections: `      <h2>What to book</h2>
-      <p>If you’re not sure, start with a 60-minute Swedish massage or a signature facial — both are gentle, standard, and a good read on whether you like the place. Couples can book a side-by-side massage. For skin concerns like fine lines or pigmentation, you want a <a href="/blog/day-spa-vs-med-spa/">med spa</a> instead.</p>
-
-      <h2>Before you go</h2>
-      <p>Arrive 10–15 minutes early to fill out a short intake form and change. Wear something comfortable; you’ll be given a robe and a private space. Skip a heavy meal right before a massage, and flag any injuries, allergies, or pregnancy when you book — it changes what’s safe to do.</p>
-
-      <h2>Tipping and cost</h2>
-      <p>For massage and facials, 15–20% is customary unless gratuity is already included. Med-spa treatments (injectables, laser) generally aren’t tipped. Ask about first-visit offers — many spas run new-client discounts.</p>
-
-      <h2>Getting the most out of it</h2>
-      <p>Put your phone away, drink water after a massage, and tell your therapist if pressure is too light or too firm — they’d much rather adjust. Found one you love? You can <a href="/">save it</a> and book again.</p>
-
-      <p>Ready? Find a spa in <a href="/cities/">your city</a> or see <a href="/blog/best-spas-atlanta/">the best spas in Atlanta</a>.</p>`,
-});
-
-// blog index — lists every post
-write('blog', shell({
-  title: 'The Georgia Spa Blog | Local Guides & Roundups',
-  desc: 'Local guides and roundups: the best day spas, med spas, and massage across Georgia, neighborhood by neighborhood.',
-  path: '/blog/',
-  body: `    <section class="hero"><h1>The Georgia Spa Blog</h1>
-      <p>Roundups and local guides, written by people who live here.</p></section>
-    <div class="listing-grid">
-      ${blogPosts.map(p => `<a class="city-card" href="/blog/${p.slug}/"><div class="city-name">${esc(p.card)}</div><div class="city-blurb">${esc(p.desc)}</div><div class="city-count">Read →</div></a>`).join('\n      ')}
-    </div>`,
-}));
 
 // ---------------------------------------------------------------------------
 // Legal: /privacy/ and /terms/. Static content pages on the shell template, so
@@ -1569,7 +1399,6 @@ ${PWA_HEAD}
     <li><a href="/cities/">Cities</a></li>
     <li><a href="/black-owned/">Black-Owned</a></li>
     <li><a href="/liked/">♥ Saved <span class="like-count" hidden></span></a></li>
-    <li><a href="/blog/">Blog</a></li>
   </ul>
   <a class="nav-cta" href="/pricing/">List your spa</a>
 </nav>
@@ -1603,8 +1432,7 @@ ${body}
       <div class="foot-col">
         <div class="foot-col-h">Company</div>
         <a href="/pricing/">Pricing</a>
-        <a href="/blog/">Blog</a>
-        <a href="https://artivicolab.com/#contact" target="_blank" rel="noopener">Contact us</a>
+        <a href="mailto:artivicolab@gmail.com?subject=GA.Spas%20enquiry">Contact us</a>
         <a href="/privacy/">Privacy</a>
         <a href="/terms/">Terms</a>
       </div>
@@ -1651,7 +1479,7 @@ write('privacy', brandPage({
       <p>GA.Spas is intended for adults and is not directed to children under 13.</p>
 
       <h2>Contact</h2>
-      <p>Questions, corrections, or removal requests: reach us via <a href="https://artivicolab.com/#contact" target="_blank" rel="noopener">Artivicolab</a>. This policy may be updated; the date above reflects the latest version.</p>
+      <p>Questions, corrections, or removal requests: <a href="mailto:artivicolab@gmail.com?subject=GA.Spas%20privacy%20request">email us</a>. This policy may be updated; the date above reflects the latest version.</p>
     </section>`,
 }));
 
@@ -1687,7 +1515,7 @@ write('terms', brandPage({
       <p>These terms are governed by the laws of the State of Georgia, USA.</p>
 
       <h2>Contact</h2>
-      <p>GA.Spas is made by <a href="https://artivicolab.com" target="_blank" rel="noopener">Artivicolab</a>. Questions about these terms? <a href="https://artivicolab.com/#contact" target="_blank" rel="noopener">Get in touch</a>. We may update these terms; the date above reflects the latest version.</p>
+      <p>GA.Spas is made by <a href="https://artivicolab.com" target="_blank" rel="noopener">Artivicolab</a>. Questions about these terms? <a href="mailto:artivicolab@gmail.com?subject=GA.Spas%20terms%20question">Email us</a>. We may update these terms; the date above reflects the latest version.</p>
     </section>`,
 }));
 
@@ -1738,7 +1566,6 @@ ${PWA_HEAD}
   <ul class="nav-links">
     <li><a href="/cities/">Cities</a></li>
     <li><a href="/black-owned/">Black-Owned</a></li>
-    <li><a href="/blog/">Blog</a></li>
   </ul>
   <a class="nav-cta" href="/pricing/">List your spa</a>
 </nav>
@@ -1762,7 +1589,6 @@ ${PWA_HEAD}
       <a class="pill" href="/">Home</a>
       <a class="pill" href="/cities/">All Georgia cities</a>
       <a class="pill bo" href="/black-owned/">✦ Black-Owned</a>
-      <a class="pill" href="/blog/">Blog</a>
     </div>
   </div>
 </header>
@@ -1773,6 +1599,6 @@ ${PWA_HEAD}
 // report
 console.log('Built static tree (publish root = ga/, deploys to ' + BASE_URL + '):');
 console.log(`  live cities ${counts.cities} · city+category ${counts.category} · city black-owned ${counts.cityBO}`);
-console.log(`  statewide ${counts.statewide} · profiles ${counts.profiles} · blog ${blogPosts.length + 1} · home 1`);
+console.log(`  statewide ${counts.statewide} · profiles ${counts.profiles} · home 1`);
 console.log(`  coming-soon cities (noindex until they get listings): ${counts.comingSoon}`);
 console.log(`  total pages: ${urls.length}   sitemap.xml: ${indexed.length} indexable URLs`);

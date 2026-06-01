@@ -15,15 +15,15 @@ try{var _c=localStorage.getItem('ga-consent');if(_c==='granted'){gtag('consent',
 gtag('js', new Date());
 gtag('config', 'G-Y842GGLJVN');
 </script>
-<script defer src="/js/analytics.js?v=0.12.0.0a8dfdc"></script>
-<script defer src="/js/consent.js?v=0.12.0.0a8dfdc"></script>
+<script defer src="/js/analytics.js?v=0.12.1.8e386ae"></script>
+<script defer src="/js/consent.js?v=0.12.1.8e386ae"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
 <meta name="robots" content="noindex,follow">
 <title>Your saved spas | GA Spas</title>
 <meta name="description" content="The spas you've saved on GA Spas."/>
 <link rel="canonical" href="https://ga.spas.artivicolab.com/liked/"/>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
-<link rel="stylesheet" href="/css/home.css?v=0.12.0.0a8dfdc"/>
+<link rel="stylesheet" href="/css/home.css?v=0.12.1.8e386ae"/>
 <link rel="manifest" href="/manifest.webmanifest"/>
 <meta name="theme-color" content="#2E3A2E"/>
 <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png"/>
@@ -34,7 +34,7 @@ gtag('config', 'G-Y842GGLJVN');
 <meta name="mobile-web-app-capable" content="yes"/>
 <meta name="apple-mobile-web-app-title" content="GA.Spas"/>
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
-<script defer src="/js/pwa.js?v=0.12.0.0a8dfdc"></script>
+<script defer src="/js/pwa.js?v=0.12.1.8e386ae"></script>
 </head>
 <body>
 <nav>
@@ -43,7 +43,6 @@ gtag('config', 'G-Y842GGLJVN');
     <li><a href="/cities/">Cities</a></li>
     <li><a href="/black-owned/">Black-Owned</a></li>
     <li><a href="/liked/">♥ Saved <span class="like-count" hidden></span></a></li>
-    <li><a href="/blog/">Blog</a></li>
   </ul>
   <a class="nav-cta" href="/pricing/">List your spa</a>
 </nav>
@@ -76,8 +75,8 @@ gtag('config', 'G-Y842GGLJVN');
 </footer>
 
 <script type="module">
-  import { renderCard } from '/js/card.js?v=0.12.0.0a8dfdc';
-  import { LIKE_INDEX } from '/js/liked-index.js?v=0.12.0.0a8dfdc';
+  import { renderCard } from '/js/card.js?v=0.12.1.8e386ae';
+  import { LIKE_INDEX } from '/js/liked-index.js?v=0.12.1.8e386ae';
   const grid = document.getElementById('liked-grid');
   const empty = document.getElementById('liked-empty');
   const read = () => { try { return JSON.parse(localStorage.getItem('gaspas:likes') || '[]'); } catch { return []; } };
@@ -91,6 +90,6 @@ gtag('config', 'G-Y842GGLJVN');
     empty.hidden = !!grid.querySelector('.card');
   });
 </script>
-<script type="module" src="/js/home.js?v=0.12.0.0a8dfdc"></script>
+<script type="module" src="/js/home.js?v=0.12.1.8e386ae"></script>
 </body>
 </html>
