@@ -32,7 +32,7 @@ import { GA_CITIES } from '../js/data/ga-cities.js';
 import { IMPORTED } from '../js/data/spas-imported.js';
 import { statusLong } from '../js/hours.js';
 import { renderCard } from '../js/card.js';
-import { topOfState, mostRated, mostRatedFiveStar, hiddenGem } from './top-spas.mjs';
+import { topOfState, mostRated, mostRatedFiveStar, hiddenGem, score } from './top-spas.mjs';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const GA_DIR = ROOT;   // publish AT the repo root so the deploy serves the home at "/" (no /ga segment)
@@ -1370,7 +1370,156 @@ ${PWA_HEAD}
 `);
 noindexed.add('/liked/');
 
-// blog index + one sample post
+// ---------------------------------------------------------------------------
+// Blog — real local guides + roundups, pre-rendered as static HTML so crawlers
+// get the full article. "Best of" picks are ranked by the SAME stars×review-
+// volume score as Georgia's Top 10 (scripts/top-spas.mjs) and drawn from REAL
+// scraped listings only (curated demo seeds excluded), so the lists are honest.
+// Editorial prose is hand-written; per-spa lines stay factual (name, area, type,
+// rating) — we never fabricate claims about a specific business.
+// ---------------------------------------------------------------------------
+const REAL_RATED = ACTIVE.filter(s => !s.example && s.rating > 0);
+const bestPicks = (pred, n = 8) =>
+  REAL_RATED.filter(s => pred(s) && s.rating >= 4.5)
+    .sort((a, b) => score(b) - score(a)).slice(0, n);
+
+const pickLine = (s) => {
+  const meta = [s.neighborhood, cityNameOf(s), catLabel(s.type).replace(/s$/, '')]
+    .filter(Boolean).join(' · ');
+  const stars = s.rating ? ` · ${s.rating}★${s.reviews ? ` (${s.reviews})` : ''}` : '';
+  return `<li><a class="pick-name" href="${spaLink(s)}" target="_blank" rel="noopener nofollow">${esc(s.name)}</a>`
+    + `<span class="pick-meta">${esc(meta)}${stars}</span></li>`;
+};
+const picksList = (spas) => `<ol class="blog-picks">
+      ${spas.map(pickLine).join('\n      ')}
+    </ol>`;
+
+const BLOG_DATE = '2026-06-01';
+const BLOG_DATE_LABEL = 'June 2026';
+const blogPosts = [];
+function blogArticle({ slug, title, desc, card, h1, lead, sections }) {
+  const path = `/blog/${slug}/`;
+  const jsonLd = `<script type="application/ld+json">${JSON.stringify({
+    '@context': 'https://schema.org', '@type': 'Article',
+    headline: title, description: desc,
+    datePublished: BLOG_DATE, dateModified: BLOG_DATE,
+    author: { '@type': 'Organization', name: 'GA.Spas', url: BASE_URL },
+    publisher: { '@type': 'Organization', name: 'GA.Spas', url: BASE_URL },
+    mainEntityOfPage: BASE_URL + path,
+    image: `${BASE_URL}/images/og-cover.jpg`,
+  })}</script>`;
+  write(`blog/${slug}`, shell({
+    title, desc, path, jsonLd,
+    body: `    <article class="blog-post">
+      <p class="blog-eyebrow"><a href="/blog/">← The Georgia Spa Blog</a> · ${BLOG_DATE_LABEL}</p>
+      <h1>${esc(h1)}</h1>
+      <p class="blog-lead">${lead}</p>
+${sections}
+      <p class="blog-foot">Ratings and listings come from public business data and are refreshed as we re-verify them. Own one of these spas? <a href="/pricing/">Claim or upgrade your listing →</a></p>
+    </article>`,
+  }));
+  blogPosts.push({ slug, card: card || title, desc });
+}
+
+// 1 — Atlanta city roundup
+blogArticle({
+  slug: 'best-spas-atlanta',
+  title: 'The Best Spas in Atlanta (2026) | GA Spa Directory',
+  card: 'The Best Spas in Atlanta (2026)',
+  desc: 'Our 2026 roundup of the best spas in Atlanta — top day spas, med spas, and massage across Buckhead, Midtown, Decatur, and beyond, ranked by real ratings and reviews.',
+  h1: 'The best spas in Atlanta (2026)',
+  lead: 'Atlanta has more spas than any other city in Georgia — which is great until you’re trying to pick one. We ranked the city’s top-rated day spas, med spas, and massage studios by the same measure we trust everywhere on this site: star rating <em>and</em> how many people backed it up, so a polished 5.0 with a handful of reviews can’t leapfrog a proven favorite with hundreds.',
+  sections: `      <h2>How we ranked them</h2>
+      <p>Every pick below is a real, currently-listed Atlanta business. We don’t take payment to move a spa up this list — the order is purely a stars-times-review-volume score. Sponsored placements live elsewhere on the site and are always labelled. If two spas are close, the one more Atlantans have actually reviewed wins.</p>
+
+      <h2>The picks</h2>
+      ${picksList(bestPicks(s => s.city === 'atlanta', 8))}
+
+      <h2>Browse by treatment</h2>
+      <p>Looking for something specific? Jump straight to <a href="/atlanta/day-spas/">day spas in Atlanta</a> for massages and facials, <a href="/atlanta/med-spas/">med spas in Atlanta</a> for injectables and skin treatments, or <a href="/atlanta/massage/">massage in Atlanta</a>. You can also see <a href="/black-owned/">Black-owned spas across Georgia</a>.</p>
+
+      <p><a href="/atlanta/">See all Atlanta spas →</a></p>`,
+});
+
+// 2 — statewide med spa roundup
+blogArticle({
+  slug: 'best-med-spas-georgia',
+  title: 'The Best Med Spas in Georgia (2026) | GA Spa Directory',
+  card: 'The Best Med Spas in Georgia (2026)',
+  desc: 'The top-rated medical spas in Georgia for 2026 — Botox, fillers, laser, and medical-grade skincare — ranked by real patient ratings and review counts.',
+  h1: 'The best med spas in Georgia (2026)',
+  lead: 'A med spa sits between a day spa and a doctor’s office: medical-grade treatments — Botox and fillers, laser hair removal, microneedling, chemical peels, IV therapy — delivered under clinical oversight. Because the results (and the risks) are higher, who you book matters more than at a relaxation spa. These are the highest-rated med spas across Georgia right now.',
+  sections: `      <h2>What makes a good med spa</h2>
+      <p>Look for a licensed medical director on site, clear before-and-after expectations, and a consult before any injectable. Strong, consistent reviews are the best public signal that a clinic delivers — which is exactly what this ranking rewards.</p>
+
+      <h2>The picks</h2>
+      ${picksList(bestPicks(s => s.type === 'Med Spa', 10))}
+
+      <h2>Find one near you</h2>
+      <p>See <a href="/category/med-spas/">every med spa in Georgia</a>, or start in <a href="/atlanta/med-spas/">Atlanta</a>, <a href="/alpharetta/med-spas/">Alpharetta</a>, or <a href="/cities/">your own city</a>. Prefer a relaxation-first visit instead? Read <a href="/blog/day-spa-vs-med-spa/">day spa vs. med spa</a>.</p>`,
+});
+
+// 3 — Marietta / East Cobb roundup
+blogArticle({
+  slug: 'best-spas-marietta',
+  title: 'The Best Spas in Marietta & East Cobb (2026) | GA Spa Directory',
+  card: 'The Best Spas in Marietta & East Cobb (2026)',
+  desc: 'The best spas in Marietta and East Cobb for 2026 — top day spas, massage, and med spas around the Marietta Square, ranked by real ratings and reviews.',
+  h1: 'The best spas in Marietta & East Cobb (2026)',
+  lead: 'You don’t have to drive into Atlanta for a great spa day. Marietta — from the historic Square out through East Cobb — has a quietly excellent set of day spas, massage studios, and med spas. Here are the top-rated spots, ranked by stars and the number of people who backed them up.',
+  sections: `      <h2>The picks</h2>
+      ${picksList(bestPicks(s => s.city === 'marietta', 8))}
+
+      <h2>Nearby</h2>
+      <p>Just outside Marietta? Browse spas in <a href="/smyrna/">Smyrna</a>, <a href="/kennesaw/">Kennesaw</a>, <a href="/roswell/">Roswell</a>, or <a href="/atlanta/">Atlanta</a>. You can also filter the whole metro by <a href="/category/day-spas/">day spas</a>, <a href="/category/massage/">massage</a>, or <a href="/category/med-spas/">med spas</a>.</p>
+
+      <p><a href="/marietta/">See all Marietta spas →</a></p>`,
+});
+
+// 4 — evergreen explainer
+blogArticle({
+  slug: 'day-spa-vs-med-spa',
+  title: 'Day Spa vs. Med Spa: Which One Do You Actually Need? | GA.Spas',
+  card: 'Day Spa vs. Med Spa: Which Do You Need?',
+  desc: 'Day spa or med spa? A plain-language guide to the difference — relaxation and bodywork vs. medical-grade aesthetic treatments — so you book the right place the first time.',
+  h1: 'Day spa vs. med spa: which one do you actually need?',
+  lead: 'People use “spa” for two pretty different things, and booking the wrong one is how you end up disappointed (or surprised at the bill). Here’s the difference in plain language.',
+  sections: `      <h2>Day spa: relaxation and bodywork</h2>
+      <p>A day spa is about feeling good and looking refreshed: massage, facials, body scrubs and wraps, manicures, saunas. No needles, no downtime, no medical oversight required. It’s what you book for a birthday, a couples afternoon, sore shoulders, or simply to decompress. Browse <a href="/category/day-spas/">day spas in Georgia</a> or <a href="/category/massage/">massage studios</a>.</p>
+
+      <h2>Med spa: medical-grade aesthetics</h2>
+      <p>A medical spa (“med spa” or “medspa”) offers treatments that need clinical oversight: Botox and dermal fillers, laser hair removal, microneedling, chemical peels, body contouring, IV therapy. There’s a medical director behind the scenes, usually a consultation first, and sometimes a little downtime after. It’s what you book for lines, pigmentation, acne scarring, or hair removal. See <a href="/category/med-spas/">med spas in Georgia</a>.</p>
+
+      <h2>Quick rule of thumb</h2>
+      <p>If you want to <em>relax or relieve tension</em>, that’s a day spa. If you want to <em>change something about your skin or body with a clinical treatment</em>, that’s a med spa. Plenty of places do both — when in doubt, call ahead and ask whether the treatment you want is performed under medical supervision.</p>
+
+      <p>Ready to book? Find the right one in <a href="/cities/">your city</a>, or read our <a href="/blog/best-med-spas-georgia/">best med spas in Georgia</a> roundup.</p>`,
+});
+
+// 5 — evergreen first-visit guide
+blogArticle({
+  slug: 'first-spa-day-guide',
+  title: 'Your First Spa Day in Georgia: What to Expect (and How to Book) | GA.Spas',
+  card: 'Your First Spa Day: What to Expect',
+  desc: 'New to spas? A simple guide to your first spa day in Georgia — what to book, what to wear, tipping, and how to get the most out of your visit.',
+  h1: 'Your first spa day in Georgia: what to expect',
+  lead: 'Never been to a spa, or just never sure what you’re supposed to do once you’re there? It’s genuinely easy. Here’s everything a first-timer wants to know.',
+  sections: `      <h2>What to book</h2>
+      <p>If you’re not sure, start with a 60-minute Swedish massage or a signature facial — both are gentle, standard, and a good read on whether you like the place. Couples can book a side-by-side massage. For skin concerns like fine lines or pigmentation, you want a <a href="/blog/day-spa-vs-med-spa/">med spa</a> instead.</p>
+
+      <h2>Before you go</h2>
+      <p>Arrive 10–15 minutes early to fill out a short intake form and change. Wear something comfortable; you’ll be given a robe and a private space. Skip a heavy meal right before a massage, and flag any injuries, allergies, or pregnancy when you book — it changes what’s safe to do.</p>
+
+      <h2>Tipping and cost</h2>
+      <p>For massage and facials, 15–20% is customary unless gratuity is already included. Med-spa treatments (injectables, laser) generally aren’t tipped. Ask about first-visit offers — many spas run new-client discounts.</p>
+
+      <h2>Getting the most out of it</h2>
+      <p>Put your phone away, drink water after a massage, and tell your therapist if pressure is too light or too firm — they’d much rather adjust. Found one you love? You can <a href="/">save it</a> and book again.</p>
+
+      <p>Ready? Find a spa in <a href="/cities/">your city</a> or see <a href="/blog/best-spas-atlanta/">the best spas in Atlanta</a>.</p>`,
+});
+
+// blog index — lists every post
 write('blog', shell({
   title: 'The Georgia Spa Blog | Local Guides & Roundups',
   desc: 'Local guides and roundups: the best day spas, med spas, and massage across Georgia, neighborhood by neighborhood.',
@@ -1378,21 +1527,8 @@ write('blog', shell({
   body: `    <section class="hero"><h1>The Georgia Spa Blog</h1>
       <p>Roundups and local guides, written by people who live here.</p></section>
     <div class="listing-grid">
-      <a class="city-card" href="/blog/best-spas-atlanta/"><div class="city-name">The Best Spas in Atlanta (2026)</div><div class="city-blurb">A neighborhood-by-neighborhood roundup of Atlanta's top day spas and med spas.</div><div class="city-count">Read →</div></a>
+      ${blogPosts.map(p => `<a class="city-card" href="/blog/${p.slug}/"><div class="city-name">${esc(p.card)}</div><div class="city-blurb">${esc(p.desc)}</div><div class="city-count">Read →</div></a>`).join('\n      ')}
     </div>`,
-}));
-
-const atl = byRank(ACTIVE.filter(s => s.city === 'atlanta')).slice(0, 6);
-write('blog/best-spas-atlanta', shell({
-  title: 'The Best Spas in Atlanta (2026) | GA Spa Directory',
-  desc: 'Our roundup of the best spas in Atlanta — top day spas, med spas, and massage, including standout Black-owned wellness across Buckhead, Midtown, and beyond.',
-  path: '/blog/best-spas-atlanta/',
-  body: `    <section class="hero"><h1>The best spas in Atlanta (2026)</h1>
-      <p>From Midtown day spas to Buckhead wellness studios, here are the Atlanta spots worth booking right now — with a few standout <a href="/black-owned/">Black-owned</a> picks.</p></section>
-    <ul class="blog-spa-list">
-      ${atl.map(s => `<li><a href="${spaLink(s)}" target="_blank" rel="noopener nofollow">${esc(s.name)}</a> · ${esc(cityNameOf(s))}${s.rating ? ` · ${s.rating}★` : ''}</li>`).join('\n      ')}
-    </ul>
-    <p><a href="/atlanta/">See all Atlanta spas →</a></p>`,
 }));
 
 // ---------------------------------------------------------------------------
@@ -1402,8 +1538,88 @@ write('blog/best-spas-atlanta', shell({
 // zero-backend static directory with no accounts; the only data we receive is
 // what people email us when they claim/contact about a listing.
 // ---------------------------------------------------------------------------
+// brandPage — content page in the live brand style (home.css + brand nav/footer),
+// so /privacy/ and /terms/ match the rest of the site instead of the old shell.
+const brandPage = ({ title, desc, path, body, noindex = false }) => `<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+${GA_HEAD}
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+<meta http-equiv="Cache-Control" content="no-cache">
+<title>${title}</title>
+<meta name="description" content="${esc(desc)}"/>${noindex ? '\n<meta name="robots" content="noindex,follow"/>' : ''}
+<link rel="canonical" href="${BASE_URL}${path}"/>
+<meta property="og:title" content="${esc(title)}"/>
+<meta property="og:description" content="${esc(desc)}"/>
+<meta property="og:type" content="website"/>
+<meta property="og:url" content="${BASE_URL}${path}"/>
+<meta property="og:image" content="${BASE_URL}/images/og-cover.jpg"/>
+<meta property="og:site_name" content="GA.Spas"/>
+<meta name="twitter:card" content="summary_large_image"/>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="/css/home.css?v=${ASSET_VER}"/>
+${PWA_HEAD}
+</head>
+<body>
+
+<nav>
+  <a class="logo" href="/">GA<span>.Spas</span></a>
+  <ul class="nav-links">
+    <li><a href="/cities/">Cities</a></li>
+    <li><a href="/black-owned/">Black-Owned</a></li>
+    <li><a href="/liked/">♥ Saved <span class="like-count" hidden></span></a></li>
+    <li><a href="/blog/">Blog</a></li>
+  </ul>
+  <a class="nav-cta" href="/pricing/">List your spa</a>
+</nav>
+
+<main class="wrap">
+${body}
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-top">
+      <div>
+        <div class="foot-logo">GA<span>.Spas</span></div>
+        <div class="foot-tag">Georgia's hyper-local spa and wellness directory. Curated, not algorithmic — every listing visited, verified, and written about by people who live here.</div>
+      </div>
+      <div class="foot-col">
+        <div class="foot-col-h">Explore</div>
+        <a href="/atlanta/">Atlanta spas</a>
+        <a href="/black-owned/">Black-owned spas</a>
+        <a href="/category/med-spas/">Med spas in GA</a>
+        <a href="/areas/">Spas by area &amp; zip</a>
+        <a href="/cities/">All Georgia cities</a>
+      </div>
+      <div class="foot-col">
+        <div class="foot-col-h">For owners</div>
+        <a href="/pricing/">List free</a>
+        <a href="/pricing/#standard">Standard — $49/mo</a>
+        <a href="/pricing/#premium">Premium — $149/mo</a>
+        <a href="/pricing/">See all plans</a>
+      </div>
+      <div class="foot-col">
+        <div class="foot-col-h">Company</div>
+        <a href="/pricing/">Pricing</a>
+        <a href="/blog/">Blog</a>
+        <a href="https://artivicolab.com/#contact" target="_blank" rel="noopener">Contact us</a>
+        <a href="/privacy/">Privacy</a>
+        <a href="/terms/">Terms</a>
+      </div>
+    </div>
+    <div class="foot-bot">
+      <span>© 2026 GA Spas · Made by <a class="foot-by" href="https://artivicolab.com" target="_blank" rel="noopener">Artivicolab</a></span>
+      <a class="foot-list" href="/pricing/">List your spa →</a>
+    </div>
+  </div>
+</footer>
+</body>
+</html>`;
+
 const LEGAL_UPDATED = 'June 1, 2026';
-write('privacy', shell({
+write('privacy', brandPage({
   title: 'Privacy Policy | GA Spas',
   desc: 'How GA.Spas handles information — a static spa directory with no accounts and no backend.',
   path: '/privacy/',
@@ -1439,7 +1655,7 @@ write('privacy', shell({
     </section>`,
 }));
 
-write('terms', shell({
+write('terms', brandPage({
   title: 'Terms of Use | GA Spas',
   desc: 'The terms for using GA.Spas, a static directory of spas across Georgia.',
   path: '/terms/',
@@ -1557,6 +1773,6 @@ ${PWA_HEAD}
 // report
 console.log('Built static tree (publish root = ga/, deploys to ' + BASE_URL + '):');
 console.log(`  live cities ${counts.cities} · city+category ${counts.category} · city black-owned ${counts.cityBO}`);
-console.log(`  statewide ${counts.statewide} · profiles ${counts.profiles} · blog 2 · home 1`);
+console.log(`  statewide ${counts.statewide} · profiles ${counts.profiles} · blog ${blogPosts.length + 1} · home 1`);
 console.log(`  coming-soon cities (noindex until they get listings): ${counts.comingSoon}`);
 console.log(`  total pages: ${urls.length}   sitemap.xml: ${indexed.length} indexable URLs`);

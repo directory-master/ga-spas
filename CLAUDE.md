@@ -5,81 +5,130 @@ Guidance for working in this repo.
 ## ⚠️ Versioning — bump it every change
 
 **Always bump `version` in `package.json` for any change before committing.**
-Use semver: patch (`0.2.0 → 0.2.1`) for fixes/tweaks, minor (`0.2.x → 0.3.0`)
-for features. The site footer shows `v<version> · <git short SHA>` — the static
-generator (`scripts/generate-pages.mjs`) reads the version from `package.json`
-and the SHA from git at build time (the `BUILD` constant). If you forget to
-bump, the visible version won't change and the footer will look stale. The
-legacy `index.html`/`city.html`/`listing.html` footers hard-code the version —
-update those to match when you bump.
+Semver: patch (`0.11.1 → 0.11.2`) for fixes/tweaks, minor (`0.11.x → 0.12.0`) for
+features. The footer shows `v<version> · <git short SHA>` (the `BUILD` constant in
+`scripts/generate-pages.mjs`, read from `package.json` + git at build time).
+`ASSET_VER` (version + SHA) is also the `?v=` cache-buster on every CSS/JS link.
+
+> **Footgun:** because `ASSET_VER` embeds the git SHA, *every commit changes the
+> SHA*, so the next `build:pages` rewrites the `?v=` query on all ~600 pages with
+> no real content change. That's why the tree looks "dirty" right after a commit.
+> It's cosmetic — discard it (`git checkout -- .`) before committing if needed.
 
 ## What this is
 
-**spas** (code name) — a zero-backend, static directory of spas & salons across
-**Georgia**, built on a **freemium model**. Free listings exist to make the
-directory useful enough to rank in search; the commercial actions (booking,
-pricing, location, contact) are paid (premium).
+**GA.Spas** (code name **spas**) — a zero-backend, **SEO-first static directory**
+of **spas across Georgia** (day spas, med spas, massage — *not* salons/nails),
+on a **freemium model**. Deploys to **`https://ga.spas.artivicolab.com`** via
+GitHub Pages (repo `directory-master/ga-spas`). Made by **Artivicolab**.
+
+The product is **the card** — there are no per-spa detail pages. Each card links
+out to the spa's own site / Google Maps. Free listings make the directory rank;
+the paid tiers unlock the commercial layer (photos, prices, booking, contact).
 
 ## Stack & constraints
 
-- **Pure HTML / CSS / vanilla JS (ES modules).** No build step, no backend, no
-  framework, no dependencies.
-- Designed to host on GitHub Pages or any static host.
-- ES modules require a real HTTP server — they will **not** load over `file://`.
+- **Pure HTML / CSS / vanilla JS (ES modules).** No framework, no runtime deps.
+- **One build step:** a Node static generator (`scripts/generate-pages.mjs`) that
+  stamps out the whole site as static HTML at the **repo root** (clean-URL folders
+  like `/atlanta/`, `/zip/30305/`). Crawlers get real, static content.
+- Hosts on GitHub Pages. ES modules need a real HTTP server (won't load `file://`).
 
-## Run locally
+## Run / build locally
 
 ```bash
 cd ~/spas
-python3 -m http.server 8000   # http://localhost:8000
+npm run build:pages   # regenerate the static site at the repo root
+npm run serve         # python3 -m http.server 8000  → http://localhost:8000
+npm run dev           # build:pages + serve
 ```
+
+The generated pages are committed (GitHub Pages serves them). Always rebuild
+after changing data, templates, or assets.
 
 ## Layout
 
 | Path | Role |
 |------|------|
-| [index.html](index.html) | Landing — grid of Georgia cities |
-| [city.html](city.html) | `?city=<slug>` — premium listings pinned to top, free below |
-| [listing.html](listing.html) | `?id=<spa-id>` — detail page, gated by tier |
-| [js/app.js](js/app.js) | All rendering logic: `renderHome`, `renderCity`, `renderListing` |
-| [js/data/spas.js](js/data/spas.js) | `CITIES` + `SPAS` data and lookup helpers |
-| [css/style.css](css/style.css) | All styles (CSS custom props in `:root`) |
+| [scripts/generate-pages.mjs](scripts/generate-pages.mjs) | The generator. Builds home, city, category, zip, neighborhood, `/areas/`, `/pricing/`, `/privacy/`, `/terms/`, `/cities/`, `/liked/`, blog, plus `sitemap.xml`, `robots.txt`, `CNAME`, the GSC verification file, `404.html`. |
+| [scripts/import-csv.mjs](scripts/import-csv.mjs) | Bing Maps scraper CSV → durable store → `js/data/spas-imported.js`. |
+| [js/card.js](js/card.js) | `renderCard(spa, opts)` — the ONE shared card renderer (free / standard / premium / example). Run at build time → static HTML. |
+| [js/data/spas.js](js/data/spas.js) | Curated demo **seeds**, all flagged `example: true` (previews shown on the pricing/marketing surfaces — never real businesses). |
+| [js/data/spas-imported.js](js/data/spas-imported.js) | **AUTO-GENERATED** real listings (all `tier: 'free'`). Don't hand-edit. |
+| [data/cities/](data/cities/) | Durable per-city JSON store (one file per city). The importer MERGES into this; nothing is lost when `~/Downloads` is cleared. |
+| [js/home.js](js/home.js) | Home/city page client JS: hero crossfade, "Near me" (watchPosition), sort, Show-more, claim modal. |
+| [js/analytics.js](js/analytics.js) | GA4 event tracking (every spa interaction + every button/link click). |
+| [js/consent.js](js/consent.js) | GDPR cookie-consent banner (pairs with Consent Mode v2). |
+| [js/pwa.js](js/pwa.js) | Reusable PWA: service worker + install button + app-feel CSS. |
+| [css/home.css](css/home.css) | Home/city/zip/etc. styles. [css/style.css](css/style.css) — shell pages (pricing, legal, cities, 404). |
 
-Each HTML page imports the matching `render*` function from `js/app.js` and
-calls it inline. `js/app.js` has a small `el(tag, attrs, kids)` DOM helper used
-everywhere — prefer it over template strings for consistency.
+## The freemium gate (core concept)
 
-## The freemium gate (the core concept)
+Every spa has `tier: 'free' | 'standard' | 'premium'`. `renderCard` gates by tier;
+**nothing gets more than its tier earns.** Pricing lives at **`/pricing/`** (Free
+$0 / Standard **$49/mo** / Premium **$149/mo**).
 
-Every entry in `SPAS` has a `tier: 'free' | 'premium'` field. The renderer reads
-it to decide what to show:
+| Feature | Free | Standard $49 | Premium $149 |
+|---|:--:|:--:|:--:|
+| Name, type, city, rating, distance | ✓ | ✓ | ✓ |
+| Photo | — | 1 | up to 6 (gallery) |
+| Hours, website link, price line | — | ✓ | ✓ |
+| Booking / "Request Appointment" | — | — | ✓ |
+| Pinned above free in results | — | ✓ | ✓ (top) |
 
-| Field | Free | Premium |
-|-------|:---:|:---:|
-| Name, city/neighborhood, business type | ✓ | ✓ |
-| Book Now link (`bookingUrl`) | — | ✓ |
-| Price menu (`menu`) / offer (`offer`) | — | ✓ |
-| Map pin + address (`address`, `lat`, `lng`) | — | ✓ |
-| Phone / contact form (`phone`) | — | ✓ |
-| Pinned to top of city list | — | ✓ |
+- **Black-owned badge is free for all tiers** (verify by emailing from a business
+  email — not a paid perk).
+- Free cards show a **"Own this spa? …"** claim CTA; city/zip pages also show
+  **Premium + Standard "claim this spot"** cards (open an in-page modal → `mailto`).
+- Claim / lead emails go to **`artivicolab@gmail.com`** — but **never render that
+  address as visible text** anywhere.
 
-Free listing detail pages show **locked panels** + a "Claim this listing" CTA.
-When changing the gate, keep free/premium parity consistent across all three
-surfaces: city card (`listingCard`), premium detail (`renderPremiumDetail`),
-and free detail (`renderFreeDetail`).
+## Adding listings
 
-## Adding a listing
+**Don't hand-edit `spas-imported.js`.** Import real spas from Bing Maps scraper
+CSVs:
 
-Append an object to `SPAS` in [js/data/spas.js](js/data/spas.js) (don't reorder —
-ids are referenced by URL). Required for all: `id`, `name`, `city` (must match a
-`CITIES` slug), `type`, `tier`. Premium adds: `bookingUrl`, `phone`, `address`,
-`lat`, `lng`, `menu` (array of `{ service, price }`), and optionally `offer`.
+```bash
+node scripts/import-csv.mjs ~/Downloads/Bing_Maps_Scraper_*.csv   # or specific files
+npm run build:pages
+```
+
+The importer keeps only GA + spa categories (Day Spa / Med Spa / Massage; excludes
+nail/hair/brow/etc.), dedupes by Bing ID then name+address, MERGES into
+`data/cities/*.json`, and regenerates `spas-imported.js`. Curated seeds in
+`spas.js` must stay `example: true`.
+
+## SEO surface
+
+- **City pages** `/atlanta/`, plus per-type `/atlanta/day-spas/`, `/atlanta/black-owned/`.
+- **Zip pages** `/zip/<code>/` — data-driven: one per GA zip with ≥3 spas; lists
+  spas within 5 mi of the zip centroid, **sorted by distance**; <5 → `noindex`.
+- **Atlanta neighborhood pages** `/atlanta/buckhead/` etc.
+- **`/areas/` hub** links all zip (grouped by city) + neighborhood pages; also
+  linked from every footer. Keep these **static** (each must be its own indexable
+  URL — that's the whole SEO point; a single dynamic `?zip=` page can't rank).
+- Every page: `LocalBusiness`/`DaySpa` JSON-LD (+ `BreadcrumbList`, `WebPage`
+  `areaServed`), canonical, OG/Twitter, geo meta, `<h3>` card names.
+- Build also emits `sitemap.xml` (indexable URLs only), `robots.txt` (→ sitemap),
+  `CNAME`, the Google Search Console verification file, and `404.html`.
+- **Generator writes but doesn't prune** removed pages — after an import, diff
+  `zip/*/` on disk vs the freshly-built `/areas/` links and `rm -rf` orphans.
+
+## Analytics & consent
+
+- **GA4** `G-Y842GGLJVN`, injected into every page `<head>` (`GA_HEAD`).
+- **Consent Mode v2**: storage **denied by default in EEA/UK/CH**, granted
+  elsewhere; `js/consent.js` shows the opt-in banner and stores the choice.
+- GA only collects once the site is **deployed live** — the tag has to run on the
+  real domain.
 
 ## Conventions
 
-- `id` is a stable URL key (e.g. `atl-luxe-nail-studio`) — never change an
-  existing one.
-- `city` must equal a `CITIES[].slug`.
-- Money/phone/address are demo placeholders today; contact form is a demo
-  (`alert`), not wired to a backend.
-- Demo contact emails point at `hello@example.com` — replace before launch.
+- `id` is a stable URL/key — never change an existing one. `city` must match a
+  city slug.
+- Site text is **selectable/copyable** (good for sharing + SEO) — don't re-add
+  copy/selection blocking.
+- Footer credits **Artivicolab** (`artivicolab.com`); contact via that site, never
+  the gmail.
+- Deploy = `git push` to `main` → GitHub Pages rebuilds. Verification, sitemap
+  submission, and indexing all require the live deploy.

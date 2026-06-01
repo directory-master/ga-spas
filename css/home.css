@@ -537,3 +537,13 @@ footer .wrap{position:relative;z-index:1}
 .cm-send:hover{background:var(--clay-deep)}
 .cm-foot{font-size:11.5px;color:var(--muted);text-align:center;line-height:1.5}
 @media (max-width:520px){.cm-dialog{padding:28px 20px 24px}.cm-row{grid-template-columns:1fr}}
+
+/* Legal pages (/privacy/, /terms/) — brand style */
+.legal{max-width:760px;margin:0 auto;padding:46px 2px 64px;line-height:1.66}
+.legal h1{font-family:'Cormorant Garamond',serif;font-size:44px;font-weight:600;margin:0 0 6px;color:var(--forest,#2E3A2E)}
+.legal-date{color:var(--sage-deep,#6E7C5E);font-size:14px;margin:0 0 30px}
+.legal h2{font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:600;margin:34px 0 8px;color:var(--forest,#2E3A2E)}
+.legal p,.legal li{color:#3a4034}
+.legal ul{padding-left:20px;margin:8px 0}
+.legal li{margin:6px 0}
+.legal a{color:var(--terracotta,#A9663F);text-decoration:underline}
