@@ -28,6 +28,7 @@ import { dirname, join } from 'node:path';
 
 import { SPAS, findCity, ZIP_CENTROIDS } from '../js/data/spas.js';
 import { GA_CITIES } from '../js/data/ga-cities.js';
+import { CITY_COUNTY, countySlug } from '../js/data/ga-counties.js';
 import { IMPORTED } from '../js/data/spas-imported.js';
 import { statusLong } from '../js/hours.js';
 import { renderCard } from '../js/card.js';
@@ -232,6 +233,7 @@ ${body}
         <a href="/black-owned/">Black-owned spas</a>
         <a href="/category/med-spas/">Med spas in GA</a>
         <a href="/category/day-spas/">Day spas near me</a>
+        <a href="/counties/">Spas by county</a>
         <a href="/cities/">All Georgia cities</a>
       </div>
       <div class="footer-col">
@@ -266,7 +268,7 @@ ${body}
 // the repo root or any source dir.
 rmSync(join(ROOT, 'ga'), { recursive: true, force: true }); // retire the old /ga subfolder output
 for (const f of ['city.html', 'listing.html', 'js/app.js']) rmSync(join(ROOT, f), { force: true });
-const GENERATED_ROOTS = new Set(['spas', 'cities', 'category', 'black-owned']);
+const GENERATED_ROOTS = new Set(['spas', 'cities', 'category', 'black-owned', 'county', 'counties']);
 for (const e of GA_CITIES) GENERATED_ROOTS.add(e.slug);
 for (const s of ACTIVE) if (s.city) GENERATED_ROOTS.add(s.city);
 for (const d of GENERATED_ROOTS) rmSync(join(ROOT, d), { recursive: true, force: true });
@@ -680,6 +682,7 @@ ${showTesti ? `<section class="band testi-band">
         <a href="/black-owned/">Black-owned spas</a>
         <a href="/category/med-spas/">Med spas in GA</a>
         <a href="/areas/">Spas by area &amp; zip</a>
+        <a href="/counties/">Spas by county</a>
         <a href="/cities/">All Georgia cities</a>
       </div>
       <div class="foot-col">
@@ -770,6 +773,7 @@ ${PWA_HEAD}
   <a class="logo" href="/">GA<span>.Spas</span></a>
   <ul class="nav-links">
     <li><a href="/cities/">Cities</a></li>
+    <li><a href="/counties/">Counties</a></li>
     <li><a href="/black-owned/">Black-Owned</a></li>
     <li><a href="/liked/">♥ Saved <span class="like-count" hidden></span></a></li>
   </ul>
@@ -833,6 +837,7 @@ ${PWA_HEAD}
         <a href="/black-owned/">Black-owned spas</a>
         <a href="/category/med-spas/">Med spas in GA</a>
         <a href="/areas/">Spas by area &amp; zip</a>
+        <a href="/counties/">Spas by county</a>
         <a href="/cities/">All Georgia cities</a>
       </div>
       <div class="foot-col">
@@ -992,6 +997,7 @@ ${PWA_HEAD}
         <a href="/black-owned/">Black-owned spas</a>
         <a href="/category/med-spas/">Med spas in GA</a>
         <a href="/areas/">Spas by area &amp; zip</a>
+        <a href="/counties/">Spas by county</a>
         <a href="/cities/">All Georgia cities</a>
       </div>
       <div class="foot-col">
@@ -1081,6 +1087,297 @@ for (const { slug, name, listings } of live) {
       showAll: true, allEyebrow: 'The full list', allH2: `All Black-owned spas in ${name}`,
     });
   }
+}
+
+// ---------------------------------------------------------------------------
+// County hub pages: /county/<name>/ rolls every live city up to its PRIMARY
+// Georgia county (js/data/ga-counties.js) and groups that county's spas BY city.
+// Distinct from city pages — a navigational hub that wins "spas in Fulton County
+// GA" queries and routes them to the right city pages, while surfacing the
+// county's top-rated spas as real cards. /counties/ indexes them all.
+// ---------------------------------------------------------------------------
+const countyReg = new Map();      // county name -> { name, slug, cities: [live entry] }
+const unmappedCounties = new Set();
+for (const p of live) {
+  const cn = CITY_COUNTY[p.slug];
+  if (!cn) { unmappedCounties.add(p.slug); continue; }
+  const c = countyReg.get(cn) || { name: cn, slug: countySlug(cn), cities: [] };
+  c.cities.push(p);
+  countyReg.set(cn, c);
+}
+const counties = [...countyReg.values()].map(c => {
+  const cities = c.cities.sort((a, b) => b.listings.length - a.listings.length || a.name.localeCompare(b.name));
+  const listings = byRank(cities.flatMap(p => p.listings));
+  return { ...c, cities, listings, count: listings.length };
+}).sort((a, b) => b.count - a.count || a.name.localeCompare(b.name));
+if (unmappedCounties.size)
+  console.log(`  ⚠ ${unmappedCounties.size} live cities have no county mapping (add to ga-counties.js):`, [...unmappedCounties].join(', '));
+
+const countyUrl = (c) => `/county/${c.slug}/`;
+// Index card for the /counties/ hub — mirrors cityIndexCard, but for a county.
+const countyIndexCard = (c, i) => {
+  const top = c.listings.find(s => s.rating && !s.example) || c.listings[0];
+  const teaser = (top && top.rating)
+    ? `<div class="city-top"><span class="ct-star">★</span> ${top.rating.toFixed(1)} · ${esc(top.name)}</div>` : '';
+  const sub = c.cities.slice(0, 3).map(p => esc(p.name)).join(', ');
+  return `<a class="city${i === 0 ? ' hero-city' : ''}" href="${countyUrl(c)}"><div class="city-name">${esc(c.name)} County</div><div class="city-sub">${sub || 'Day spas, med spas & massage'}</div>${teaser}<div class="city-count">${c.count} ${c.count === 1 ? 'spa' : 'spas'} · ${c.cities.length} ${c.cities.length === 1 ? 'city' : 'cities'} →</div></a>`;
+};
+
+for (const c of counties) {
+  counts.county = (counts.county || 0) + 1;
+  const topSpas = c.listings.slice(0, 12);
+  const topCards = topSpas.map((s, i) =>
+    renderCard(s, { href: spaLink(s), cityName: cityNameOf(s), photoClass: i % 2 ? 'p2' : '' })).join('\n      ');
+  const cityCards = c.cities.map(cityIndexCard).join('\n      ');
+  const moreCounties = counties.filter(o => o.slug !== c.slug).slice(0, 8)
+    .map(o => `<a href="${countyUrl(o)}">${esc(o.name)} County <span>${o.count}</span></a>`).join('\n        ');
+  const canonical = `${BASE_URL}${countyUrl(c)}`;
+  const jsonLd = `<script type="application/ld+json">${JSON.stringify({
+    '@context': 'https://schema.org', '@type': 'CollectionPage',
+    name: `Spas in ${c.name} County, Georgia`, url: canonical,
+    breadcrumb: { '@type': 'BreadcrumbList', itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'GA Spas', item: BASE_URL + '/' },
+      { '@type': 'ListItem', position: 2, name: 'Counties', item: BASE_URL + '/counties/' },
+      { '@type': 'ListItem', position: 3, name: `${c.name} County`, item: canonical },
+    ] },
+    about: { '@type': 'AdministrativeArea', name: `${c.name} County, Georgia` },
+  })}</script>`;
+  write(`county/${c.slug}`, `<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+${GA_HEAD}
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+<meta http-equiv="Cache-Control" content="no-cache">
+<title>Spas in ${esc(c.name)} County, GA — Directory | GA Spas</title>
+<meta name="description" content="Browse ${c.count} spas across ${c.cities.length} ${c.cities.length === 1 ? 'city' : 'cities'} in ${esc(c.name)} County, Georgia — day spas, med spas & massage, with ratings, hours, and directions."/>
+<link rel="canonical" href="${canonical}"/>
+<meta property="og:title" content="Spas in ${esc(c.name)} County, GA | GA Spas"/>
+<meta property="og:description" content="Day spas, med spas & massage across ${esc(c.name)} County, Georgia."/>
+<meta property="og:type" content="website"/>
+<meta property="og:url" content="${canonical}"/>
+<meta property="og:image" content="${BASE_URL}/images/og-cover.jpg"/>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="/css/home.css?v=${ASSET_VER}"/>
+${PWA_HEAD}
+${jsonLd}
+</head>
+<body>
+
+<nav>
+  <a class="logo" href="/">GA<span>.Spas</span></a>
+  <ul class="nav-links">
+    <li><a href="/cities/">Cities</a></li>
+    <li><a href="/counties/">Counties</a></li>
+    <li><a href="/black-owned/">Black-Owned</a></li>
+    <li><a href="/liked/">♥ Saved <span class="like-count" hidden></span></a></li>
+  </ul>
+  <a class="nav-cta" href="/pricing/">List your spa</a>
+</nav>
+
+<header class="hero hero--photo">
+  <div class="hero-bg" data-hero-bg>
+    <div class="hero-slide hslide-1 on"></div>
+    <div class="hero-slide hslide-2"></div>
+    <div class="hero-slide hslide-3"></div>
+  </div>
+  <div class="wrap hero-inner">
+    <div class="eyebrow">Georgia county · spa directory</div>
+    <h1><em>Spas</em> in<br>${esc(c.name)} County</h1>
+    <p class="hero-sub">Every day spa, med spa, and massage studio in ${esc(c.name)} County, Georgia — grouped by city, with ratings, hours, and directions.</p>
+    <p class="hero-proof"><strong>${c.count} ${c.count === 1 ? 'spa' : 'spas'}</strong> across <strong>${c.cities.length} ${c.cities.length === 1 ? 'city' : 'cities'}</strong> in ${esc(c.name)} County</p>
+    <div class="pills">
+      <a class="pill" href="/cities/">All cities</a>
+      <a class="pill" href="/counties/">All counties</a>
+      <a class="pill" href="/category/day-spas/">Day Spas</a>
+      <a class="pill" href="/category/med-spas/">Med Spas</a>
+      <a class="pill bo" href="/black-owned/">✦ Black-Owned</a>
+    </div>
+  </div>
+</header>
+
+<section class="band">
+  <div class="wrap">
+    <div class="sec-head">
+      <div><div class="eyebrow">Top rated</div><h2 class="serif">Top spas in ${esc(c.name)} County</h2></div>
+      <a class="sec-link" href="/counties/">← All counties</a>
+    </div>
+    <div class="feat-grid">
+      ${topCards}
+    </div>
+  </div>
+</section>
+
+<section class="band" style="padding-top:0">
+  <div class="wrap">
+    <div class="sec-head">
+      <div><div class="eyebrow">By city</div><h2 class="serif">Spas by city in ${esc(c.name)} County</h2></div>
+    </div>
+    <div class="cities-grid">
+      ${cityCards}
+    </div>
+  </div>
+</section>
+
+<section class="band" style="padding-top:0">
+  <div class="wrap">
+    <div class="sec-head"><div><div class="eyebrow">Nearby</div><h2 class="serif">Other Georgia counties</h2></div></div>
+    <div class="claim-links county-more">
+        ${moreCounties}
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-top">
+      <div>
+        <div class="foot-logo">GA<span>.Spas</span></div>
+        <div class="foot-tag">Georgia's spa & wellness directory — day spas, med spas, and massage across the state, compiled from public business listings and refreshed regularly.</div>
+      </div>
+      <div class="foot-col">
+        <div class="foot-col-h">Explore</div>
+        <a href="/atlanta/">Atlanta spas</a>
+        <a href="/cities/">All Georgia cities</a>
+        <a href="/counties/">Spas by county</a>
+        <a href="/areas/">Spas by area &amp; zip</a>
+        <a href="/black-owned/">Black-owned spas</a>
+      </div>
+      <div class="foot-col">
+        <div class="foot-col-h">For owners</div>
+        <a href="/pricing/">List free</a>
+        <a href="/pricing/#standard">Standard — $49/mo</a>
+        <a href="/pricing/#premium">Premium — $149/mo</a>
+        <a href="/pricing/">See all plans</a>
+      </div>
+      <div class="foot-col">
+        <div class="foot-col-h">Company</div>
+        <a href="/pricing/">Pricing</a>
+        <a href="mailto:artivicolab@gmail.com?subject=GA.Spas%20enquiry">Contact us</a>
+        <a href="/privacy/">Privacy</a>
+        <a href="/terms/">Terms</a>
+      </div>
+    </div>
+    <div class="foot-bot">
+      <span>© 2026 GA Spas · Made by <a class="foot-by" href="https://artivicolab.com" target="_blank" rel="noopener">Artivicolab</a></span>
+      <a class="foot-list" href="/pricing/">List your spa →</a>
+    </div>
+  </div>
+</footer>
+
+<script type="module" src="/js/home.js?v=${ASSET_VER}"></script>
+</body>
+</html>
+`);
+}
+
+// /counties/ — index hub linking every county page (crawl path + browsable index).
+{
+  const total = counties.reduce((a, c) => a + c.count, 0);
+  write('counties', `<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+${GA_HEAD}
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+<meta http-equiv="Cache-Control" content="no-cache">
+<title>Spas by county in Georgia — all ${counties.length} counties | GA Spas</title>
+<meta name="description" content="Browse spas in every Georgia county — day spas, med spas, and massage across ${counties.length} counties, from Fulton and DeKalb to Chatham and Glynn."/>
+<link rel="canonical" href="${BASE_URL}/counties/"/>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="/css/home.css?v=${ASSET_VER}"/>
+${PWA_HEAD}
+</head>
+<body>
+
+<nav>
+  <a class="logo" href="/">GA<span>.Spas</span></a>
+  <ul class="nav-links">
+    <li><a href="/cities/">Cities</a></li>
+    <li><a href="/counties/">Counties</a></li>
+    <li><a href="/black-owned/">Black-Owned</a></li>
+    <li><a href="/liked/">♥ Saved <span class="like-count" hidden></span></a></li>
+  </ul>
+  <a class="nav-cta" href="/pricing/">List your spa</a>
+</nav>
+
+<header class="hero hero--photo">
+  <div class="hero-bg" data-hero-bg>
+    <div class="hero-slide hslide-1 on"></div>
+    <div class="hero-slide hslide-2"></div>
+    <div class="hero-slide hslide-3"></div>
+  </div>
+  <div class="wrap hero-inner">
+    <div class="eyebrow">Browse by county</div>
+    <h1><em>Spas</em> by<br>Georgia county</h1>
+    <p class="hero-sub">From Fulton and DeKalb to Chatham and Glynn — browse day spas, med spas, and massage studios in every Georgia county we've mapped.</p>
+    <p class="hero-proof"><strong>${total} spas</strong> across <strong>${counties.length} counties</strong></p>
+    <div class="pills">
+      <a class="pill" href="/cities/">All cities</a>
+      <a class="pill" href="/category/day-spas/">Day Spas</a>
+      <a class="pill" href="/category/med-spas/">Med Spas</a>
+      <a class="pill" href="/category/massage/">Massage</a>
+      <a class="pill bo" href="/black-owned/">✦ Black-Owned</a>
+    </div>
+  </div>
+</header>
+
+<section class="band">
+  <div class="wrap">
+    <div class="sec-head">
+      <div>
+        <div class="eyebrow">The full directory</div>
+        <h2 class="serif">Every Georgia spa county</h2>
+      </div>
+      <a class="sec-link" href="/cities/">Browse by city →</a>
+    </div>
+    <div class="cities-grid">
+      ${counties.map(countyIndexCard).join('\n      ')}
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-top">
+      <div>
+        <div class="foot-logo">GA<span>.Spas</span></div>
+        <div class="foot-tag">Georgia's spa & wellness directory — day spas, med spas, and massage across the state, compiled from public business listings and refreshed regularly.</div>
+      </div>
+      <div class="foot-col">
+        <div class="foot-col-h">Explore</div>
+        <a href="/atlanta/">Atlanta spas</a>
+        <a href="/cities/">All Georgia cities</a>
+        <a href="/counties/">Spas by county</a>
+        <a href="/areas/">Spas by area &amp; zip</a>
+        <a href="/black-owned/">Black-owned spas</a>
+      </div>
+      <div class="foot-col">
+        <div class="foot-col-h">For owners</div>
+        <a href="/pricing/">List free</a>
+        <a href="/pricing/#standard">Standard — $49/mo</a>
+        <a href="/pricing/#premium">Premium — $149/mo</a>
+        <a href="/pricing/">See all plans</a>
+      </div>
+      <div class="foot-col">
+        <div class="foot-col-h">Company</div>
+        <a href="/pricing/">Pricing</a>
+        <a href="mailto:artivicolab@gmail.com?subject=GA.Spas%20enquiry">Contact us</a>
+        <a href="/privacy/">Privacy</a>
+        <a href="/terms/">Terms</a>
+      </div>
+    </div>
+    <div class="foot-bot">
+      <span>© 2026 GA Spas · Made by <a class="foot-by" href="https://artivicolab.com" target="_blank" rel="noopener">Artivicolab</a></span>
+      <a class="foot-list" href="/pricing/">List your spa →</a>
+    </div>
+  </div>
+</footer>
+
+<script type="module" src="/js/home.js?v=${ASSET_VER}"></script>
+</body>
+</html>
+`);
 }
 
 // roadmap: GA_CITIES not yet covered → noindex "expanding soon" page
@@ -1420,6 +1717,7 @@ ${body}
         <a href="/black-owned/">Black-owned spas</a>
         <a href="/category/med-spas/">Med spas in GA</a>
         <a href="/areas/">Spas by area &amp; zip</a>
+        <a href="/counties/">Spas by county</a>
         <a href="/cities/">All Georgia cities</a>
       </div>
       <div class="foot-col">

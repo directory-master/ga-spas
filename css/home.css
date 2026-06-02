@@ -554,3 +554,6 @@ footer .wrap{position:relative;z-index:1}
 .legal ul{padding-left:20px;margin:8px 0}
 .legal li{margin:6px 0}
 .legal a{color:var(--terracotta,#A9663F);text-decoration:underline}
+/* "Other Georgia counties" chip row on county hub pages (reuses .claim-links base) */
+.claim-links.county-more{flex-direction:row;flex-wrap:wrap;gap:10px}
+.claim-links.county-more a{flex:0 0 auto}
