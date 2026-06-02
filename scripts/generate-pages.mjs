@@ -220,7 +220,7 @@ ${body}
     <div class="container footer-grid">
       <div class="footer-brand">
         <div class="brand"><a href="/">GA<span>.Spas</span></a></div>
-        <p>Georgia's hyper-local spa and wellness directory. Curated, not algorithmic. Every listing visited, verified, and written about by people who live here.</p>
+        <p>Georgia's spa & wellness directory — day spas, med spas, and massage across the state, compiled from public business listings and refreshed regularly.</p>
         <div class="footer-social">
           <a href="https://instagram.com/" target="_blank" rel="noopener">Instagram</a>
           <a href="https://facebook.com/" target="_blank" rel="noopener">Facebook</a>
@@ -672,7 +672,7 @@ ${showTesti ? `<section class="band testi-band">
     <div class="foot-top">
       <div>
         <div class="foot-logo">GA<span>.Spas</span></div>
-        <div class="foot-tag">Georgia's hyper-local spa and wellness directory. Curated, not algorithmic — every listing visited, verified, and written about by people who live here.</div>
+        <div class="foot-tag">Georgia's spa & wellness directory — day spas, med spas, and massage across the state, compiled from public business listings and refreshed regularly.</div>
       </div>
       <div class="foot-col">
         <div class="foot-col-h">Explore</div>
@@ -718,7 +718,7 @@ homeStylePage({
   desc: `Find your perfect spa day in Atlanta. ${ACTIVE.length} vetted day spas, med spas, and massage studios across ${live.length} Georgia cities — including the best Black-owned wellness businesses.`,
   heroEyebrow: "Georgia's spa &amp; wellness directory",
   heroH1: 'Find your <em>perfect</em><br>spa in Georgia',
-  heroSub: "We've visited, vetted, and written about every spa on this list — day spas, med spas, massage studios, and Georgia's best Black-owned wellness businesses, all in one calm place.",
+  heroSub: "Every day spa, med spa, and massage studio across Georgia — including Black-owned wellness businesses — gathered in one calm place. Compare ratings, find what's near you, and reach them direct.",
   heroProof: `<strong>${ACTIVE.length} spas</strong> across <strong>${live.length} Georgia cities</strong> — updated weekly`,
   featEyebrow: 'Hand-picked', featH2: "Georgia's best spas", showBoBand: true, showCities: true,
   topSpas: TOP10, topSpots: TOP_SPOTS, topEyebrow: 'Ranked by stars &amp; reviews', topH2: "Georgia's top 10 spas",
@@ -825,7 +825,7 @@ ${PWA_HEAD}
     <div class="foot-top">
       <div>
         <div class="foot-logo">GA<span>.Spas</span></div>
-        <div class="foot-tag">Georgia's hyper-local spa and wellness directory. Curated, not algorithmic — every listing visited, verified, and written about by people who live here.</div>
+        <div class="foot-tag">Georgia's spa & wellness directory — day spas, med spas, and massage across the state, compiled from public business listings and refreshed regularly.</div>
       </div>
       <div class="foot-col">
         <div class="foot-col-h">Explore</div>
@@ -984,7 +984,7 @@ ${PWA_HEAD}
     <div class="foot-top">
       <div>
         <div class="foot-logo">GA<span>.Spas</span></div>
-        <div class="foot-tag">Georgia's hyper-local spa and wellness directory. Curated, not algorithmic — every listing visited, verified, and written about by people who live here.</div>
+        <div class="foot-tag">Georgia's spa & wellness directory — day spas, med spas, and massage across the state, compiled from public business listings and refreshed regularly.</div>
       </div>
       <div class="foot-col">
         <div class="foot-col-h">Explore</div>
@@ -1412,7 +1412,7 @@ ${body}
     <div class="foot-top">
       <div>
         <div class="foot-logo">GA<span>.Spas</span></div>
-        <div class="foot-tag">Georgia's hyper-local spa and wellness directory. Curated, not algorithmic — every listing visited, verified, and written about by people who live here.</div>
+        <div class="foot-tag">Georgia's spa & wellness directory — day spas, med spas, and massage across the state, compiled from public business listings and refreshed regularly.</div>
       </div>
       <div class="foot-col">
         <div class="foot-col-h">Explore</div>
