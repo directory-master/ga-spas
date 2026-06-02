@@ -1124,7 +1124,7 @@ for (const { slug, name, listings } of live) {
     counts.cityBO++;
     homeStylePage({
       relPath: `${slug}/black-owned`, canonical: `/${slug}/black-owned/`, pool: cityBO, activePill: 'bo',
-      title: `Black-Owned Spas in ${name} GA | GA Spas`,
+      title: `Black-Owned Spas in ${name}, GA | GA Spas`,
       desc: `Black-owned spas and wellness businesses in ${name}, Georgia. Discover, support, and book.`,
       heroEyebrow: 'Community first',
       heroH1: `<em>Black-owned</em> spas<br>in ${name}`,
@@ -1415,7 +1415,7 @@ for (const e of GA_CITIES) {
   if (liveSlugs.has(e.slug)) continue;
   counts.comingSoon++;
   write(e.slug, shell({
-    title: `Spas in ${e.name} GA | GA Spa Directory`,
+    title: `Spas in ${e.name}, GA | GA Spas`,
     desc: `Spas in ${e.name}, Georgia — we're expanding here soon. Explore nearby cities in the meantime.`,
     path: `/${e.slug}/`, noindex: true,
     body: `    <section class="hero">
@@ -1506,7 +1506,7 @@ for (const z of ZIP_AREAS) {
   const pool = withinArea(z);
   if (!pool.length) continue;
   const ni = pool.length < AREA_INDEX_MIN;
-  const loc = z.area === z.city ? `${z.city}, GA` : `${z.area}, ${z.city} GA`;
+  const loc = z.area === z.city ? `${z.city}, GA` : `${z.area}, ${z.city}, GA`;
   counts.zip = (counts.zip || 0) + 1;
   zipPages.push({ ...z, count: pool.length, ni });
   homeStylePage({
@@ -1555,7 +1555,7 @@ for (const h of ATL_HOODS) {
   homeStylePage({
     relPath: `atlanta/${h.slug}`, canonical: `/atlanta/${h.slug}/`, pool, activePill: 'all',
     noindex: ni, geoPoint: { lat: h.lat, lng: h.lng },
-    title: `Day Spas in ${h.name}, Atlanta GA | GA Spas`,
+    title: `Day Spas in ${h.name}, Atlanta, GA | GA Spas`,
     desc: `Day spas, med spas & massage in ${h.name}, Atlanta, GA — ratings, hours, and directions, sorted by distance.`,
     heroEyebrow: `${h.name} · Atlanta, Georgia`,
     heroH1: `<em>Spas in</em><br>${h.name}`,

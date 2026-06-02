@@ -121,6 +121,10 @@
   <url><loc>https://ga.spas.artivicolab.com/dunwoody/med-spas/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/dunwoody/massage/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/dunwoody/day-spas/</loc></url>
+  <url><loc>https://ga.spas.artivicolab.com/warner-robins/</loc></url>
+  <url><loc>https://ga.spas.artivicolab.com/warner-robins/med-spas/</loc></url>
+  <url><loc>https://ga.spas.artivicolab.com/warner-robins/day-spas/</loc></url>
+  <url><loc>https://ga.spas.artivicolab.com/warner-robins/massage/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/snellville/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/snellville/massage/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/snellville/day-spas/</loc></url>
@@ -199,13 +203,17 @@
   <url><loc>https://ga.spas.artivicolab.com/valdosta/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/valdosta/day-spas/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/valdosta/med-spas/</loc></url>
-  <url><loc>https://ga.spas.artivicolab.com/canton/</loc></url>
-  <url><loc>https://ga.spas.artivicolab.com/canton/day-spas/</loc></url>
-  <url><loc>https://ga.spas.artivicolab.com/canton/med-spas/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/braselton/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/braselton/day-spas/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/braselton/massage/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/braselton/med-spas/</loc></url>
+  <url><loc>https://ga.spas.artivicolab.com/canton/</loc></url>
+  <url><loc>https://ga.spas.artivicolab.com/canton/day-spas/</loc></url>
+  <url><loc>https://ga.spas.artivicolab.com/canton/med-spas/</loc></url>
+  <url><loc>https://ga.spas.artivicolab.com/griffin/</loc></url>
+  <url><loc>https://ga.spas.artivicolab.com/griffin/med-spas/</loc></url>
+  <url><loc>https://ga.spas.artivicolab.com/griffin/massage/</loc></url>
+  <url><loc>https://ga.spas.artivicolab.com/griffin/day-spas/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/lagrange/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/lagrange/massage/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/lagrange/med-spas/</loc></url>
@@ -237,10 +245,6 @@
   <url><loc>https://ga.spas.artivicolab.com/chamblee/day-spas/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/chamblee/med-spas/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/chamblee/massage/</loc></url>
-  <url><loc>https://ga.spas.artivicolab.com/griffin/</loc></url>
-  <url><loc>https://ga.spas.artivicolab.com/griffin/med-spas/</loc></url>
-  <url><loc>https://ga.spas.artivicolab.com/griffin/day-spas/</loc></url>
-  <url><loc>https://ga.spas.artivicolab.com/griffin/massage/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/statesboro/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/statesboro/day-spas/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/statesboro/med-spas/</loc></url>
@@ -297,6 +301,10 @@
   <url><loc>https://ga.spas.artivicolab.com/bainbridge/med-spas/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/college-park/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/college-park/day-spas/</loc></url>
+  <url><loc>https://ga.spas.artivicolab.com/dacula/</loc></url>
+  <url><loc>https://ga.spas.artivicolab.com/dacula/massage/</loc></url>
+  <url><loc>https://ga.spas.artivicolab.com/dacula/day-spas/</loc></url>
+  <url><loc>https://ga.spas.artivicolab.com/dacula/med-spas/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/dallas/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/dallas/day-spas/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/grovetown/</loc></url>
@@ -321,6 +329,9 @@
   <url><loc>https://ga.spas.artivicolab.com/powder-springs/day-spas/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/powder-springs/massage/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/powder-springs/med-spas/</loc></url>
+  <url><loc>https://ga.spas.artivicolab.com/thomaston/</loc></url>
+  <url><loc>https://ga.spas.artivicolab.com/thomaston/med-spas/</loc></url>
+  <url><loc>https://ga.spas.artivicolab.com/thomaston/day-spas/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/waycross/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/waycross/med-spas/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/waycross/massage/</loc></url>
@@ -353,16 +364,12 @@
   <url><loc>https://ga.spas.artivicolab.com/moultrie/massage/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/moultrie/med-spas/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/moultrie/day-spas/</loc></url>
-  <url><loc>https://ga.spas.artivicolab.com/thomaston/</loc></url>
-  <url><loc>https://ga.spas.artivicolab.com/thomaston/day-spas/</loc></url>
-  <url><loc>https://ga.spas.artivicolab.com/thomaston/med-spas/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/bogart/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/bogart/day-spas/</loc></url>
+  <url><loc>https://ga.spas.artivicolab.com/bonaire/</loc></url>
+  <url><loc>https://ga.spas.artivicolab.com/bonaire/day-spas/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/calhoun/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/calhoun/day-spas/</loc></url>
-  <url><loc>https://ga.spas.artivicolab.com/dacula/</loc></url>
-  <url><loc>https://ga.spas.artivicolab.com/dacula/day-spas/</loc></url>
-  <url><loc>https://ga.spas.artivicolab.com/dacula/med-spas/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/fairburn/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/fairburn/day-spas/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/gray/</loc></url>
@@ -390,6 +397,9 @@
   <url><loc>https://ga.spas.artivicolab.com/tyrone/day-spas/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/union-city/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/union-city/day-spas/</loc></url>
+  <url><loc>https://ga.spas.artivicolab.com/west-point/</loc></url>
+  <url><loc>https://ga.spas.artivicolab.com/west-point/day-spas/</loc></url>
+  <url><loc>https://ga.spas.artivicolab.com/west-point/massage/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/adairsville/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/adairsville/day-spas/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/blackshear/</loc></url>
@@ -437,6 +447,8 @@
   <url><loc>https://ga.spas.artivicolab.com/temple/day-spas/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/toccoa/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/toccoa/day-spas/</loc></url>
+  <url><loc>https://ga.spas.artivicolab.com/zebulon/</loc></url>
+  <url><loc>https://ga.spas.artivicolab.com/zebulon/day-spas/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/alto/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/alto/day-spas/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/ashburn/</loc></url>
@@ -469,6 +481,8 @@
   <url><loc>https://ga.spas.artivicolab.com/hogansville/day-spas/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/jackson/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/jackson/day-spas/</loc></url>
+  <url><loc>https://ga.spas.artivicolab.com/kathleen/</loc></url>
+  <url><loc>https://ga.spas.artivicolab.com/kathleen/day-spas/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/lavonia/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/lavonia/massage/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/lithia-springs/</loc></url>
@@ -497,10 +511,6 @@
   <url><loc>https://ga.spas.artivicolab.com/warm-springs/massage/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/waverly-hall/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/waverly-hall/day-spas/</loc></url>
-  <url><loc>https://ga.spas.artivicolab.com/west-point/</loc></url>
-  <url><loc>https://ga.spas.artivicolab.com/west-point/day-spas/</loc></url>
-  <url><loc>https://ga.spas.artivicolab.com/zebulon/</loc></url>
-  <url><loc>https://ga.spas.artivicolab.com/zebulon/day-spas/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/county/fulton/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/county/gwinnett/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/county/dekalb/</loc></url>
@@ -521,22 +531,23 @@
   <url><loc>https://ga.spas.artivicolab.com/county/cherokee/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/county/douglas/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/county/hall/</loc></url>
+  <url><loc>https://ga.spas.artivicolab.com/county/houston/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/county/rockdale/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/county/carroll/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/county/jackson/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/county/walton/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/county/oconee/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/county/liberty/</loc></url>
+  <url><loc>https://ga.spas.artivicolab.com/county/troup/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/county/baldwin/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/county/lowndes/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/county/newton/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/county/paulding/</loc></url>
-  <url><loc>https://ga.spas.artivicolab.com/county/troup/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/county/barrow/</loc></url>
+  <url><loc>https://ga.spas.artivicolab.com/county/spalding/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/county/bryan/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/county/bulloch/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/county/dougherty/</loc></url>
-  <url><loc>https://ga.spas.artivicolab.com/county/spalding/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/county/toombs/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/county/coffee/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/county/dawson/</loc></url>
@@ -545,17 +556,18 @@
   <url><loc>https://ga.spas.artivicolab.com/county/decatur/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/county/habersham/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/county/pickens/</loc></url>
+  <url><loc>https://ga.spas.artivicolab.com/county/upson/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/county/ware/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/county/wayne/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/county/bartow/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/county/colquitt/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/county/morgan/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/county/sumter/</loc></url>
-  <url><loc>https://ga.spas.artivicolab.com/county/upson/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/county/white/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/county/gordon/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/county/jones/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/county/meriwether/</loc></url>
+  <url><loc>https://ga.spas.artivicolab.com/county/pike/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/county/worth/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/county/gilmer/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/county/greene/</loc></url>
@@ -563,7 +575,6 @@
   <url><loc>https://ga.spas.artivicolab.com/county/lee/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/county/lumpkin/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/county/pierce/</loc></url>
-  <url><loc>https://ga.spas.artivicolab.com/county/pike/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/county/stephens/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/county/ben-hill/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/county/butts/</loc></url>
@@ -662,6 +673,7 @@
   <url><loc>https://ga.spas.artivicolab.com/zip/30276/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/zip/30277/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/zip/30281/</loc></url>
+  <url><loc>https://ga.spas.artivicolab.com/zip/30286/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/zip/30290/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/zip/30291/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/zip/30294/</loc></url>
@@ -721,7 +733,10 @@
   <url><loc>https://ga.spas.artivicolab.com/zip/30904/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/zip/30907/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/zip/30909/</loc></url>
+  <url><loc>https://ga.spas.artivicolab.com/zip/31005/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/zip/31061/</loc></url>
+  <url><loc>https://ga.spas.artivicolab.com/zip/31088/</loc></url>
+  <url><loc>https://ga.spas.artivicolab.com/zip/31093/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/zip/31201/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/zip/31204/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/zip/31206/</loc></url>
