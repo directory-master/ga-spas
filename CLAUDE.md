@@ -55,7 +55,7 @@ after changing data, templates, or assets.
 | [js/card.js](js/card.js) | `renderCard(spa, opts)` — the ONE shared card renderer (free / standard / premium / example). Run at build time → static HTML. |
 | [js/data/spas.js](js/data/spas.js) | Curated demo **seeds**, all flagged `example: true` (previews shown on the pricing/marketing surfaces — never real businesses). |
 | [js/data/spas-imported.js](js/data/spas-imported.js) | **AUTO-GENERATED** real listings (all `tier: 'free'`). Don't hand-edit. |
-| [data/cities/](data/cities/) | Durable per-city JSON store (one file per city). The importer MERGES into this; nothing is lost when `~/Downloads` is cleared. |
+| [data/cities/](data/cities/) | Durable **spas-only** per-city JSON store (one file per city). The importer filters at ingest (`isSpaRow`) and MERGES; non-spa rows are **never** stored. Spa rows survive `~/Downloads` cleanup. |
 | [js/home.js](js/home.js) | Home/city page client JS: hero crossfade, "Near me" (watchPosition), sort, Show-more, claim modal. |
 | [js/analytics.js](js/analytics.js) | GA4 event tracking (every spa interaction + every button/link click). |
 | [js/consent.js](js/consent.js) | GDPR cookie-consent banner (pairs with Consent Mode v2). |
@@ -97,6 +97,13 @@ The importer keeps only GA + spa categories (Day Spa / Med Spa / Massage; exclud
 nail/hair/brow/etc.), dedupes by Bing ID then name+address, MERGES into
 `data/cities/*.json`, and regenerates `spas-imported.js`. Curated seeds in
 `spas.js` must stay `example: true`.
+
+**Spas-only store — never warehouse non-spa raw scraps.** The single `isSpaRow`
+gate (GA address + spa category + spa-name rules, with a tight `med spa` rescue)
+runs **at ingest**, so nail/hair/barber/lash/salon-supply rows are filtered out
+*before* anything is written to `data/cities/` — they are not kept "for a future
+nail/hair directory." Don't reintroduce a keep-everything raw store; if a salon/
+nail directory is ever wanted, re-scrape for it separately.
 
 ## SEO surface
 
