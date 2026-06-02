@@ -340,6 +340,9 @@
   <url><loc>https://ga.spas.artivicolab.com/oakwood/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/oakwood/massage/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/oakwood/day-spas/</loc></url>
+  <url><loc>https://ga.spas.artivicolab.com/senoia/</loc></url>
+  <url><loc>https://ga.spas.artivicolab.com/senoia/day-spas/</loc></url>
+  <url><loc>https://ga.spas.artivicolab.com/senoia/massage/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/thomaston/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/thomaston/day-spas/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/villa-rica/</loc></url>
@@ -373,6 +376,8 @@
   <url><loc>https://ga.spas.artivicolab.com/palmetto/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/palmetto/day-spas/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/palmetto/med-spas/</loc></url>
+  <url><loc>https://ga.spas.artivicolab.com/sharpsburg/</loc></url>
+  <url><loc>https://ga.spas.artivicolab.com/sharpsburg/med-spas/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/toccoa/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/toccoa/day-spas/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/tyrone/</loc></url>
@@ -422,10 +427,6 @@
   <url><loc>https://ga.spas.artivicolab.com/pine-mountain/day-spas/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/sea-island/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/sea-island/day-spas/</loc></url>
-  <url><loc>https://ga.spas.artivicolab.com/senoia/</loc></url>
-  <url><loc>https://ga.spas.artivicolab.com/senoia/day-spas/</loc></url>
-  <url><loc>https://ga.spas.artivicolab.com/sharpsburg/</loc></url>
-  <url><loc>https://ga.spas.artivicolab.com/sharpsburg/med-spas/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/social-circle/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/social-circle/day-spas/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/statesboro/</loc></url>
@@ -523,6 +524,7 @@
   <url><loc>https://ga.spas.artivicolab.com/zip/30269/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/zip/30273/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/zip/30274/</loc></url>
+  <url><loc>https://ga.spas.artivicolab.com/zip/30276/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/zip/30281/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/zip/30294/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/zip/30297/</loc></url>
