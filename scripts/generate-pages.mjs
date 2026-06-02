@@ -314,6 +314,27 @@ const nearestCities = (slug, n = 3) => {
 };
 footerCities = live.slice(0, 6).map(p => `<a href="/${p.slug}/">${esc(p.name)}</a>`).join('\n        ');
 
+// Roll live cities up to their PRIMARY Georgia county (js/data/ga-counties.js).
+// Built here (before any page emits) so the home page can offer "Browse by county"
+// AND the /county/ + /counties/ hub pages below reuse the same array.
+const countyReg = new Map();      // county name -> { name, slug, cities: [live entry] }
+const unmappedCounties = new Set();
+for (const p of live) {
+  const cn = CITY_COUNTY[p.slug];
+  if (!cn) { unmappedCounties.add(p.slug); continue; }
+  const c = countyReg.get(cn) || { name: cn, slug: countySlug(cn), cities: [] };
+  c.cities.push(p);
+  countyReg.set(cn, c);
+}
+const counties = [...countyReg.values()].map(c => {
+  const cities = c.cities.sort((a, b) => b.listings.length - a.listings.length || a.name.localeCompare(b.name));
+  const listings = byRank(cities.flatMap(p => p.listings));
+  return { ...c, cities, listings, count: listings.length };
+}).sort((a, b) => b.count - a.count || a.name.localeCompare(b.name));
+if (unmappedCounties.size)
+  console.log(`  ⚠ ${unmappedCounties.size} live cities have no county mapping (add to ga-counties.js):`, [...unmappedCounties].join(', '));
+const countyUrl = (c) => `/county/${c.slug}/`;
+
 // Local-flavor subtext per city (our brand edge).
 const CITY_BLURBS = {
   atlanta: 'Buckhead, Midtown, West End, Decatur', roswell: 'Canton Street district',
@@ -339,6 +360,7 @@ const cityRow = (p) => `<a class="city-row" href="/${p.slug}/">
 // Calm, spa-like landing — reused for the Georgia home and the Black-Owned page.
 function homeStylePage({ relPath, canonical, pool, title, desc, heroEyebrow, heroH1, heroSub, heroProof, activePill, featEyebrow, featH2, showBoBand, showCities,
   showAll = false, allEyebrow = '', allH2 = '', cityScope = 'all', citiesEyebrow = 'Local knowledge', citiesH2 = 'Browse by city', showTesti = true, spotPlace = 'Georgia',
+  showCounties = false, countiesEyebrow = 'By county', countiesH2 = 'Browse by county',
   topSpas = [], topSpots = [], topEyebrow = '', topH2 = '', fillCity = '', noindex = false, geoPoint = null }) {
   if (noindex) noindexed.add(canonical);
   const boCount = ACTIVE.filter(s => s.blackOwned).length;
@@ -452,6 +474,16 @@ function homeStylePage({ relPath, canonical, pool, title, desc, heroEyebrow, her
     (cityScope === 'all'
       ? `\n      <a class="city all" href="/cities/"><div class="city-name">All ${live.length} cities</div><div class="city-sub">${esc(live.slice(6, 9).map(p => p.name).join(', '))} + more</div><div class="city-count">View all →</div></a>`
       : '');
+
+  // Browse-by-county — same card design, links to /county/<slug>/ hub pages.
+  const countyCards = !showCounties ? '' : counties.slice(0, 6).map((c, i) => {
+    const top = c.listings.find(s => s.rating && !s.example) || c.listings[0];
+    const teaser = (top && top.rating)
+      ? `<div class="city-top"><span class="ct-star">★</span> ${top.rating.toFixed(1)} · ${esc(top.name)}</div>` : '';
+    const sub = c.cities.slice(0, 3).map(p => esc(p.name)).join(', ');
+    return `<a class="city${i === 0 ? ' hero-city' : ''}" href="${countyUrl(c)}"><div class="city-name">${esc(c.name)} County</div><div class="city-sub">${sub || 'Day spas, med spas & massage'}</div>${teaser}<div class="city-count">${c.count} ${c.count === 1 ? 'spa' : 'spas'} →</div></a>`;
+  }).join('\n      ') +
+    `\n      <a class="city all" href="/counties/"><div class="city-name">All ${counties.length} counties</div><div class="city-sub">${esc(counties.slice(6, 9).map(c => c.name + ' County').join(', '))} + more</div><div class="city-count">View all →</div></a>`;
 
   // ---- SEO: JSON-LD (BreadcrumbList + ItemList of LocalBusiness), OG + geo ----
   const realSpas = pool.filter(s => !s.example && s.name);
@@ -641,6 +673,21 @@ ${showCities ? `<section class="band" style="padding-top:0">
   </div>
 </section>` : ''}
 
+${showCounties ? `<section class="band" style="padding-top:0">
+  <div class="wrap">
+    <div class="sec-head">
+      <div>
+        <div class="eyebrow">${countiesEyebrow}</div>
+        <h2 class="serif">${countiesH2}</h2>
+      </div>
+      <a class="sec-link" href="/counties/">All ${counties.length} counties →</a>
+    </div>
+    <div class="cities-grid">
+      ${countyCards}
+    </div>
+  </div>
+</section>` : ''}
+
 ${showTesti ? `<section class="band testi-band">
   <div class="wrap">
     <div class="sec-head">
@@ -724,6 +771,7 @@ homeStylePage({
   heroSub: "Every day spa, med spa, and massage studio across Georgia — including Black-owned wellness businesses — gathered in one calm place. Compare ratings, find what's near you, and reach them direct.",
   heroProof: `<strong>${ACTIVE.length} spas</strong> across <strong>${live.length} Georgia cities</strong> — updated weekly`,
   featEyebrow: 'Hand-picked', featH2: "Georgia's best spas", showBoBand: true, showCities: true,
+  showCounties: true, countiesEyebrow: 'By county', countiesH2: 'Browse spas by county',
   topSpas: TOP10, topSpots: TOP_SPOTS, topEyebrow: 'Ranked by stars &amp; reviews', topH2: "Georgia's top 10 spas",
 });
 
@@ -1096,24 +1144,6 @@ for (const { slug, name, listings } of live) {
 // GA" queries and routes them to the right city pages, while surfacing the
 // county's top-rated spas as real cards. /counties/ indexes them all.
 // ---------------------------------------------------------------------------
-const countyReg = new Map();      // county name -> { name, slug, cities: [live entry] }
-const unmappedCounties = new Set();
-for (const p of live) {
-  const cn = CITY_COUNTY[p.slug];
-  if (!cn) { unmappedCounties.add(p.slug); continue; }
-  const c = countyReg.get(cn) || { name: cn, slug: countySlug(cn), cities: [] };
-  c.cities.push(p);
-  countyReg.set(cn, c);
-}
-const counties = [...countyReg.values()].map(c => {
-  const cities = c.cities.sort((a, b) => b.listings.length - a.listings.length || a.name.localeCompare(b.name));
-  const listings = byRank(cities.flatMap(p => p.listings));
-  return { ...c, cities, listings, count: listings.length };
-}).sort((a, b) => b.count - a.count || a.name.localeCompare(b.name));
-if (unmappedCounties.size)
-  console.log(`  ⚠ ${unmappedCounties.size} live cities have no county mapping (add to ga-counties.js):`, [...unmappedCounties].join(', '));
-
-const countyUrl = (c) => `/county/${c.slug}/`;
 // Index card for the /counties/ hub — mirrors cityIndexCard, but for a county.
 const countyIndexCard = (c, i) => {
   const top = c.listings.find(s => s.rating && !s.example) || c.listings[0];
