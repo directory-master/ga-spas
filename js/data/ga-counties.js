@@ -152,6 +152,7 @@ export const CITY_COUNTY = {
   sylvester: 'Worth',
   temple: 'Carroll',
   thomaston: 'Upson',
+  thomasville: 'Thomas',
   tifton: 'Tift',
   toccoa: 'Stephens',
   tucker: 'DeKalb',

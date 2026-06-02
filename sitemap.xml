@@ -69,6 +69,10 @@
   <url><loc>https://ga.spas.artivicolab.com/peachtree-city/day-spas/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/peachtree-city/massage/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/peachtree-city/med-spas/</loc></url>
+  <url><loc>https://ga.spas.artivicolab.com/woodstock/</loc></url>
+  <url><loc>https://ga.spas.artivicolab.com/woodstock/massage/</loc></url>
+  <url><loc>https://ga.spas.artivicolab.com/woodstock/day-spas/</loc></url>
+  <url><loc>https://ga.spas.artivicolab.com/woodstock/med-spas/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/sandy-springs/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/sandy-springs/massage/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/sandy-springs/day-spas/</loc></url>
@@ -141,10 +145,6 @@
   <url><loc>https://ga.spas.artivicolab.com/jonesboro/massage/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/jonesboro/day-spas/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/jonesboro/med-spas/</loc></url>
-  <url><loc>https://ga.spas.artivicolab.com/woodstock/</loc></url>
-  <url><loc>https://ga.spas.artivicolab.com/woodstock/day-spas/</loc></url>
-  <url><loc>https://ga.spas.artivicolab.com/woodstock/med-spas/</loc></url>
-  <url><loc>https://ga.spas.artivicolab.com/woodstock/massage/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/carrollton/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/carrollton/day-spas/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/carrollton/med-spas/</loc></url>
@@ -262,6 +262,10 @@
   <url><loc>https://ga.spas.artivicolab.com/forest-park/med-spas/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/riverdale/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/riverdale/day-spas/</loc></url>
+  <url><loc>https://ga.spas.artivicolab.com/thomasville/</loc></url>
+  <url><loc>https://ga.spas.artivicolab.com/thomasville/massage/</loc></url>
+  <url><loc>https://ga.spas.artivicolab.com/thomasville/day-spas/</loc></url>
+  <url><loc>https://ga.spas.artivicolab.com/thomasville/med-spas/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/dawsonville/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/dawsonville/med-spas/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/dawsonville/day-spas/</loc></url>
@@ -522,13 +526,13 @@
   <url><loc>https://ga.spas.artivicolab.com/county/chatham/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/county/clarke/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/county/columbia/</loc></url>
+  <url><loc>https://ga.spas.artivicolab.com/county/cherokee/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/county/muscogee/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/county/richmond/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/county/whitfield/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/county/bibb/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/county/forsyth/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/county/coweta/</loc></url>
-  <url><loc>https://ga.spas.artivicolab.com/county/cherokee/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/county/douglas/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/county/hall/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/county/houston/</loc></url>
@@ -549,6 +553,7 @@
   <url><loc>https://ga.spas.artivicolab.com/county/bulloch/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/county/dougherty/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/county/toombs/</loc></url>
+  <url><loc>https://ga.spas.artivicolab.com/county/thomas/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/county/coffee/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/county/dawson/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/county/floyd/</loc></url>
@@ -757,6 +762,7 @@
   <url><loc>https://ga.spas.artivicolab.com/zip/31601/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/zip/31602/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/zip/31707/</loc></url>
+  <url><loc>https://ga.spas.artivicolab.com/zip/31792/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/zip/31794/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/zip/31901/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/zip/31904/</loc></url>
