@@ -22,6 +22,8 @@ body{
   font-weight:400;
   line-height:1.6;
   -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;             /* belt-and-suspenders against sideways scroll */
+  max-width:100%;
 }
 .wrap{width:88%;max-width:1180px;margin:0 auto}
 .serif{font-family:'Cormorant Garamond',Georgia,serif}
@@ -125,7 +127,10 @@ nav{
   background:var(--paper);border:1px solid var(--line);border-radius:100px;
   padding:6px 6px 6px 22px;box-shadow:0 14px 40px -22px rgba(46,58,46,.4);
 }
-.search-box input{flex:1;border:0;outline:0;background:transparent;font-family:'Inter';font-size:15px;color:var(--forest)}
+/* font-size:16px is REQUIRED — iOS Safari auto-zooms (and triggers a sideways
+   scrollbar) on focus of any input under 16px. min-width:0 lets the flex item
+   shrink instead of overflowing the box on narrow screens. */
+.search-box input{flex:1;min-width:0;border:0;outline:0;background:transparent;font-family:'Inter';font-size:16px;color:var(--forest)}
 .search-box input::placeholder{color:#A39D8E}
 .btn{font-family:'Inter';font-size:14px;font-weight:500;cursor:pointer;border:0;border-radius:100px;transition:all .2s;text-decoration:none;display:inline-flex;align-items:center;justify-content:center}
 .btn-go{background:var(--sage-deep);color:#fff;padding:13px 26px}
@@ -208,7 +213,22 @@ section.band{padding:90px 0}
 @keyframes fabPulse{0%,100%{opacity:1}50%{opacity:.4}}
 /* .pwa-fab (the floating install button) is styled in js/pwa.js, which owns it */
 
-@media (max-width:600px){.loc-fab{right:12px;bottom:12px;padding:12px}.loc-fab-label{display:none}}
+/* nearby-cities chooser — pops above the location FAB after a pin resolves */
+.loc-near{position:fixed;right:18px;bottom:74px;z-index:61;width:268px;max-width:calc(100vw - 36px);background:var(--paper);border:1px solid var(--line);border-radius:18px;box-shadow:0 18px 40px -12px rgba(0,0,0,.4);overflow:hidden;opacity:0;transform:translateY(8px) scale(.98);pointer-events:none;transition:opacity .2s ease,transform .2s ease}
+.loc-near.show{opacity:1;transform:none;pointer-events:auto}
+.loc-near-head{display:flex;align-items:center;justify-content:space-between;padding:13px 16px;font-size:13px;font-weight:600;color:var(--forest);background:var(--cream-deep);border-bottom:1px solid var(--line)}
+.loc-near-x{border:0;background:transparent;font-size:20px;line-height:1;color:var(--muted);cursor:pointer;padding:0 2px}
+.loc-near-x:hover{color:var(--forest)}
+.loc-near-list{display:flex;flex-direction:column;padding:6px;max-height:min(46vh,340px);overflow-y:auto;overscroll-behavior:contain}
+.loc-near-city{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:11px 12px;border-radius:11px;font-size:14px;font-weight:500;color:var(--forest);transition:background .15s}
+.loc-near-city:hover{background:var(--cream-deep)}
+.loc-near-city.is-nearest{background:rgba(63,166,106,.1)}
+.loc-near-tag{display:inline-block;margin-left:7px;font-size:10px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:#2f7a4e;background:rgba(63,166,106,.18);padding:2px 7px;border-radius:100px;vertical-align:middle}
+.loc-near-mi{font-size:12px;font-weight:600;color:var(--sage-deep);white-space:nowrap}
+.loc-near-clear{width:100%;border:0;border-top:1px solid var(--line);background:transparent;padding:12px;font-family:'Inter',sans-serif;font-size:12px;font-weight:600;color:var(--muted);cursor:pointer;transition:color .15s,background .15s}
+.loc-near-clear:hover{color:var(--clay-deep);background:var(--cream-deep)}
+
+@media (max-width:600px){.loc-fab{right:12px;bottom:12px;padding:12px}.loc-fab-label{display:none}.loc-near{right:12px;bottom:68px}}
 
 /* nav like count chip */
 .nav-links .like-count{display:inline-block;min-width:18px;padding:0 5px;margin-left:4px;font-size:11px;font-weight:700;line-height:18px;text-align:center;color:#fff;background:var(--clay);border-radius:100px}
@@ -265,6 +285,8 @@ section.band{padding:90px 0}
 }
 .card-cat{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--sage-deep);font-weight:500}
 .card-name{font-family:'Cormorant Garamond',serif;font-size:25px;font-weight:600;line-height:1.12;margin:6px 0 0}
+/* live-search highlight: the typed text marked inside results on /search/ */
+mark.hl{background:rgba(190,123,84,.24);color:inherit;border-radius:3px;padding:0 .1em;box-decoration-break:clone;-webkit-box-decoration-break:clone}
 .card-name a{color:inherit}
 .card-name a:hover{color:var(--sage-deep)}
 .card-meta{display:flex;align-items:center;gap:7px;margin-top:8px;font-size:13px;color:var(--muted)}

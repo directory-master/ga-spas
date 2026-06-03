@@ -120,12 +120,24 @@ document.querySelectorAll('[data-show-more]').forEach((btn) => {
   if (!grid) return;
   grid.classList.remove('capped'); // JS now controls visibility
   let shown = SHOW_BATCH;
+  const wrapEl = btn.closest('.show-more-wrap');
   const apply = () => {
-    const kids = [...grid.children];
-    kids.forEach((c, i) => { c.style.display = i < shown ? '' : 'none'; });
-    const left = kids.length - shown;
-    if (left <= 0) btn.closest('.show-more-wrap')?.remove();
-    else btn.textContent = `Show more · ${left} more`;
+    // When a name search is active, the cap is lifted so EVERY match shows;
+    // filtered-out cards (data-filtered="1") are hidden regardless of the cap.
+    const searching = grid.dataset.searchActive === '1';
+    let vis = 0, total = 0;
+    [...grid.children].forEach((c) => {
+      if (c.dataset.filtered === '1') { c.style.display = 'none'; return; }
+      total++;
+      c.style.display = (searching || vis < shown) ? '' : 'none';
+      if (!searching) vis++;
+    });
+    const left = total - shown;
+    // Hide (don't remove) the button so it can return when the filter changes.
+    if (wrapEl) {
+      if (searching || left <= 0) { wrapEl.style.display = 'none'; }
+      else { wrapEl.style.display = ''; btn.textContent = `Show more · ${left} more`; }
+    }
   };
   grid.addEventListener('recap', apply);
   btn.addEventListener('click', () => { shown += SHOW_BATCH; apply(); });
@@ -180,6 +192,8 @@ document.addEventListener('click', (e) => {
 });
 syncLikeButtons();
 paintLikeCount();
+// re-reflect liked state when cards are injected client-side (e.g. /search/)
+document.addEventListener('cards:rendered', () => { syncLikeButtons(); paintLikeCount(); });
 
 // Demo cards: Call / Request Appointment don't connect (sample data).
 document.querySelectorAll('a[data-demo]').forEach((a) => {
@@ -290,19 +304,14 @@ window.addEventListener('resize', () => { clearTimeout(reflow); reflow = setTime
     const on = !!userPoint();
     fab.classList.toggle('on', on);
     fab.setAttribute('aria-pressed', on ? 'true' : 'false');
-    fab.title = on ? 'Location on — distances shown · tap to clear' : 'Use my location';
-    fab.setAttribute('aria-label', on ? 'Location on — tap to clear' : 'Use my location');
+    fab.title = on ? 'Location on — tap for nearby cities' : 'Use my location';
+    fab.setAttribute('aria-label', on ? 'Location on — tap to see nearby cities' : 'Use my location');
     fab.innerHTML = `${on ? PIN_FILLED : PIN_OUTLINE}<span class="loc-fab-label">${on ? 'Location on' : 'Use my location'}</span>`;
   };
   fab.addEventListener('click', () => {
-    if (userPoint()) {                 // on → clear
-      try { localStorage.removeItem(LOC_KEY); } catch {}
-      paintDistances();
-      syncLoc();
-      show('Location cleared.');
-    } else {                           // off → start continuous tracking
-      watchGPS(() => show('📍 Tracking you — nearest spas first. Distances update as you move.'));
-    }
+    const p = userPoint();
+    if (p) showNearbyCities(p);        // on → re-open the nearby-cities chooser
+    else locateAndShowNearby();        // off → locate, then show it (clear lives in the panel)
   });
 
   const save = (loc) => {
@@ -378,22 +387,70 @@ window.addEventListener('resize', () => { clearTimeout(reflow); reflow = setTime
     });
   }
 
-  // CONTINUOUS "near me": keep watching as the user moves — every position update
-  // repaints distances (save → paintDistances) and re-sorts the list nearest-first.
-  let geoWatch = null;
-  function watchGPS(onFirst) {
+  // scroll the user to the nearest-first list so locating produces a VISIBLE result
+  function revealResults() {
+    const grid = document.querySelector('[data-all-grid]') || document.querySelector('.feat-grid');
+    grid?.closest('.wrap, section')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+  function geoError(err) {
+    const msg = err && err.code === 1
+      ? 'Location is blocked. Allow location for this site, or type a city/ZIP above.'
+      : 'Couldn’t pin your location. Type a city, neighborhood, or ZIP instead.';
+    show(msg);
+  }
+
+  // The N live city PAGES nearest a GPS point, from the embedded city-centroids
+  // list, each tagged with its distance in miles (nearest first).
+  function nearestCities(p, n = 5) {
+    let cities = [];
+    try { cities = JSON.parse(document.getElementById('city-centroids')?.textContent || '[]'); } catch {}
+    return cities.map((c) => ({ ...c, mi: miles(p, c) })).sort((a, b) => a.mi - b.mi).slice(0, n);
+  }
+
+  // clear the saved location: drop distances, reset the pin, hide the panel
+  function clearLocation() {
+    try { localStorage.removeItem(LOC_KEY); } catch {}
+    paintDistances();
+    syncLoc();
+    nearPanel?.classList.remove('show');
+    show('Location cleared.');
+  }
+
+  // A floating chooser of the 10 nearest cities (nearest first), shown after the
+  // pin resolves — the visitor picks which local directory to open. Picking one
+  // flags the destination to auto-sort nearest-first (see the justlocated check).
+  // Re-openable: once located, tapping the pin calls this again from the saved point.
+  let nearPanel;
+  function showNearbyCities(p) {
+    const list = nearestCities(p, 10);
+    if (!list.length) { sortNearest(); revealResults(); show('📍 Showing spas nearest you.'); return; }
+    if (!nearPanel) { nearPanel = document.createElement('div'); nearPanel.className = 'loc-near'; document.body.appendChild(nearPanel); }
+    nearPanel.innerHTML =
+      `<div class="loc-near-head"><span>📍 Cities near you</span><button class="loc-near-x" type="button" aria-label="Close">×</button></div>` +
+      `<div class="loc-near-list">` + list.map((c, i) =>
+        `<a class="loc-near-city${i === 0 ? ' is-nearest' : ''}" href="/${c.slug}/"><span class="loc-near-name">${c.name}${i === 0 ? ' <span class="loc-near-tag">Nearest</span>' : ''}</span><span class="loc-near-mi">${c.mi < 10 ? c.mi.toFixed(1) : Math.round(c.mi)} mi</span></a>`).join('') +
+      `</div>` +
+      `<button class="loc-near-clear" type="button">Clear my location</button>`;
+    nearPanel.querySelector('.loc-near-x').addEventListener('click', () => nearPanel.classList.remove('show'));
+    nearPanel.querySelector('.loc-near-clear').addEventListener('click', clearLocation);
+    nearPanel.querySelectorAll('.loc-near-city').forEach((a) =>
+      a.addEventListener('click', () => { try { sessionStorage.setItem('gaspas:justlocated', '1'); } catch {} }));
+    nearPanel.classList.add('show');
+  }
+
+  // PIN = "show me what's near me". Grab a fast fix, save it, then surface the
+  // nearest cities to choose from (the nearest is first/tagged).
+  function locateAndShowNearby() {
     if (!navigator.geolocation) { show('Geolocation isn’t available here — type a city or ZIP instead.'); return; }
     show('📍 Locating you…');
-    if (geoWatch != null) navigator.geolocation.clearWatch(geoWatch);
-    let first = true;
-    geoWatch = navigator.geolocation.watchPosition(
+    navigator.geolocation.getCurrentPosition(
       (pos) => {
-        save({ lat: +pos.coords.latitude.toFixed(5), lng: +pos.coords.longitude.toFixed(5), label: 'your location' });
-        sortNearest();
-        if (first) { first = false; onFirst?.(); }
+        const p = { lat: +pos.coords.latitude.toFixed(5), lng: +pos.coords.longitude.toFixed(5), label: 'your location' };
+        save(p);
+        showNearbyCities(p);
       },
-      () => show('Couldn’t get your location. You can type a city or ZIP instead.'),
-      { enableHighAccuracy: true, timeout: 10000, maximumAge: 15000 }
+      geoError,
+      { enableHighAccuracy: false, timeout: 9000, maximumAge: 120000 }
     );
   }
 
@@ -403,25 +460,43 @@ window.addEventListener('resize', () => { clearTimeout(reflow); reflow = setTime
   paintDistances();
   syncLoc();
 
-  // typed city / ZIP / neighborhood — save, don't navigate
+  // Arrived here via the location pin (routed from another page) → auto-sort the
+  // city's list nearest-first and scroll to it, so locating lands on a real result.
+  try {
+    if (sessionStorage.getItem('gaspas:justlocated')) {
+      sessionStorage.removeItem('gaspas:justlocated');
+      sortNearest(); revealResults();
+      show('📍 You’re near here — showing the closest spas first.');
+    }
+  } catch {}
+
+  // Search no longer filters this page in place (that mangled curated sections
+  // like "Georgia's top 10"). Instead the box hands the query to the dedicated
+  // /search/ results page, which searches the WHOLE directory. The form's
+  // action="/search/" already does this without JS; we only intercept to trim.
   form?.addEventListener('submit', (e) => {
-    e.preventDefault();
     const q = (input?.value || '').trim();
-    if (!q) { show('Type a city, neighborhood, or ZIP — or use the location button.'); return; }
-    save({ query: q, label: q });
-    const known = userPoint();
-    show(known ? `📍 Showing distances from ${q}.` : `📍 Saved “${q}”. (Tap a card’s “Get distance” or the location button for exact miles.)`);
+    if (!q) { e.preventDefault(); show('Type a spa name, city, neighborhood, or ZIP — or tap the location button.'); return; }
+    if (location.pathname.replace(/\/$/, '') === '/search') return; // already there: let GET reload
+    e.preventDefault();
+    location.assign(`/search/?q=${encodeURIComponent(q)}`);
   });
 
-  // card chip: located → open Google Maps directions; not yet → ask for GPS.
-  // each external-link icon nudges on its own random speed.
-  document.querySelectorAll('.card-dist').forEach((el) => {
-    el.style.setProperty('--ext-dur', `${(2.1 + Math.random() * 2.4).toFixed(2)}s`);
-    el.addEventListener('click', () => {
-      if (el.classList.contains('has-dist')) openDirections(el);
-      else requestGPS();
+  // card chip: located → open Google Maps directions; not yet → ask for GPS. Run
+  // on load AND whenever cards are injected (the /search/ page renders later).
+  function wireDistanceChips() {
+    document.querySelectorAll('.card-dist:not([data-wired])').forEach((el) => {
+      el.dataset.wired = '1';
+      el.style.setProperty('--ext-dur', `${(2.1 + Math.random() * 2.4).toFixed(2)}s`);
+      el.addEventListener('click', () => {
+        if (el.classList.contains('has-dist')) openDirections(el);
+        else requestGPS();
+      });
     });
-  });
+  }
+  wireDistanceChips();
+  // the /search/ page renders its cards client-side — re-wire + repaint when it does
+  document.addEventListener('cards:rendered', () => { wireDistanceChips(); paintDistances(); });
 
   // The hero "Near me" button is the single location control — it shows the
   // on/off state (green "Location on") and toggles locate/clear. No floating
