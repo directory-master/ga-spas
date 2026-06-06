@@ -36,7 +36,9 @@
   }
 
   function spasFromCards() {
-    return [...document.querySelectorAll('.card[data-lat][data-lng]')].map((c) => {
+    // skip .is-example demo cards — they're tier previews (often another city's
+    // spa) shown to illustrate Premium/Standard, not real local listings to map.
+    return [...document.querySelectorAll('.card[data-lat][data-lng]:not(.is-example)')].map((c) => {
       const lat = num(c.dataset.lat), lng = num(c.dataset.lng);
       if (lat == null || lng == null) return null;
       const a = c.querySelector('.card-name a');
