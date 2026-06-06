@@ -549,8 +549,10 @@ footer .wrap{position:relative;z-index:1}
 /* black-owned pill on a (photoless) free card */
 .bo-pill{display:inline-block;font-size:10.5px;letter-spacing:.06em;font-weight:700;color:var(--sage-deep);background:rgba(139,154,126,.14);border-radius:100px;padding:3px 10px;margin-bottom:8px}
 /* free cards have no photo, so the distance chip sits inline in the foot */
-.card.is-free .card-dist{position:static;align-self:flex-start;margin-bottom:10px;background:var(--cream);border:1px solid var(--line);color:var(--forest-soft);box-shadow:none;text-shadow:none}
-.card.is-free .card-dist:hover{background:var(--cream-deep)}
+/* photoless ("ghost") free card: the distance chip flows in the footer. Free
+   cards WITH a photo keep the default bottom-right-over-photo placement (above). */
+.card.is-free:not(.has-photo) .card-dist{position:static;align-self:flex-start;margin-bottom:10px;background:var(--cream);border:1px solid var(--line);color:var(--forest-soft);box-shadow:none;text-shadow:none}
+.card.is-free:not(.has-photo) .card-dist:hover{background:var(--cream-deep)}
 @media (max-width:880px){.pricing-grid{grid-template-columns:1fr;max-width:440px;margin:0 auto}}
 
 /* ---- "Own this spa?" claim modal ---- */
