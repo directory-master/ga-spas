@@ -617,6 +617,7 @@ ${ldJson}
   <a class="logo" href="/">GA<span>.Spas</span></a>
   <ul class="nav-links">
     <li><a href="/cities/">Cities</a></li>
+    <li><a href="/spas-near-me/">Near me</a></li>
     <li><a href="/map/">Map</a></li>
     <li><a href="/black-owned/">Black-Owned</a></li>
     <li><a href="/liked/">♥ Saved <span class="like-count" hidden></span></a></li>
@@ -645,6 +646,7 @@ ${ldJson}
     <p class="loc-note" id="home-loc-note" hidden></p>
     <div class="pills">
       <a class="pill${activePill === 'all' ? ' active' : ''}" href="/">All</a>
+      <a class="pill" href="/spas-near-me/">📍 Near me</a>
       <a class="pill" href="/category/day-spas/">Day Spas</a>
       <a class="pill" href="/category/med-spas/">Med Spas</a>
       <a class="pill" href="/category/massage/">Massage</a>
@@ -786,6 +788,7 @@ ${showTesti ? `<section class="band testi-band">
       </div>
       <div class="foot-col">
         <div class="foot-col-h">Explore</div>
+        <a href="/spas-near-me/">Spas near me</a>
         <a href="/atlanta/">Atlanta spas</a>
         <a href="/black-owned/">Black-owned spas</a>
         <a href="/category/med-spas/">Med spas in GA</a>
@@ -884,6 +887,7 @@ ${PWA_HEAD}
   <a class="logo" href="/">GA<span>.Spas</span></a>
   <ul class="nav-links">
     <li><a href="/cities/">Cities</a></li>
+    <li><a href="/spas-near-me/">Near me</a></li>
     <li><a href="/map/">Map</a></li>
     <li><a href="/counties/">Counties</a></li>
     <li><a href="/black-owned/">Black-Owned</a></li>
@@ -945,6 +949,7 @@ ${PWA_HEAD}
       </div>
       <div class="foot-col">
         <div class="foot-col-h">Explore</div>
+        <a href="/spas-near-me/">Spas near me</a>
         <a href="/atlanta/">Atlanta spas</a>
         <a href="/black-owned/">Black-owned spas</a>
         <a href="/category/med-spas/">Med spas in GA</a>
@@ -1036,6 +1041,7 @@ ${PWA_HEAD}
   <a class="logo" href="/">GA<span>.Spas</span></a>
   <ul class="nav-links">
     <li><a href="/cities/">Cities</a></li>
+    <li><a href="/spas-near-me/">Near me</a></li>
     <li><a href="/map/">Map</a></li>
     <li><a href="/black-owned/">Black-Owned</a></li>
     <li><a href="/liked/">♥ Saved <span class="like-count" hidden></span></a></li>
@@ -1107,6 +1113,7 @@ ${PWA_HEAD}
       </div>
       <div class="foot-col">
         <div class="foot-col-h">Explore</div>
+        <a href="/spas-near-me/">Spas near me</a>
         <a href="/atlanta/">Atlanta spas</a>
         <a href="/black-owned/">Black-owned spas</a>
         <a href="/category/med-spas/">Med spas in GA</a>
@@ -1310,6 +1317,7 @@ ${jsonLd}
   <a class="logo" href="/">GA<span>.Spas</span></a>
   <ul class="nav-links">
     <li><a href="/cities/">Cities</a></li>
+    <li><a href="/spas-near-me/">Near me</a></li>
     <li><a href="/map/">Map</a></li>
     <li><a href="/counties/">Counties</a></li>
     <li><a href="/black-owned/">Black-Owned</a></li>
@@ -1391,6 +1399,7 @@ ${jsonLd}
       </div>
       <div class="foot-col">
         <div class="foot-col-h">Explore</div>
+        <a href="/spas-near-me/">Spas near me</a>
         <a href="/atlanta/">Atlanta spas</a>
         <a href="/cities/">All Georgia cities</a>
         <a href="/counties/">Spas by county</a>
@@ -1448,6 +1457,7 @@ ${PWA_HEAD}
   <a class="logo" href="/">GA<span>.Spas</span></a>
   <ul class="nav-links">
     <li><a href="/cities/">Cities</a></li>
+    <li><a href="/spas-near-me/">Near me</a></li>
     <li><a href="/map/">Map</a></li>
     <li><a href="/counties/">Counties</a></li>
     <li><a href="/black-owned/">Black-Owned</a></li>
@@ -1501,6 +1511,7 @@ ${PWA_HEAD}
       </div>
       <div class="foot-col">
         <div class="foot-col-h">Explore</div>
+        <a href="/spas-near-me/">Spas near me</a>
         <a href="/atlanta/">Atlanta spas</a>
         <a href="/cities/">All Georgia cities</a>
         <a href="/counties/">Spas by county</a>
@@ -1710,7 +1721,7 @@ for (const h of ATL_HOODS) {
     desc: 'Find spas near you in Georgia by neighborhood (Buckhead, Midtown, Sandy Springs) or by zip code. Day spas, med spas & massage sorted by distance.',
     path: '/areas/',
     body: `    <section class="hero"><h1>Spas near you</h1>
-      <p>Browse Georgia spas by Atlanta neighborhood or by metro-area zip code — each list is sorted by distance. Looking for the closest spa right now? Use <a href="/">Near me</a> on the home page.</p></section>
+      <p>Browse Georgia spas by Atlanta neighborhood or by metro-area zip code — each list is sorted by distance. Looking for the closest spa right now? <a href="/spas-near-me/"><strong>Find spas near me →</strong></a> uses your location to show the nearest ones instantly.</p></section>
     <h2 class="section">Atlanta neighborhoods</h2>
     <div class="area-links">
         ${hoodLinks || '<a href="/atlanta/">Atlanta spas</a>'}
@@ -1757,6 +1768,7 @@ ${PWA_HEAD}
   <a class="logo" href="/">GA<span>.Spas</span></a>
   <ul class="nav-links">
     <li><a href="/cities/">Cities</a></li>
+    <li><a href="/spas-near-me/">Near me</a></li>
     <li><a href="/map/">Map</a></li>
     <li><a href="/black-owned/">Black-Owned</a></li>
     <li><a href="/liked/">♥ Saved <span class="like-count" hidden></span></a></li>
@@ -1837,6 +1849,7 @@ ${PWA_HEAD}
   <a class="logo" href="/">GA<span>.Spas</span></a>
   <ul class="nav-links">
     <li><a href="/cities/">Cities</a></li>
+    <li><a href="/spas-near-me/">Near me</a></li>
     <li><a href="/map/">Map</a></li>
     <li><a href="/black-owned/">Black-Owned</a></li>
     <li><a href="/liked/">♥ Saved <span class="like-count" hidden></span></a></li>
@@ -1916,7 +1929,7 @@ ${PWA_HEAD}
   <a class="logo" href="/">GA<span>.Spas</span></a>
   <ul class="nav-links">
     <li><a href="/cities/">Cities</a></li>
-    <li><a href="/map/">Map</a></li>
+    <li><a href="/spas-near-me/">Near me</a></li>
     <li><a href="/map/">Map</a></li>
     <li><a href="/black-owned/">Black-Owned</a></li>
     <li><a href="/liked/">♥ Saved <span class="like-count" hidden></span></a></li>
@@ -1956,6 +1969,126 @@ ${PWA_HEAD}
 noindexed.add('/map/');
 
 
+// /spas-near-me/ — INDEXABLE landing page for the head query "spa near me" /
+// "spas near me". Auto-asks the visitor's location and renders the closest spas
+// (js/near-me.js); the static city + area links carry the SEO and serve anyone who
+// declines location. This is the page Google should match "spa near me" to.
+{
+  const nmCities = live.slice(0, 18).map(cityIndexCard).join('\n      ');
+  const nmCityLinks = live.map(p => `<a class="pill" href="/${p.slug}/">${esc(p.name)}</a>`).join('\n        ');
+  const canonical = `${BASE_URL}/spas-near-me/`;
+  const faqs = [
+    ['How do I find a spa near me in Georgia?', `Open this page and allow location access — GA Spas instantly lists the day spas, med spas, and massage studios closest to you, sorted by distance, across all ${live.length} Georgia cities. You can also browse by city or ZIP code below.`],
+    ['Are the spas near me open now?', 'Each listing links to the spa’s own site and Google Maps for current hours, and shows ratings and reviews so you can pick with confidence before you go.'],
+    ['Does GA Spas show Black-owned spas near me?', 'Yes — every Black-owned spa carries a badge, and you can browse the dedicated Black-owned directory. Black-owned status is free to display for any listing.'],
+  ];
+  const faqLd = { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: faqs.map(([q, a]) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: a } })) };
+  const pageLd = { '@context': 'https://schema.org', '@type': 'WebPage', name: 'Spas near me in Georgia', url: canonical,
+    breadcrumb: { '@type': 'BreadcrumbList', itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'GA Spas', item: BASE_URL + '/' },
+      { '@type': 'ListItem', position: 2, name: 'Spas near me', item: canonical },
+    ] } };
+  write('spas-near-me', `<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+${GA_HEAD}
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+<title>Spas Near Me — Day Spas, Med Spas &amp; Massage in Georgia | GA Spas</title>
+<meta name="description" content="Find spas near me in Georgia. Allow location to instantly see the closest day spas, med spas, and massage studios — sorted by distance, with ratings, hours, and directions."/>
+<link rel="canonical" href="${canonical}"/>
+<meta property="og:title" content="Spas near me in Georgia | GA Spas"/>
+<meta property="og:description" content="The day spas, med spas & massage studios closest to you, across Georgia — sorted by distance."/>
+<meta property="og:type" content="website"/>
+<meta property="og:url" content="${canonical}"/>
+<meta property="og:image" content="${BASE_URL}/images/og-cover.jpg"/>
+<meta name="geo.region" content="US-GA"/>
+<meta name="geo.placename" content="Georgia"/>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="/css/home.css?v=${ASSET_VER}"/>
+${PWA_HEAD}
+<script type="application/ld+json">${JSON.stringify(pageLd)}</script>
+<script type="application/ld+json">${JSON.stringify(faqLd)}</script>
+</head>
+<body>
+<nav>
+  <a class="logo" href="/">GA<span>.Spas</span></a>
+  <ul class="nav-links">
+    <li><a href="/cities/">Cities</a></li>
+    <li><a href="/spas-near-me/">Near me</a></li>
+    <li><a href="/map/">Map</a></li>
+    <li><a href="/black-owned/">Black-Owned</a></li>
+    <li><a href="/liked/">♥ Saved <span class="like-count" hidden></span></a></li>
+  </ul>
+  <a class="nav-cta" href="/pricing/">List your spa</a>
+</nav>
+
+<section class="band" style="padding-top:120px">
+  <div class="wrap">
+    <div class="eyebrow">Find a spa near you</div>
+    <h1 class="serif" style="font-size:clamp(34px,5vw,58px);font-weight:500;line-height:1.05;margin:8px 0 14px">Spas near me</h1>
+    <p class="hero-sub" style="max-width:620px">Allow location and GA Spas shows the day spas, med spas, and massage studios <strong>closest to you</strong> — sorted by distance, with ratings, reviews, and directions. Covering ${ACTIVE.length} spas across ${live.length} Georgia cities.</p>
+    <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin-top:20px">
+      <button class="btn btn-go" id="nearme-btn" type="button" style="padding:13px 24px">📍 Find spas near me</button>
+      <a class="sec-link" href="/map/">See them on the map →</a>
+    </div>
+    <p class="loc-note" id="nearme-note" hidden style="margin-top:18px"></p>
+    <div class="feat-grid" id="nearme-grid" hidden style="margin-top:24px"></div>
+  </div>
+</section>
+
+<section class="band" style="padding-top:0">
+  <div class="wrap">
+    <div class="sec-head"><div><div class="eyebrow">By city</div><h2 class="serif">Spas near you, by city</h2></div>
+      <a class="sec-link" href="/cities/">All ${live.length} cities →</a></div>
+    <div class="cities-grid">
+      ${nmCities}
+    </div>
+  </div>
+</section>
+
+<section class="band" style="padding-top:0">
+  <div class="wrap">
+    <div class="sec-head"><div><div class="eyebrow">By area &amp; ZIP</div><h2 class="serif">Or find a spa near your ZIP code</h2></div>
+      <a class="sec-link" href="/areas/">All areas &amp; ZIPs →</a></div>
+    <p class="hero-sub" style="max-width:640px;margin-bottom:18px">Searching from a specific area? Jump straight to spas near your neighborhood or ZIP code — each page lists the spas within ${AREA_RADIUS} miles, sorted by distance.</p>
+    <div class="pills">
+        ${nmCityLinks}
+    </div>
+  </div>
+</section>
+
+<section class="band" style="padding-top:0">
+  <div class="wrap">
+    <div class="sec-head"><div><div class="eyebrow">Good to know</div><h2 class="serif">Finding a spa near you</h2></div></div>
+    <div class="cities-grid">
+      ${faqs.map(([q, a]) => `<div class="city" style="cursor:default"><div class="city-name" style="font-size:18px">${esc(q)}</div><div class="city-sub" style="-webkit-line-clamp:unset">${esc(a)}</div></div>`).join('\n      ')}
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-bot">
+      <span>© 2026 GA Spas · Made by <a class="foot-by" href="https://artivicolab.com" target="_blank" rel="noopener">Artivicolab</a></span>
+      <a class="foot-list" href="/">← Back to GA Spas</a>
+    </div>
+  </div>
+</footer>
+
+<script type="application/json" id="zip-centroids">${JSON.stringify(ZIP_CENTROIDS)}</script>
+<script type="application/json" id="city-centroids">${CITY_CENTROIDS_JSON}</script>
+<script type="module">
+  import { run } from '/js/near-me.js?v=${ASSET_VER}';
+  run('${ASSET_VER}');
+</script>
+<script type="module" src="/js/home.js?v=${ASSET_VER}"></script>
+</body>
+</html>
+`);
+}
+
+
 // ---------------------------------------------------------------------------
 // Legal: /privacy/ and /terms/. Static content pages on the shell template, so
 // they pick up the standard header/footer. Footer links across the site point
@@ -1992,6 +2125,7 @@ ${PWA_HEAD}
   <a class="logo" href="/">GA<span>.Spas</span></a>
   <ul class="nav-links">
     <li><a href="/cities/">Cities</a></li>
+    <li><a href="/spas-near-me/">Near me</a></li>
     <li><a href="/map/">Map</a></li>
     <li><a href="/black-owned/">Black-Owned</a></li>
     <li><a href="/liked/">♥ Saved <span class="like-count" hidden></span></a></li>
@@ -2012,6 +2146,7 @@ ${body}
       </div>
       <div class="foot-col">
         <div class="foot-col-h">Explore</div>
+        <a href="/spas-near-me/">Spas near me</a>
         <a href="/atlanta/">Atlanta spas</a>
         <a href="/black-owned/">Black-owned spas</a>
         <a href="/category/med-spas/">Med spas in GA</a>
@@ -2162,6 +2297,7 @@ ${PWA_HEAD}
   <a class="logo" href="/">GA<span>.Spas</span></a>
   <ul class="nav-links">
     <li><a href="/cities/">Cities</a></li>
+    <li><a href="/spas-near-me/">Near me</a></li>
     <li><a href="/map/">Map</a></li>
     <li><a href="/black-owned/">Black-Owned</a></li>
   </ul>
