@@ -179,6 +179,14 @@ const cityNameOf = (spa) => spa.cityName || (findCity(spa.city) || {}).name || s
 // chrome leaks in; the site-wide distance chip (lat/lng) still stays for all.
 const freeView = (spa) => ({ ...spa, tier: 'free', menu: undefined, price: undefined, offer: undefined, perks: undefined, hours: undefined, bookingUrl: undefined });
 
+// compact spa records for an embedded map (#map-spas) — js/map.js plots these.
+// A `rank` (1-based) is carried through when present (the home top-10 map).
+const mapSpasJson = (list) => JSON.stringify(list.filter(s => s.lat && s.lng).map(s => ({
+  name: s.name, lat: s.lat, lng: s.lng, type: s.type || '', city: cityNameOf(s),
+  rating: s.rating || 0, reviews: s.reviews || 0, href: spaLink(s),
+  ...(s.rank ? { rank: s.rank } : {}),
+})));
+
 function shell({ title, desc, path, jsonLd = '', body, noindex = false }) {
   const canonical = BASE_URL + path;
   return `<!doctype html>
@@ -389,7 +397,8 @@ const cityRow = (p) => `<a class="city-row" href="/${p.slug}/">
 function homeStylePage({ relPath, canonical, pool, title, desc, heroEyebrow, heroH1, heroSub, heroProof, activePill, featEyebrow, featH2, showBoBand, showCities,
   showAll = false, allEyebrow = '', allH2 = '', cityScope = 'all', citiesEyebrow = 'Local knowledge', citiesH2 = 'Browse by city', showTesti = true, spotPlace = 'Georgia',
   showCounties = false, countiesEyebrow = 'By county', countiesH2 = 'Browse by county',
-  topSpas = [], topSpots = [], topEyebrow = '', topH2 = '', fillCity = '', noindex = false, geoPoint = null, mapRadius = 0 }) {
+  topSpas = [], topSpots = [], topEyebrow = '', topH2 = '', fillCity = '', noindex = false, geoPoint = null, mapRadius = 0,
+  mapEmbed = null, mapMarker = '', mapH2 = '' }) {
   if (noindex) noindexed.add(canonical);
   const boCount = ACTIVE.filter(s => s.blackOwned).length;
   const fmtNbhd = (spa) => esc([spa.neighborhood, cityNameOf(spa) + ', GA', spa.price].filter(Boolean).join(' · '));
@@ -468,13 +477,32 @@ function homeStylePage({ relPath, canonical, pool, title, desc, heroEyebrow, her
   </div>
 </section>` : '';
 
-  // City / zip / neighborhood pages get an OpenStreetMap (Leaflet) map of their
-  // spas + the visitor's location. js/map.js reads the markers from the page's
-  // own cards. City pages also outline their county (CITY_COUNTY — authoritative,
-  // not guessed); zip/neighborhood pages draw their "within N miles" radius.
+  // Map section. Two modes:
+  //  • EMBED (home): plot a fixed set of spas (e.g. the top 10) from a #map-spas
+  //    JSON, optionally with pulsating star markers (mapMarker='star').
+  //  • CITY / zip / neighborhood: read markers from the page's own cards + the
+  //    visitor's location; city pages outline their county (authoritative
+  //    CITY_COUNTY), zip/neighborhood draw their "within N miles" radius.
+  const embedPts = (mapEmbed || []).filter(s => s.lat && s.lng);
   const mapCtr = geoPoint || (fillCity && cityCentroid[fillCity]);
   const mapCounty = fillCity ? (CITY_COUNTY[fillCity] || '') : '';
-  const mapSection = mapCtr ? `<section class="band map-band" style="padding-top:0">
+  let mapSection = '';
+  if (embedPts.length) {
+    const ctr = { lat: embedPts.reduce((a, s) => a + s.lat, 0) / embedPts.length, lng: embedPts.reduce((a, s) => a + s.lng, 0) / embedPts.length };
+    mapSection = `<section class="band map-band" style="padding-top:0">
+  <div class="wrap">
+    <div class="sec-head">
+      <div><div class="eyebrow">On the map</div><h2 class="serif">${mapH2 || 'On the map'}</h2></div>
+      <button class="map-locate" type="button" data-map-locate>📍 Show my location</button>
+    </div>
+    <div id="spa-map" class="spa-map" data-lat="${ctr.lat.toFixed(5)}" data-lng="${ctr.lng.toFixed(5)}" data-zoom="7"${mapMarker ? ` data-marker="${mapMarker}"` : ''} data-ver="${ASSET_VER}"></div>
+  </div>
+  <script type="application/json" id="map-spas">${mapSpasJson(embedPts)}</script>
+  <script defer src="/vendor/leaflet/leaflet.js"></script>
+  <script defer src="/js/map.js?v=${ASSET_VER}"></script>
+</section>`;
+  } else if (mapCtr) {
+    mapSection = `<section class="band map-band" style="padding-top:0">
   <div class="wrap">
     <div class="sec-head">
       <div><div class="eyebrow">On the map</div><h2 class="serif">${esc(spotPlace)} spas on the map</h2></div>
@@ -484,7 +512,8 @@ function homeStylePage({ relPath, canonical, pool, title, desc, heroEyebrow, her
   </div>
   <script defer src="/vendor/leaflet/leaflet.js"></script>
   <script defer src="/js/map.js?v=${ASSET_VER}"></script>
-</section>` : '';
+</section>`;
+  }
   const hasMap = !!mapSection;
 
   // Browse-by-city — scoped to all spas or Black-owned only (links to per-city BO page)
@@ -806,6 +835,7 @@ homeStylePage({
   featEyebrow: 'Hand-picked', featH2: "Georgia's best spas", showBoBand: true, showCities: true,
   showCounties: true, countiesEyebrow: 'By county', countiesH2: 'Browse spas by county',
   topSpas: TOP10, topSpots: TOP_SPOTS, topEyebrow: 'Ranked by stars &amp; reviews', topH2: "Georgia's top 10 spas",
+  mapEmbed: TOP10.map((s, i) => ({ ...s, rank: i + 1 })), mapMarker: 'star', mapH2: "Georgia's top 10, mapped",
 });
 
 // Black-Owned — the home page, filtered to Black-owned spas

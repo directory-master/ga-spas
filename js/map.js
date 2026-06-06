@@ -74,7 +74,8 @@
     const dest = `${s.lat},${s.lng}`;
     const origin = u ? `&origin=${u.lat},${u.lng}` : '';
     const visit = s.href ? `<a href="${esc(s.href)}" target="_blank" rel="noopener nofollow">Visit</a> · ` : '';
-    return `<div class="map-pop"><strong>${esc(s.name)}</strong>${meta ? `<div class="map-pop-meta">${meta}</div>` : ''}${rating}${dist}` +
+    const rank = s.rank ? `<span class="map-pop-rank">#${s.rank}</span> ` : '';
+    return `<div class="map-pop">${rank}<strong>${esc(s.name)}</strong>${meta ? `<div class="map-pop-meta">${meta}</div>` : ''}${rating}${dist}` +
       `<div class="map-pop-links">${visit}<a href="https://www.google.com/maps/dir/?api=1${origin}&destination=${dest}" target="_blank" rel="noopener">Directions</a></div></div>`;
   }
 
@@ -122,11 +123,18 @@
       radiusLayer = L.circle(center, { radius: radiusMi * 1609.34, color: '#6E7E61', weight: 1.5, dashArray: '5 5', fillColor: '#8B9A7E', fillOpacity: 0.06, interactive: false }).addTo(map);
     }
 
+    // marker style: default clay canvas dot, or a pulsating gold STAR when the
+    // container asks for it (data-marker="star" — used by the home top-10 map).
+    const useStar = el.dataset.marker === 'star';
+    // pulsating gold star; when the spa has a rank, its number rides on the star
+    const starIcon = (rank) => L.divIcon({ className: 'spa-star-wrap', html: `<span class="spa-star">★${rank ? `<b class="spa-star-rank">${rank}</b>` : ''}</span>`, iconSize: [32, 32] });
     const renderer = L.canvas({ padding: 0.5 });
     const bounds = [];
     spas.forEach((s) => {
-      L.circleMarker([s.lat, s.lng], { renderer, radius: 7, color: '#fff', weight: 1.5, fillColor: '#BE7B54', fillOpacity: 0.92 })
-        .bindPopup(() => popupHtml(s, getUser)).addTo(map);
+      const m = useStar
+        ? L.marker([s.lat, s.lng], { icon: starIcon(s.rank), zIndexOffset: s.rank ? (100 - s.rank) * 10 : 0 })
+        : L.circleMarker([s.lat, s.lng], { renderer, radius: 7, color: '#fff', weight: 1.5, fillColor: '#BE7B54', fillOpacity: 0.92 });
+      m.bindPopup(() => popupHtml(s, getUser)).addTo(map);
       bounds.push([s.lat, s.lng]);
     });
 

@@ -237,6 +237,7 @@ section.band{padding:90px 0}
 .map-band .sec-head{margin-bottom:18px}
 .map-locate{border:1px solid var(--line);background:var(--paper);border-radius:100px;padding:9px 16px;font-family:'Inter',sans-serif;font-size:13px;font-weight:600;color:var(--forest);cursor:pointer;white-space:nowrap;transition:background .15s}
 .map-locate:hover{background:var(--cream-deep)}
+.map-pop-rank{display:inline-block;font-family:'Inter',sans-serif;font-size:12px;font-weight:800;color:#fff;background:var(--clay);border-radius:100px;padding:1px 9px;vertical-align:middle;margin-right:2px}
 .map-pop strong{font-family:'Cormorant Garamond',serif;font-size:18px;color:var(--forest)}
 .map-pop-meta{font-size:12px;color:var(--muted);margin-top:2px}
 .map-pop-rate{font-size:12px;color:var(--forest);margin-top:5px;font-weight:600}
@@ -245,6 +246,18 @@ section.band{padding:90px 0}
 .map-pop-dist{font-size:12px;font-weight:700;color:var(--sage-deep);margin-top:4px}
 .map-pop-links{margin-top:8px;font-size:12px;font-weight:600}
 .map-pop-links a{color:var(--sage-deep)}
+/* spa marker as a pulsating gold star (home top-10 map) */
+.spa-star-wrap{background:none;border:0}
+/* white outline (halo) + drop shadow so the gold star reads on any map tile —
+   roads, parks, water — instead of blending in. The 4-corner white shadows draw
+   the outline; the last shadow is the cast shadow. */
+.spa-star{position:relative;display:flex;align-items:center;justify-content:center;width:32px;height:32px;font-size:30px;line-height:1;color:#F2A100;
+  text-shadow:-1.5px -1.5px 0 #fff,1.5px -1.5px 0 #fff,-1.5px 1.5px 0 #fff,1.5px 1.5px 0 #fff,0 0 2px #fff,0 3px 6px rgba(0,0,0,.55);
+  animation:spaStarPulse 1.8s ease-in-out infinite;transform-origin:center;will-change:transform}
+/* rank number centered on the star (the gold star is large enough to carry it) */
+.spa-star-rank{position:absolute;top:46%;left:50%;transform:translate(-50%,-50%);font-family:'Inter',sans-serif;font-size:11px;font-weight:800;font-style:normal;color:#3A2A12;text-shadow:0 0 2px rgba(255,255,255,.9)}
+@keyframes spaStarPulse{0%,100%{transform:scale(1);opacity:.95}50%{transform:scale(1.32);opacity:1}}
+@media (prefers-reduced-motion:reduce){.spa-star{animation:none}}
 /* user "you are here" pulsing dot */
 .user-dot-wrap{background:none;border:0}
 .user-dot{display:block;width:16px;height:16px;border-radius:50%;background:#2f7ad6;border:3px solid #fff;box-shadow:0 0 0 rgba(47,122,214,.5);animation:userPulse 2s infinite}
