@@ -18,7 +18,12 @@
   const TILE = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
   const ATTR = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors';
   const esc = (s) => String(s == null ? '' : s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
-  const dirLink = (lat, lng) => `https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`;
+  const milesBetween = (a, b) => {
+    const R = 3958.8, rad = (d) => d * Math.PI / 180;
+    const dLat = rad(b.lat - a.lat), dLng = rad(b.lng - a.lng);
+    const h = Math.sin(dLat / 2) ** 2 + Math.cos(rad(a.lat)) * Math.cos(rad(b.lat)) * Math.sin(dLng / 2) ** 2;
+    return 2 * R * Math.asin(Math.sqrt(h));
+  };
 
   // saved location (shared with js/home.js): GPS coords or a ZIP centroid
   function userPoint() {
@@ -38,6 +43,7 @@
       return {
         name: c.dataset.spa || (a ? a.textContent : 'Spa'), lat, lng,
         type: c.querySelector('.card-cat')?.textContent || '', city: c.dataset.city || '',
+        rating: num(c.dataset.rating) || 0, reviews: num(c.dataset.reviews) || 0,
         href: a ? a.href : null,
       };
     }).filter(Boolean);
@@ -48,15 +54,26 @@
     const mod = await import('/js/data/search-index.js' + (ver ? `?v=${ver}` : ''));
     return mod.INDEX.filter((s) => s.lat && s.lng).map((s) => ({
       name: s.name, lat: s.lat, lng: s.lng, type: s.type || '', city: s.cityName || '',
+      rating: s.rating || 0, reviews: s.reviews || 0,
       href: s.website || `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${s.name}, ${s.address || s.cityName || 'GA'}`)}`,
     }));
   }
 
-  function popupHtml(s) {
+  // `getUser` returns the live user point so distance recomputes after locating;
+  // the popup is bound as a function and re-rendered on each open.
+  function popupHtml(s, getUser) {
     const meta = [esc(s.type), esc(s.city)].filter(Boolean).join(' · ');
+    const r = Math.round(s.rating);
+    const rating = s.rating
+      ? `<div class="map-pop-rate"><span class="map-pop-stars">${'★'.repeat(r)}${'☆'.repeat(5 - r)}</span> ${s.rating.toFixed(1)}${s.reviews ? ` · ${s.reviews} review${s.reviews === 1 ? '' : 's'}` : ''}</div>`
+      : `<div class="map-pop-rate map-pop-new">New · no reviews yet</div>`;
+    const u = getUser && getUser();
+    const dist = u ? `<div class="map-pop-dist">📍 ${(() => { const mi = milesBetween(u, s); return mi < 10 ? mi.toFixed(1) : Math.round(mi); })()} mi away</div>` : '';
+    const dest = `${s.lat},${s.lng}`;
+    const origin = u ? `&origin=${u.lat},${u.lng}` : '';
     const visit = s.href ? `<a href="${esc(s.href)}" target="_blank" rel="noopener nofollow">Visit</a> · ` : '';
-    return `<div class="map-pop"><strong>${esc(s.name)}</strong>${meta ? `<div class="map-pop-meta">${meta}</div>` : ''}` +
-      `<div class="map-pop-links">${visit}<a href="${dirLink(s.lat, s.lng)}" target="_blank" rel="noopener">Directions</a></div></div>`;
+    return `<div class="map-pop"><strong>${esc(s.name)}</strong>${meta ? `<div class="map-pop-meta">${meta}</div>` : ''}${rating}${dist}` +
+      `<div class="map-pop-links">${visit}<a href="https://www.google.com/maps/dir/?api=1${origin}&destination=${dest}" target="_blank" rel="noopener">Directions</a></div></div>`;
   }
 
   async function init() {
@@ -65,11 +82,16 @@
     const map = L.map(el, { scrollWheelZoom: false, preferCanvas: true }).setView(center, num(el.dataset.zoom) || 11);
     L.tileLayer(TILE, { attribution: ATTR, maxZoom: 19 }).addTo(map);
 
+    // live user point — read once now, refreshed when "Show my location" runs;
+    // distances in popups recompute against this on every open.
+    let currentUser = userPoint();
+    const getUser = () => currentUser;
+
     const renderer = L.canvas({ padding: 0.5 });
     const bounds = [];
     spas.forEach((s) => {
       L.circleMarker([s.lat, s.lng], { renderer, radius: 7, color: '#fff', weight: 1.5, fillColor: '#BE7B54', fillOpacity: 0.92 })
-        .bindPopup(popupHtml(s)).addTo(map);
+        .bindPopup(() => popupHtml(s, getUser)).addTo(map);
       bounds.push([s.lat, s.lng]);
     });
 
@@ -77,12 +99,12 @@
     const userIcon = L.divIcon({ className: 'user-dot-wrap', html: '<span class="user-dot"></span>', iconSize: [20, 20] });
     let userMarker = null;
     const setUser = (lat, lng, pan) => {
+      currentUser = { lat, lng };
       if (userMarker) userMarker.setLatLng([lat, lng]);
       else userMarker = L.marker([lat, lng], { icon: userIcon, zIndexOffset: 1000 }).addTo(map).bindPopup('You are here');
       if (pan) map.setView([lat, lng], Math.max(map.getZoom(), 12));
     };
-    const up = userPoint();
-    if (up) { setUser(up.lat, up.lng, false); bounds.push([up.lat, up.lng]); }
+    if (currentUser) { setUser(currentUser.lat, currentUser.lng, false); bounds.push([currentUser.lat, currentUser.lng]); }
 
     if (bounds.length) map.fitBounds(bounds, { padding: [40, 40], maxZoom: 14 });
 
