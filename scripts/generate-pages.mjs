@@ -416,48 +416,25 @@ function homeStylePage({ relPath, canonical, pool, title, desc, heroEyebrow, her
       </article>`;
   // demo: stagger statuses so the showcase always shows a mix (one open, one closed, …)
   const DEMO_STATES = ['open', 'closed', 'closing', 'opening'];
-  // Most city/category pages have no paid listings. Instead of filling the
-  // Spotlight with "this spot is available" cards (which buries the real spas),
-  // feature the top-rated REAL spas there. Claim cards only show where paid
-  // tiers actually exist (e.g. the home and curated-demo cities).
-  const hasPaid = premiumSpas.length || standardSpas.length;
 
-  // NEVER feature an unpaid spa. With no paid listings the featured spots stay
-  // "available" (the claim card) and the rest of the row is filled with non-spa
-  // helper cards: a "more spas nearby" card and a browse-by-type card. The real
-  // (unpaid) spas all appear below in the "All spas in …" list, not the Spotlight.
-  const nb = fillCity ? nearestCities(fillCity, 3) : [];
-  const nearbyCard = nb.length ? `<article class="card claim">
-        <div class="card-pad">
-          <div class="claim-eyebrow">Nearby</div>
-          <div class="claim-h serif">More spas<br>near ${spotPlace}</div>
-          <div class="claim-links">${nb.map(c => `<a href="/${c.slug}/">${esc(c.name)} <span>${c.count}</span></a>`).join('')}</div>
-          <a class="claim-btn ghost" href="/cities/">All Georgia cities →</a>
-        </div>
-      </article>` : '';
-  const categoryCard = `<article class="card claim">
-        <div class="card-pad">
-          <div class="claim-eyebrow">By treatment</div>
-          <div class="claim-h serif">Browse<br>by type</div>
-          <div class="claim-links">
-            <a href="/category/day-spas/">Day Spas</a>
-            <a href="/category/med-spas/">Med Spas</a>
-            <a href="/category/massage/">Massage</a>
-          </div>
-        </div>
-      </article>`;
-  // claim spots lead — BOTH the premium and the standard spot are claimable in
-  // every city — then a helper filler; cap at 3
-  const premiumCards = hasPaid
-    ? premiumSpas.slice(0, 2).map((s, i) => homeCard(s, i % 2 ? 'p2' : '', DEMO_STATES[i % DEMO_STATES.length])).join('\n      ') + '\n      ' + claimCard
-    : [claimCard, standardClaimCard, nearbyCard, categoryCard].filter(Boolean).slice(0, 3).join('\n      ');
-  const standardCards = hasPaid
-    ? standardSpas.slice(0, 2).map((s, i) => homeCard(s, i % 2 ? 'p2' : '')).join('\n      ') + '\n      ' + standardClaimCard
-    : '';
+  // Each paying tier gets its OWN row of EXACTLY 3 cards: the real paid spas
+  // first, then "spot available" claim cards padding any empty slots (never an
+  // empty hole). Premium row leads, standard row follows. Paid spas are never
+  // mixed with free ones.
+  const padRow = (spas, claimCard, demo) => {
+    const cards = spas.map((s, i) => homeCard(s, i % 2 ? 'p2' : '', (demo && s.example) ? DEMO_STATES[i % DEMO_STATES.length] : undefined));
+    while (cards.length < 3) cards.push(claimCard);
+    return cards.join('\n      ');
+  };
+  const premiumCards = padRow(premiumSpas, claimCard, true);
+  const standardCards = padRow(standardSpas, standardClaimCard, false);
 
-  // "All …" grid = every spa in the pool beyond the highlighted featured/standard rows
-  const shownIds = new Set((hasPaid ? [...premiumSpas.slice(0, 2), ...standardSpas.slice(0, 2)] : []).map(s => s.id));
-  const restSpas = byRank(pool.filter(s => !shownIds.has(s.id)));
+  // "All …" grid = every spa beyond the paid rows. Ordered so CLAIMED listings
+  // (free spas that have an image because the owner contacted us) come first,
+  // then everyone else without an image — both still ranked within their group.
+  const shownIds = new Set([...premiumSpas, ...standardSpas].map(s => s.id));
+  const hasImg = (s) => ((s.images && s.images.length) || s.image) ? 0 : 1;
+  const restSpas = byRank(pool.filter(s => !shownIds.has(s.id))).sort((a, b) => hasImg(a) - hasImg(b));
   const ALL_SHOWN = 30; // show ~10 rows (3-col grid) before "Show more"
   const restCards = restSpas.map((s, i) => homeCard(s, i % 2 ? 'p2' : ''));
   const allSection = (showAll && restSpas.length) ? `<section class="band">
@@ -645,13 +622,14 @@ ${premiumCards ? `<section class="band band--dots">
       </div>
       <a class="sec-link" href="/cities/">View all spas →</a>
     </div>
+    <div class="tier-row-label">Premium listings</div>
     <div class="feat-grid">
       ${premiumCards}
     </div>
-    ${standardCards ? `<div class="tier-row-label">Standard listings</div>
+    <div class="tier-row-label">Standard listings</div>
     <div class="feat-grid">
       ${standardCards}
-    </div>` : ''}
+    </div>
   </div>
 </section>` : ''}
 
@@ -1203,9 +1181,38 @@ const countyIndexCard = (c, i) => {
 
 for (const c of counties) {
   counts.county = (counts.county || 0) + 1;
-  const topSpas = c.listings.slice(0, 12);
-  const topCards = topSpas.map((s, i) =>
-    renderCard(s, { href: spaLink(s), cityName: cityNameOf(s), photoClass: i % 2 ? 'p2' : '' })).join('\n      ');
+  // Tiers NEVER mix. Premium row (top) then standard row — each EXACTLY 3 cards,
+  // real paid spas first then "spot available" claim cards padding empty slots.
+  // Then free spas: CLAIMED (have an image) first, the rest (no image) after.
+  const cCard = (s, i) => renderCard(s, { href: spaLink(s), cityName: cityNameOf(s), photoClass: i % 2 ? 'p2' : '' });
+  const cPremium = byRank(c.listings.filter(s => s.tier === 'premium'));
+  const cStandard = byRank(c.listings.filter(s => s.tier === 'standard'));
+  const cHasImg = (s) => ((s.images && s.images.length) || s.image) ? 0 : 1;
+  const cFree = byRank(c.listings.filter(s => s.tier !== 'premium' && s.tier !== 'standard')).sort((a, b) => cHasImg(a) - cHasImg(b));
+  const cPlace = `${c.name} County`;
+  const cPremClaim = `<article class="card claim">
+        <div class="card-pad">
+          <div class="claim-eyebrow">Your spa here</div>
+          <div class="claim-h serif">This ${esc(cPlace)}<br>premium spot is open</div>
+          <div class="claim-p">Be a featured premium spa in ${esc(cPlace)} — top of every relevant page, full gallery, booking.</div>
+          <div class="claim-price">Premium · $149/mo · featured at the top</div>
+          <a class="claim-btn" href="/pricing/#premium" data-claim-spot data-claim-tier="premium" data-claim-city="${esc(cPlace)}">Claim this spot →</a>
+        </div>
+      </article>`;
+  const cStdClaim = `<article class="card claim">
+        <div class="card-pad">
+          <div class="claim-eyebrow">Your spa here</div>
+          <div class="claim-h serif">This ${esc(cPlace)}<br>standard spot is open</div>
+          <div class="claim-p">Claim a standard listing in ${esc(cPlace)} — your photo, services, hours, and website link.</div>
+          <div class="claim-price">Standard · $49/mo · enhanced placement</div>
+          <a class="claim-btn" href="/pricing/#standard" data-claim-spot data-claim-tier="standard" data-claim-city="${esc(cPlace)}">Claim this spot →</a>
+        </div>
+      </article>`;
+  const cPad = (list, claim) => { const cards = list.map(cCard); while (cards.length < 3) cards.push(claim); return cards.join('\n      '); };
+  const topCards =
+    `<div class="tier-row-label">Premium listings</div>\n    <div class="feat-grid">\n      ${cPad(cPremium, cPremClaim)}\n    </div>` +
+    `\n    <div class="tier-row-label">Standard listings</div>\n    <div class="feat-grid">\n      ${cPad(cStandard, cStdClaim)}\n    </div>` +
+    `\n    <div class="tier-row-label">More spas</div>\n    <div class="feat-grid">\n      ${cFree.slice(0, 12).map(cCard).join('\n      ')}\n    </div>`;
   const cityCards = c.cities.map(cityIndexCard).join('\n      ');
   // county map: ALL of the county's spas (not just the top cards) + the county border
   const countyPts = c.listings.filter(s => s.lat && s.lng);
@@ -1291,9 +1298,7 @@ ${jsonLd}
       <div><div class="eyebrow">Top rated</div><h2 class="serif">Top spas in ${esc(c.name)} County</h2></div>
       <a class="sec-link" href="/counties/">← All counties</a>
     </div>
-    <div class="feat-grid">
-      ${topCards}
-    </div>
+    ${topCards}
   </div>
 </section>
 

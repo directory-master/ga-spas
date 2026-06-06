@@ -31,10 +31,12 @@ export function renderCard(spa, opts = {}) {
     ? (minPrice ? `<span class="card-price">From $${minPrice}</span>` : (spa.price ? `<span class="card-price">${esc(spa.price)}</span>` : ''))
     : '';
 
-  // ---- photo: tier-gated. FREE = none (the ghost listing), STANDARD = 1 image,
-  // PREMIUM = up to 6 (gallery). Nothing gets more than its tier earns. ----
+  // ---- photo: tier-gated. PREMIUM = up to 6 (gallery), STANDARD = 1, FREE = 1
+  // ONLY if the owner contacted us to claim the listing and we added an image
+  // (otherwise free is the photoless "ghost listing"). Hours/website/prices stay
+  // paid-only, so a claimed free card is still below standard. ----
   const allImgs = (spa.images && spa.images.length) ? spa.images : (spa.image ? [spa.image] : []);
-  const imgs = premium ? allImgs.slice(0, 6) : standard ? allImgs.slice(0, 1) : [];
+  const imgs = premium ? allImgs.slice(0, 6) : allImgs.slice(0, 1);
   const slidesHtml = imgs.map((src, i) =>
     `<div class="ph-slide${i === 0 ? ' on' : ''}" data-src="${esc(src)}" style="background-image:linear-gradient(135deg,rgba(110,126,97,.20),rgba(46,58,46,.32)),url('${esc(src)}')"></div>`).join('');
   const dotsHtml = imgs.length > 1
@@ -98,6 +100,20 @@ export function renderCard(spa, opts = {}) {
     const claim = `mailto:artivicolab@gmail.com?subject=${encodeURIComponent('GASpas Claiming Listing: ' + spa.name)}`;
     const claimHtml = opts.noClaim ? '' : `\n            <a class="card-claim" href="${claim}" data-claim="${esc(spa.name)}" data-claim-city="${esc(cityName || '')}">💲 Own this spa? Add your prices &amp; deals →</a>`;
     const boPill = spa.blackOwned ? '<span class="bo-pill">✦ Black-Owned</span>' : '';
+    // CLAIMED free listing — has an image (owner contacted us). Photo on top
+    // (carries the like / distance / black-owned chrome), then the free body.
+    if (imgs.length) {
+      return `<article class="card is-free has-photo"${cardBg}${dataAttrs}>
+        ${photo}
+        <div class="card-pad">
+          ${head}
+          <div class="card-foot">
+            ${actions}${claimHtml}
+          </div>
+        </div>
+      </article>`;
+    }
+    // ghost listing — no photo
     return `<article class="card is-free"${dataAttrs}>
         <div class="card-pad">
           ${likeBtn}
