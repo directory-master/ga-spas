@@ -230,6 +230,23 @@ section.band{padding:90px 0}
 
 @media (max-width:600px){.loc-fab{right:12px;bottom:12px;padding:12px}.loc-fab-label{display:none}.loc-near{right:12px;bottom:68px}}
 
+/* Leaflet/OpenStreetMap spa map (js/map.js) */
+.spa-map{position:relative;z-index:0;height:440px;border-radius:18px;overflow:hidden;border:1px solid var(--line);background:var(--cream-deep)}
+.spa-map--full{height:min(78vh,720px)}
+.spa-map .leaflet-container{font-family:'Inter',sans-serif}
+.map-band .sec-head{margin-bottom:18px}
+.map-locate{border:1px solid var(--line);background:var(--paper);border-radius:100px;padding:9px 16px;font-family:'Inter',sans-serif;font-size:13px;font-weight:600;color:var(--forest);cursor:pointer;white-space:nowrap;transition:background .15s}
+.map-locate:hover{background:var(--cream-deep)}
+.map-pop strong{font-family:'Cormorant Garamond',serif;font-size:17px;color:var(--forest)}
+.map-pop-meta{font-size:12px;color:var(--muted);margin-top:2px}
+.map-pop-links{margin-top:7px;font-size:12px;font-weight:600}
+.map-pop-links a{color:var(--sage-deep)}
+/* user "you are here" pulsing dot */
+.user-dot-wrap{background:none;border:0}
+.user-dot{display:block;width:16px;height:16px;border-radius:50%;background:#2f7ad6;border:3px solid #fff;box-shadow:0 0 0 rgba(47,122,214,.5);animation:userPulse 2s infinite}
+@keyframes userPulse{0%{box-shadow:0 0 0 0 rgba(47,122,214,.45)}70%{box-shadow:0 0 0 14px rgba(47,122,214,0)}100%{box-shadow:0 0 0 0 rgba(47,122,214,0)}}
+@media (max-width:600px){.spa-map{height:340px}}
+
 /* nav like count chip */
 .nav-links .like-count{display:inline-block;min-width:18px;padding:0 5px;margin-left:4px;font-size:11px;font-weight:700;line-height:18px;text-align:center;color:#fff;background:var(--clay);border-radius:100px}
 

@@ -480,6 +480,22 @@ function homeStylePage({ relPath, canonical, pool, title, desc, heroEyebrow, her
   </div>
 </section>` : '';
 
+  // City pages get an OpenStreetMap (Leaflet) map of that city's spas + the
+  // visitor's location. js/map.js reads the markers from the page's own cards.
+  const mapCtr = fillCity && cityCentroid[fillCity];
+  const mapSection = mapCtr ? `<section class="band map-band" style="padding-top:0">
+  <div class="wrap">
+    <div class="sec-head">
+      <div><div class="eyebrow">On the map</div><h2 class="serif">${esc(spotPlace)} spas on the map</h2></div>
+      <button class="map-locate" type="button" data-map-locate>📍 Show my location</button>
+    </div>
+    <div id="spa-map" class="spa-map" data-lat="${mapCtr.lat.toFixed(5)}" data-lng="${mapCtr.lng.toFixed(5)}" data-zoom="12"></div>
+  </div>
+  <script defer src="/vendor/leaflet/leaflet.js"></script>
+  <script defer src="/js/map.js?v=${ASSET_VER}"></script>
+</section>` : '';
+  const hasMap = !!mapSection;
+
   // Browse-by-city — scoped to all spas or Black-owned only (links to per-city BO page)
   const cityList = cityScope === 'black-owned'
     ? live.map(p => ({ slug: p.slug, name: p.name, listings: p.listings.filter(s => s.blackOwned) })).filter(p => p.listings.length)
@@ -571,7 +587,7 @@ ${GA_HEAD}
 ${ogMeta}
 ${geoMeta}
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
-<link rel="stylesheet" href="/css/home.css?v=${ASSET_VER}"/>
+<link rel="stylesheet" href="/css/home.css?v=${ASSET_VER}"/>${hasMap ? '\n<link rel="stylesheet" href="/vendor/leaflet/leaflet.css"/>' : ''}
 ${PWA_HEAD}
 ${ldJson}
 </head>
@@ -581,6 +597,7 @@ ${ldJson}
   <a class="logo" href="/">GA<span>.Spas</span></a>
   <ul class="nav-links">
     <li><a href="/cities/">Cities</a></li>
+    <li><a href="/map/">Map</a></li>
     <li><a href="/black-owned/">Black-Owned</a></li>
     <li><a href="/liked/">♥ Saved <span class="like-count" hidden></span></a></li>
   </ul>
@@ -676,6 +693,8 @@ ${(showBoBand && boCount) ? `<section class="band" style="padding-top:0">
     </div>
   </div>
 </section>` : ''}
+
+${mapSection}
 
 ${allSection}
 
@@ -843,6 +862,7 @@ ${PWA_HEAD}
   <a class="logo" href="/">GA<span>.Spas</span></a>
   <ul class="nav-links">
     <li><a href="/cities/">Cities</a></li>
+    <li><a href="/map/">Map</a></li>
     <li><a href="/counties/">Counties</a></li>
     <li><a href="/black-owned/">Black-Owned</a></li>
     <li><a href="/liked/">♥ Saved <span class="like-count" hidden></span></a></li>
@@ -994,6 +1014,7 @@ ${PWA_HEAD}
   <a class="logo" href="/">GA<span>.Spas</span></a>
   <ul class="nav-links">
     <li><a href="/cities/">Cities</a></li>
+    <li><a href="/map/">Map</a></li>
     <li><a href="/black-owned/">Black-Owned</a></li>
     <li><a href="/liked/">♥ Saved <span class="like-count" hidden></span></a></li>
   </ul>
@@ -1222,6 +1243,7 @@ ${jsonLd}
   <a class="logo" href="/">GA<span>.Spas</span></a>
   <ul class="nav-links">
     <li><a href="/cities/">Cities</a></li>
+    <li><a href="/map/">Map</a></li>
     <li><a href="/counties/">Counties</a></li>
     <li><a href="/black-owned/">Black-Owned</a></li>
     <li><a href="/liked/">♥ Saved <span class="like-count" hidden></span></a></li>
@@ -1348,6 +1370,7 @@ ${PWA_HEAD}
   <a class="logo" href="/">GA<span>.Spas</span></a>
   <ul class="nav-links">
     <li><a href="/cities/">Cities</a></li>
+    <li><a href="/map/">Map</a></li>
     <li><a href="/counties/">Counties</a></li>
     <li><a href="/black-owned/">Black-Owned</a></li>
     <li><a href="/liked/">♥ Saved <span class="like-count" hidden></span></a></li>
@@ -1656,6 +1679,7 @@ ${PWA_HEAD}
   <a class="logo" href="/">GA<span>.Spas</span></a>
   <ul class="nav-links">
     <li><a href="/cities/">Cities</a></li>
+    <li><a href="/map/">Map</a></li>
     <li><a href="/black-owned/">Black-Owned</a></li>
     <li><a href="/liked/">♥ Saved <span class="like-count" hidden></span></a></li>
   </ul>
@@ -1735,6 +1759,7 @@ ${PWA_HEAD}
   <a class="logo" href="/">GA<span>.Spas</span></a>
   <ul class="nav-links">
     <li><a href="/cities/">Cities</a></li>
+    <li><a href="/map/">Map</a></li>
     <li><a href="/black-owned/">Black-Owned</a></li>
     <li><a href="/liked/">♥ Saved <span class="like-count" hidden></span></a></li>
   </ul>
@@ -1790,6 +1815,69 @@ ${PWA_HEAD}
 noindexed.add('/search/');
 
 
+// /map/ — the whole directory on one OpenStreetMap (Leaflet) map. All spa
+// markers come from the build's search index (data-source="index"); js/map.js
+// plots them on a canvas renderer + the visitor's location. noindex (JS-only).
+write('map', `<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+${GA_HEAD}
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+<meta name="robots" content="noindex,follow">
+<title>Map of spas across Georgia | GA Spas</title>
+<meta name="description" content="Every day spa, med spa, and massage studio in the GA Spas directory, plotted on a map with your location."/>
+<link rel="canonical" href="${BASE_URL}/map/"/>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="/css/home.css?v=${ASSET_VER}"/>
+<link rel="stylesheet" href="/vendor/leaflet/leaflet.css"/>
+${PWA_HEAD}
+</head>
+<body>
+<nav>
+  <a class="logo" href="/">GA<span>.Spas</span></a>
+  <ul class="nav-links">
+    <li><a href="/cities/">Cities</a></li>
+    <li><a href="/map/">Map</a></li>
+    <li><a href="/map/">Map</a></li>
+    <li><a href="/black-owned/">Black-Owned</a></li>
+    <li><a href="/liked/">♥ Saved <span class="like-count" hidden></span></a></li>
+  </ul>
+  <a class="nav-cta" href="/pricing/">List your spa</a>
+</nav>
+
+<section class="band" style="padding-top:120px">
+  <div class="wrap">
+    <div class="sec-head">
+      <div>
+        <div class="eyebrow">On the map</div>
+        <h2 class="serif">Georgia spas, mapped</h2>
+      </div>
+      <button class="map-locate" type="button" data-map-locate>📍 Show my location</button>
+    </div>
+    <div id="spa-map" class="spa-map spa-map--full" data-source="index" data-ver="${ASSET_VER}" data-lat="32.9" data-lng="-83.5" data-zoom="7"></div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-bot">
+      <span>© 2026 GA Spas · Made by <a class="foot-by" href="https://artivicolab.com" target="_blank" rel="noopener">Artivicolab</a></span>
+      <a class="foot-list" href="/">← Back to GA Spas</a>
+    </div>
+  </div>
+</footer>
+
+<script type="application/json" id="zip-centroids">${JSON.stringify(ZIP_CENTROIDS)}</script>
+<script defer src="/vendor/leaflet/leaflet.js"></script>
+<script defer src="/js/map.js?v=${ASSET_VER}"></script>
+<script type="module" src="/js/home.js?v=${ASSET_VER}"></script>
+</body>
+</html>
+`);
+noindexed.add('/map/');
+
+
 // ---------------------------------------------------------------------------
 // Legal: /privacy/ and /terms/. Static content pages on the shell template, so
 // they pick up the standard header/footer. Footer links across the site point
@@ -1826,6 +1914,7 @@ ${PWA_HEAD}
   <a class="logo" href="/">GA<span>.Spas</span></a>
   <ul class="nav-links">
     <li><a href="/cities/">Cities</a></li>
+    <li><a href="/map/">Map</a></li>
     <li><a href="/black-owned/">Black-Owned</a></li>
     <li><a href="/liked/">♥ Saved <span class="like-count" hidden></span></a></li>
   </ul>
@@ -1995,6 +2084,7 @@ ${PWA_HEAD}
   <a class="logo" href="/">GA<span>.Spas</span></a>
   <ul class="nav-links">
     <li><a href="/cities/">Cities</a></li>
+    <li><a href="/map/">Map</a></li>
     <li><a href="/black-owned/">Black-Owned</a></li>
   </ul>
   <a class="nav-cta" href="/pricing/">List your spa</a>
