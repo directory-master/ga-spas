@@ -76,8 +76,18 @@
       `<div class="map-pop-links">${visit}<a href="https://www.google.com/maps/dir/?api=1${origin}&destination=${dest}" target="_blank" rel="noopener">Directions</a></div></div>`;
   }
 
+  // embedded spa list (county pages): a <script type="application/json" id="map-spas">
+  function spasFromEmbedded() {
+    try {
+      const raw = document.getElementById('map-spas')?.textContent;
+      if (raw) return JSON.parse(raw).filter((s) => s.lat && s.lng);
+    } catch {}
+    return null;
+  }
+
   async function init() {
-    const spas = el.dataset.source === 'index' ? await spasFromIndex() : spasFromCards();
+    const embedded = spasFromEmbedded();
+    const spas = el.dataset.source === 'index' ? await spasFromIndex() : (embedded || spasFromCards());
     const center = [num(el.dataset.lat) ?? 32.9, num(el.dataset.lng) ?? -83.5];
     const map = L.map(el, { scrollWheelZoom: false, preferCanvas: true }).setView(center, num(el.dataset.zoom) || 11);
     L.tileLayer(TILE, { attribution: ATTR, maxZoom: 19 }).addTo(map);
@@ -86,6 +96,29 @@
     // distances in popups recompute against this on every open.
     let currentUser = userPoint();
     const getUser = () => currentUser;
+
+    // county border(s) — drawn FIRST so spa markers sit on top. A single county
+    // on city/zip/county pages (data-county), or all of them on /map/
+    // (data-counties="all"). Geometry comes from js/data/ga-county-borders.js.
+    let countyLayer = null;
+    try {
+      const ver = el.dataset.ver || '';
+      const { COUNTIES } = await import('/js/data/ga-county-borders.js' + (ver ? `?v=${ver}` : ''));
+      if (el.dataset.counties === 'all') {
+        const feats = Object.values(COUNTIES).map((g) => ({ type: 'Feature', geometry: g, properties: {} }));
+        L.geoJSON(feats, { style: { color: '#9aa38c', weight: 1, fill: false, interactive: false } }).addTo(map);
+      } else if (el.dataset.county && COUNTIES[el.dataset.county]) {
+        countyLayer = L.geoJSON(COUNTIES[el.dataset.county], { style: { color: '#6E7E61', weight: 2.5, fillColor: '#8B9A7E', fillOpacity: 0.08, interactive: false } }).addTo(map);
+      }
+    } catch (e) { /* border data is optional — map still works without it */ }
+
+    // optional catchment circle — zip / neighborhood pages list "spas within N
+    // miles" of a centroid; draw that radius so the area is clear.
+    let radiusLayer = null;
+    const radiusMi = num(el.dataset.radius);
+    if (radiusMi) {
+      radiusLayer = L.circle(center, { radius: radiusMi * 1609.34, color: '#6E7E61', weight: 1.5, dashArray: '5 5', fillColor: '#8B9A7E', fillOpacity: 0.06, interactive: false }).addTo(map);
+    }
 
     const renderer = L.canvas({ padding: 0.5 });
     const bounds = [];
@@ -106,7 +139,12 @@
     };
     if (currentUser) { setUser(currentUser.lat, currentUser.lng, false); bounds.push([currentUser.lat, currentUser.lng]); }
 
-    if (bounds.length) map.fitBounds(bounds, { padding: [40, 40], maxZoom: 14 });
+    // fit to the county outline / radius circle when shown (so the whole area is
+    // visible), else to the spas
+    let fitB = bounds.length ? L.latLngBounds(bounds) : null;
+    if (countyLayer) { const cb = countyLayer.getBounds(); fitB = fitB ? fitB.extend(cb) : cb; }
+    if (radiusLayer) { const rb = radiusLayer.getBounds(); fitB = fitB ? fitB.extend(rb) : rb; }
+    if (fitB && fitB.isValid()) map.fitBounds(fitB, { padding: [30, 30], maxZoom: el.dataset.counties === 'all' ? 9 : 13 });
 
     const btn = document.querySelector('[data-map-locate]');
     btn?.addEventListener('click', () => {

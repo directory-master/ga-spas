@@ -382,7 +382,7 @@ const cityRow = (p) => `<a class="city-row" href="/${p.slug}/">
 function homeStylePage({ relPath, canonical, pool, title, desc, heroEyebrow, heroH1, heroSub, heroProof, activePill, featEyebrow, featH2, showBoBand, showCities,
   showAll = false, allEyebrow = '', allH2 = '', cityScope = 'all', citiesEyebrow = 'Local knowledge', citiesH2 = 'Browse by city', showTesti = true, spotPlace = 'Georgia',
   showCounties = false, countiesEyebrow = 'By county', countiesH2 = 'Browse by county',
-  topSpas = [], topSpots = [], topEyebrow = '', topH2 = '', fillCity = '', noindex = false, geoPoint = null }) {
+  topSpas = [], topSpots = [], topEyebrow = '', topH2 = '', fillCity = '', noindex = false, geoPoint = null, mapRadius = 0 }) {
   if (noindex) noindexed.add(canonical);
   const boCount = ACTIVE.filter(s => s.blackOwned).length;
   const fmtNbhd = (spa) => esc([spa.neighborhood, cityNameOf(spa) + ', GA', spa.price].filter(Boolean).join(' · '));
@@ -480,16 +480,19 @@ function homeStylePage({ relPath, canonical, pool, title, desc, heroEyebrow, her
   </div>
 </section>` : '';
 
-  // City pages get an OpenStreetMap (Leaflet) map of that city's spas + the
-  // visitor's location. js/map.js reads the markers from the page's own cards.
-  const mapCtr = fillCity && cityCentroid[fillCity];
+  // City / zip / neighborhood pages get an OpenStreetMap (Leaflet) map of their
+  // spas + the visitor's location. js/map.js reads the markers from the page's
+  // own cards. City pages also outline their county (CITY_COUNTY — authoritative,
+  // not guessed); zip/neighborhood pages draw their "within N miles" radius.
+  const mapCtr = geoPoint || (fillCity && cityCentroid[fillCity]);
+  const mapCounty = fillCity ? (CITY_COUNTY[fillCity] || '') : '';
   const mapSection = mapCtr ? `<section class="band map-band" style="padding-top:0">
   <div class="wrap">
     <div class="sec-head">
       <div><div class="eyebrow">On the map</div><h2 class="serif">${esc(spotPlace)} spas on the map</h2></div>
       <button class="map-locate" type="button" data-map-locate>📍 Show my location</button>
     </div>
-    <div id="spa-map" class="spa-map" data-lat="${mapCtr.lat.toFixed(5)}" data-lng="${mapCtr.lng.toFixed(5)}" data-zoom="12"></div>
+    <div id="spa-map" class="spa-map" data-lat="${mapCtr.lat.toFixed(5)}" data-lng="${mapCtr.lng.toFixed(5)}" data-zoom="12"${mapCounty ? ` data-county="${esc(mapCounty)}"` : ''}${mapRadius ? ` data-radius="${mapRadius}"` : ''} data-ver="${ASSET_VER}"></div>
   </div>
   <script defer src="/vendor/leaflet/leaflet.js"></script>
   <script defer src="/js/map.js?v=${ASSET_VER}"></script>
@@ -1204,6 +1207,15 @@ for (const c of counties) {
   const topCards = topSpas.map((s, i) =>
     renderCard(s, { href: spaLink(s), cityName: cityNameOf(s), photoClass: i % 2 ? 'p2' : '' })).join('\n      ');
   const cityCards = c.cities.map(cityIndexCard).join('\n      ');
+  // county map: ALL of the county's spas (not just the top cards) + the county border
+  const countyPts = c.listings.filter(s => s.lat && s.lng);
+  const countyMapSpas = JSON.stringify(countyPts.map(s => ({
+    name: s.name, lat: s.lat, lng: s.lng, type: s.type || '', city: cityNameOf(s),
+    rating: s.rating || 0, reviews: s.reviews || 0, href: spaLink(s),
+  })));
+  const countyCtr = countyPts.length
+    ? { lat: countyPts.reduce((a, s) => a + s.lat, 0) / countyPts.length, lng: countyPts.reduce((a, s) => a + s.lng, 0) / countyPts.length }
+    : { lat: 32.9, lng: -83.5 };
   const moreCounties = counties.filter(o => o.slug !== c.slug).slice(0, 8)
     .map(o => `<a href="${countyUrl(o)}">${esc(o.name)} County <span>${o.count}</span></a>`).join('\n        ');
   const canonical = `${BASE_URL}${countyUrl(c)}`;
@@ -1234,6 +1246,7 @@ ${GA_HEAD}
 <meta property="og:image" content="${BASE_URL}/images/og-cover.jpg"/>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
 <link rel="stylesheet" href="/css/home.css?v=${ASSET_VER}"/>
+<link rel="stylesheet" href="/vendor/leaflet/leaflet.css"/>
 ${PWA_HEAD}
 ${jsonLd}
 </head>
@@ -1282,6 +1295,19 @@ ${jsonLd}
       ${topCards}
     </div>
   </div>
+</section>
+
+<section class="band map-band" style="padding-top:0">
+  <div class="wrap">
+    <div class="sec-head">
+      <div><div class="eyebrow">On the map</div><h2 class="serif">${esc(c.name)} County spas on the map</h2></div>
+      <button class="map-locate" type="button" data-map-locate>📍 Show my location</button>
+    </div>
+    <div id="spa-map" class="spa-map" data-county="${esc(c.name)}" data-lat="${countyCtr.lat.toFixed(5)}" data-lng="${countyCtr.lng.toFixed(5)}" data-zoom="10" data-ver="${ASSET_VER}"></div>
+  </div>
+  <script type="application/json" id="map-spas">${countyMapSpas}</script>
+  <script defer src="/vendor/leaflet/leaflet.js"></script>
+  <script defer src="/js/map.js?v=${ASSET_VER}"></script>
 </section>
 
 <section class="band" style="padding-top:0">
@@ -1558,7 +1584,7 @@ for (const z of ZIP_AREAS) {
   zipPages.push({ ...z, count: pool.length, ni });
   homeStylePage({
     relPath: `zip/${z.zip}`, canonical: `/zip/${z.zip}/`, pool, activePill: 'all',
-    noindex: ni, geoPoint: { lat: z.lat, lng: z.lng },
+    noindex: ni, geoPoint: { lat: z.lat, lng: z.lng }, mapRadius: AREA_RADIUS,
     title: `Spas near ${z.zip} — ${loc} | GA Spas`,
     desc: `Day spas, med spas & massage near zip code ${z.zip} (${loc}) — ratings, hours, and directions, sorted by distance.`,
     heroEyebrow: `Spas near ${z.zip} · ${z.city}, Georgia`,
@@ -1601,7 +1627,7 @@ for (const h of ATL_HOODS) {
   hoodPages.push({ ...h, count: pool.length, ni });
   homeStylePage({
     relPath: `atlanta/${h.slug}`, canonical: `/atlanta/${h.slug}/`, pool, activePill: 'all',
-    noindex: ni, geoPoint: { lat: h.lat, lng: h.lng },
+    noindex: ni, geoPoint: { lat: h.lat, lng: h.lng }, mapRadius: AREA_RADIUS,
     title: `Day Spas in ${h.name}, Atlanta, GA | GA Spas`,
     desc: `Day spas, med spas & massage in ${h.name}, Atlanta, GA — ratings, hours, and directions, sorted by distance.`,
     heroEyebrow: `${h.name} · Atlanta, Georgia`,
@@ -1855,7 +1881,7 @@ ${PWA_HEAD}
       </div>
       <button class="map-locate" type="button" data-map-locate>📍 Show my location</button>
     </div>
-    <div id="spa-map" class="spa-map spa-map--full" data-source="index" data-ver="${ASSET_VER}" data-lat="32.9" data-lng="-83.5" data-zoom="7"></div>
+    <div id="spa-map" class="spa-map spa-map--full" data-source="index" data-counties="all" data-ver="${ASSET_VER}" data-lat="32.9" data-lng="-83.5" data-zoom="7"></div>
   </div>
 </section>
 
