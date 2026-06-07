@@ -441,7 +441,7 @@ const cityRow = (p) => `<a class="city-row" href="/${p.slug}/">
 function homeStylePage({ relPath, canonical, pool, title, desc, heroEyebrow, heroH1, heroSub, heroProof, activePill, featEyebrow, featH2, showBoBand, showCities,
   showAll = false, allEyebrow = '', allH2 = '', cityScope = 'all', citiesEyebrow = 'Local knowledge', citiesH2 = 'Browse by city', showTesti = true, spotPlace = 'Georgia',
   showCounties = false, countiesEyebrow = 'By county', countiesH2 = 'Browse by county',
-  topSpas = [], topSpots = [], topEyebrow = '', topH2 = '', fillCity = '', noindex = false, geoPoint = null, mapRadius = 0,
+  topSpas = [], topSpots = [], topEyebrow = '', topH2 = '', spotsEyebrow = 'Standouts', spotsH2 = 'Georgia highlights', fillCity = '', noindex = false, geoPoint = null, mapRadius = 0,
   mapEmbed = null, mapMarker = '', mapH2 = '', intro = '',
   nearbySpas = [], nearbyEyebrow = '', nearbyH2 = '' }) {
   if (noindex) noindexed.add(canonical);
@@ -766,7 +766,22 @@ ${premiumCards ? `<section class="band band--dots">
   </div>
 </section>` : ''}
 
-${topSpas.length ? `<section class="band top-band">
+${topSpots.length ? `<section class="band top-band">
+  <div class="wrap">
+    <div class="sec-head">
+      <div>
+        <div class="eyebrow">${spotsEyebrow}</div>
+        <h2 class="serif">${spotsH2}</h2>
+      </div>
+    </div>
+    <div class="feat-grid spot-grid">
+      ${topSpots.map(({ label, spa }) =>
+        `<div class="rank-card spot-card"><span class="spot-badge">${esc(label)}</span>${renderCard(freeView(spa), { href: spaLink(spa), cityName: cityNameOf(spa) })}</div>`).join('\n      ')}
+    </div>
+  </div>
+</section>` : ''}
+
+${topSpas.length ? `<section class="band top-band"${topSpots.length ? ' style="padding-top:0"' : ''}>
   <div class="wrap">
     <div class="sec-head">
       <div>
@@ -775,10 +790,6 @@ ${topSpas.length ? `<section class="band top-band">
       </div>
       <a class="sec-link" href="/cities/">Browse all cities →</a>
     </div>
-    ${topSpots.length ? `<div class="feat-grid spot-grid">
-      ${topSpots.map(({ label, spa }) =>
-        `<div class="rank-card spot-card"><span class="spot-badge">${esc(label)}</span>${renderCard(freeView(spa), { href: spaLink(spa), cityName: cityNameOf(spa) })}</div>`).join('\n      ')}
-    </div>` : ''}
     <div class="feat-grid top-grid">
       ${topSpas.map((s, i) =>
         `<div class="rank-card${i < 3 ? ' rank-top' : ''}"><span class="rank-badge">${i + 1}</span>${renderCard(freeView(s), { href: spaLink(s), cityName: cityNameOf(s) })}</div>`).join('\n      ')}
