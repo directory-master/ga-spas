@@ -553,7 +553,7 @@ function homeStylePage({ relPath, canonical, pool, title, desc, heroEyebrow, her
     if (street || s.zip) b.address = { '@type': 'PostalAddress', streetAddress: street, addressLocality: cityNameOf(s), addressRegion: 'GA', postalCode: s.zip || undefined };
     const tel = teleOf(s.phone); if (tel) b.telephone = tel;
     if (s.lat && s.lng) b.geo = { '@type': 'GeoCoordinates', latitude: s.lat, longitude: s.lng };
-    if (s.rating) b.aggregateRating = { '@type': 'AggregateRating', ratingValue: s.rating, reviewCount: s.reviews || 0 };
+    if (s.rating && s.reviews > 0) b.aggregateRating = { '@type': 'AggregateRating', ratingValue: s.rating, reviewCount: s.reviews };
     b.url = s.website || spaLink(s);
     return b;
   };
@@ -565,10 +565,24 @@ function homeStylePage({ relPath, canonical, pool, title, desc, heroEyebrow, her
       { '@type': 'ListItem', position: 2, name: spotPlace, item: BASE_URL + canonical },
     ],
   });
-  if (realSpas.length) graph.push({
-    '@type': 'ItemList',
-    itemListElement: realSpas.map((s, i) => ({ '@type': 'ListItem', position: i + 1, item: business(s) })),
-  });
+  if (realSpas.length) {
+    // Carousel requires every item.url to be unique. Chains / shared sites can
+    // collide (two distinct spas, one website) → fall back to the per-spa maps
+    // link (unique by name+address), then to an id-stamped one if even that ties.
+    const usedUrls = new Set();
+    graph.push({
+      '@type': 'ItemList',
+      itemListElement: realSpas.map((s, i) => {
+        const b = business(s);
+        if (usedUrls.has(b.url)) {
+          const maps = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${s.name}, ${s.address || cityNameOf(s) || s.city || 'GA'}`)}`;
+          b.url = usedUrls.has(maps) ? `${maps}&spa=${encodeURIComponent(s.id || i)}` : maps;
+        }
+        usedUrls.add(b.url);
+        return { '@type': 'ListItem', position: i + 1, item: b };
+      }),
+    });
+  }
   // WebPage + areaServed so Google knows the geographic area this page covers
   if (fillCity && spotPlace && spotPlace !== 'Georgia') graph.push({
     '@type': 'WebPage',
