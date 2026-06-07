@@ -162,7 +162,9 @@ const byRank = (list) => [...list].sort((a, b) =>
 const TYPE_NOUN = { 'Day Spa': 'day spa', 'Med Spa': 'med spa', 'Massage': 'massage studio' };
 // `lead` answers "Need a spa ___?" (e.g. "near 31210"); `place` is the city we say
 // the results sit "around" (only when it adds info the lead doesn't already carry).
-function areaIntro(pool, lead, place = '') {
+const CLOSE_DISTANCE = 'are sorted by distance — compare ratings, hours, and directions in one place';
+const CLOSE_STATEWIDE = 'are gathered in one place — compare ratings, hours, and directions';
+function areaIntro(pool, lead, place = '', closer = CLOSE_DISTANCE) {
   const real = pool.filter(s => !s.example && s.name);
   const n = real.length;
   if (!n) return '';
@@ -171,7 +173,7 @@ function areaIntro(pool, lead, place = '') {
   const mix = nouns.length > 1 ? nouns.slice(0, -1).join(', ') + ', and ' + nouns.slice(-1) : nouns[0];
   const at = place ? ` around ${place}` : '';
   if (n === 1) return `Need a spa ${lead}? One ${TYPE_NOUN[present[0]]}${at}, with ratings, hours, and directions.`;
-  return `Need a spa ${lead}? These ${n} ${mix}${at} are sorted by distance — compare ratings, hours, and directions in one place.`;
+  return `Need a spa ${lead}? These ${n} ${mix}${at} ${closer}.`;
 }
 
 // Curated demo seeds (example:true, spa types only) used to SHOW what the Premium
@@ -890,6 +892,7 @@ homeStylePage({
   showCounties: true, countiesEyebrow: 'By county', countiesH2: 'Browse spas by county',
   topSpas: TOP10, topSpots: TOP_SPOTS, topEyebrow: 'Ranked by stars &amp; reviews', topH2: "Georgia's top 10 spas",
   mapEmbed: TOP10.map((s, i) => ({ ...s, rank: i + 1 })), mapMarker: 'star', mapH2: "Georgia's top 10, mapped",
+  intro: areaIntro(ACTIVE, 'in Georgia', '', CLOSE_STATEWIDE),
 });
 
 // Black-Owned — the home page, filtered to Black-owned spas
@@ -906,6 +909,7 @@ homeStylePage({
     featEyebrow: 'Hand-picked', featH2: 'Featured Black-owned spas', showBoBand: false, showCities: true, spotPlace: 'Georgia Black-owned',
     showAll: true, allEyebrow: 'The full list', allH2: 'All Black-owned spas',
     cityScope: 'black-owned', citiesEyebrow: 'Community', citiesH2: 'Browse Black-owned by city',
+    intro: areaIntro(boSpas, 'in Georgia', '', CLOSE_STATEWIDE),
   });
 }
 
@@ -1242,6 +1246,7 @@ for (const { slug, name, listings } of live) {
       featEyebrow: 'Spotlight', featH2: `Featured ${catLabel(type)}`, spotPlace: name,
       showBoBand: false, showCities: false, showTesti: false,
       showAll: true, allEyebrow: 'The full list', allH2: `All ${catLabel(type)} in ${name}`,
+      intro: areaIntro(list, `in ${name}, GA`),
     });
   }
 
@@ -1259,6 +1264,7 @@ for (const { slug, name, listings } of live) {
       featEyebrow: 'Hand-picked', featH2: `Featured Black-owned in ${name}`, spotPlace: `${name} Black-owned`,
       showBoBand: false, showCities: false, showTesti: false,
       showAll: true, allEyebrow: 'The full list', allH2: `All Black-owned spas in ${name}`,
+      intro: areaIntro(cityBO, `in ${name}, GA`),
     });
   }
 }
@@ -1398,6 +1404,12 @@ ${jsonLd}
     </div>
   </div>
 </header>
+
+${(() => { const ai = areaIntro(c.listings, `in ${esc(c.name)} County, GA`, '', CLOSE_STATEWIDE); return ai ? `<section class="band intro-band">
+  <div class="wrap">
+    <p class="area-intro">${ai}</p>
+  </div>
+</section>` : ''; })()}
 
 <section class="band">
   <div class="wrap">
@@ -1636,6 +1648,7 @@ for (const type of [...new Set(ACTIVE.map(s => s.type))]) {
     showBoBand: false, showCities: true, showTesti: false,
     showAll: true, allEyebrow: 'The full list', allH2: `All ${catLabel(type)} in Georgia`,
     cityScope: 'all', citiesEyebrow: 'Explore', citiesH2: 'Browse by city',
+    intro: areaIntro(list, 'in Georgia', '', CLOSE_STATEWIDE),
   });
 }
 
