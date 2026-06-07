@@ -155,6 +155,25 @@ const byRank = (list) => [...list].sort((a, b) =>
   || (b.reviews || 0) - (a.reviews || 0)
   || String(a.name).localeCompare(String(b.name)));
 
+// A genuine descriptive paragraph for area pages (zip / neighborhood / city).
+// Without it, the densest text on the page is card name·address lines, so Google
+// scrapes those into a semicolon "address dump" snippet instead of our meta
+// description. This gives the crawler real, query-relevant prose to quote.
+const TYPE_NOUN = { 'Day Spa': 'day spa', 'Med Spa': 'med spa', 'Massage': 'massage studio' };
+// `lead` answers "Need a spa ___?" (e.g. "near 31210"); `place` is the city we say
+// the results sit "around" (only when it adds info the lead doesn't already carry).
+function areaIntro(pool, lead, place = '') {
+  const real = pool.filter(s => !s.example && s.name);
+  const n = real.length;
+  if (!n) return '';
+  const present = ['Day Spa', 'Med Spa', 'Massage'].filter(t => real.some(s => s.type === t));
+  const nouns = present.map(t => TYPE_NOUN[t] + 's');
+  const mix = nouns.length > 1 ? nouns.slice(0, -1).join(', ') + ', and ' + nouns.slice(-1) : nouns[0];
+  const at = place ? ` around ${place}` : '';
+  if (n === 1) return `Need a spa ${lead}? One ${TYPE_NOUN[present[0]]}${at}, with ratings, hours, and directions.`;
+  return `Need a spa ${lead}? These ${n} ${mix}${at} are sorted by distance — compare ratings, hours, and directions in one place.`;
+}
+
 // Curated demo seeds (example:true, spa types only) used to SHOW what the Premium
 // and Standard tiers look like on EVERY city/county/zip page — so a tier row is
 // never just empty "spot available" cards. renderCard marks them is-example with
@@ -207,7 +226,7 @@ function shell({ title, desc, path, jsonLd = '', body, noindex = false }) {
   <meta property="og:image:width" content="1731">
   <meta property="og:image:height" content="909">
   <meta property="og:image:alt" content="GA.Spas — find your perfect spa in Georgia">
-  <meta property="og:site_name" content="GA.Spas">
+  <meta property="og:site_name" content="Georgia Spa Directory">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:image" content="${BASE_URL}/images/og-cover.jpg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -398,7 +417,7 @@ function homeStylePage({ relPath, canonical, pool, title, desc, heroEyebrow, her
   showAll = false, allEyebrow = '', allH2 = '', cityScope = 'all', citiesEyebrow = 'Local knowledge', citiesH2 = 'Browse by city', showTesti = true, spotPlace = 'Georgia',
   showCounties = false, countiesEyebrow = 'By county', countiesH2 = 'Browse by county',
   topSpas = [], topSpots = [], topEyebrow = '', topH2 = '', fillCity = '', noindex = false, geoPoint = null, mapRadius = 0,
-  mapEmbed = null, mapMarker = '', mapH2 = '' }) {
+  mapEmbed = null, mapMarker = '', mapH2 = '', intro = '' }) {
   if (noindex) noindexed.add(canonical);
   const boCount = ACTIVE.filter(s => s.blackOwned).length;
   const fmtNbhd = (spa) => esc([spa.neighborhood, cityNameOf(spa) + ', GA', spa.price].filter(Boolean).join(' · '));
@@ -595,11 +614,11 @@ function homeStylePage({ relPath, canonical, pool, title, desc, heroEyebrow, her
   // Organization brand entity. These are what make the homepage SERP result rich.
   if (canonical === '/') {
     graph.push({
-      '@type': 'WebSite', name: 'GA Spas', url: BASE_URL + '/',
+      '@type': 'WebSite', name: 'Georgia Spa Directory', alternateName: 'GA Spas', url: BASE_URL + '/',
       potentialAction: { '@type': 'SearchAction', target: { '@type': 'EntryPoint', urlTemplate: `${BASE_URL}/search/?q={search_term_string}` }, 'query-input': 'required name=search_term_string' },
     });
     graph.push({
-      '@type': 'Organization', name: 'GA Spas', url: BASE_URL + '/', logo: `${BASE_URL}/images/og-cover.jpg`,
+      '@type': 'Organization', name: 'Georgia Spa Directory', alternateName: 'GA Spas', url: BASE_URL + '/', logo: `${BASE_URL}/images/og-cover.jpg`,
       description: `A directory of ${ACTIVE.length} day spas, med spas, and massage studios across Georgia.`,
     });
   }
@@ -613,7 +632,7 @@ function homeStylePage({ relPath, canonical, pool, title, desc, heroEyebrow, her
 <meta property="og:image:width" content="1731"/>
 <meta property="og:image:height" content="909"/>
 <meta property="og:image:alt" content="GA.Spas — find your perfect spa in Georgia"/>
-<meta property="og:site_name" content="GA.Spas"/>
+<meta property="og:site_name" content="Georgia Spa Directory"/>
 <meta name="twitter:card" content="summary_large_image"/>
 <meta name="twitter:image" content="${BASE_URL}/images/og-cover.jpg"/>`;
   const geoC = geoPoint || (fillCity && cityCentroid[fillCity]);
@@ -680,6 +699,12 @@ ${ldJson}
     </div>
   </div>
 </header>
+
+${intro ? `<section class="band intro-band">
+  <div class="wrap">
+    <p class="area-intro">${intro}</p>
+  </div>
+</section>` : ''}
 
 ${premiumCards ? `<section class="band band--dots">
   <div class="wrap">
@@ -855,7 +880,7 @@ ${showTesti ? `<section class="band testi-band">
 // Georgia home
 homeStylePage({
   relPath: '', canonical: '/', pool: ACTIVE, activePill: 'all',
-  title: 'Best Spas in Atlanta &amp; Georgia | GA Spas Directory',
+  title: 'Best Spas in Atlanta &amp; Georgia | Georgia Spa Directory',
   desc: `${ACTIVE.length} day spas, med spas & massage studios across Atlanta & ${live.length} Georgia cities — compare ratings & reviews, find Black-owned spas, and book direct.`,
   heroEyebrow: "Georgia's spa &amp; wellness directory",
   heroH1: 'Find your <em>perfect</em><br>spa in Georgia',
@@ -872,7 +897,7 @@ homeStylePage({
   const boSpas = ACTIVE.filter(s => s.blackOwned);
   homeStylePage({
     relPath: 'black-owned', canonical: '/black-owned/', pool: boSpas, activePill: 'bo',
-    title: 'Black-Owned Spas in Atlanta &amp; Georgia | GA Spas',
+    title: 'Black-Owned Spas in Atlanta &amp; Georgia | Georgia Spa Directory',
     desc: `Discover Georgia's best Black-owned spas, med spas, and massage studios — verified, featured, and easy to find across Atlanta and beyond.`,
     heroEyebrow: 'Community first',
     heroH1: "Georgia's best<br><em>Black-owned</em> spas",
@@ -900,7 +925,7 @@ write('cities', `<!DOCTYPE html>
 ${GA_HEAD}
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
 <meta http-equiv="Cache-Control" content="no-cache">
-<title>All Georgia spa cities | GA Spas</title>
+<title>All Georgia spa cities | Georgia Spa Directory</title>
 <meta name="description" content="Browse spas in all ${live.length} Georgia cities — day spas, med spas, and massage from Atlanta to Savannah."/>
 <link rel="canonical" href="${BASE_URL}/cities/"/>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
@@ -1054,7 +1079,7 @@ write('pricing', `<!DOCTYPE html>
 ${GA_HEAD}
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
 <meta http-equiv="Cache-Control" content="no-cache">
-<title>Pricing — list your spa | GA Spas</title>
+<title>Pricing — list your spa | Georgia Spa Directory</title>
 <meta name="description" content="Simple pricing for Georgia spa owners. Free ghost listing, Standard at $49/mo, Premium at $149/mo. The card is the product — scan, compare, call."/>
 <link rel="canonical" href="${BASE_URL}/pricing/"/>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
@@ -1178,7 +1203,7 @@ ${PWA_HEAD}
 
 // hair salons — coming soon (keeps the homepage pill from 404ing)
 write('category/hair-salons', shell({
-  title: 'Hair salons in Georgia | GA Spas',
+  title: 'Hair salons in Georgia | Georgia Spa Directory',
   desc: 'Hair salons are coming soon to GA Spas.',
   path: '/category/hair-salons/', noindex: true,
   body: `    <section class="hero"><h1>Hair salons — coming soon</h1>
@@ -1190,7 +1215,7 @@ for (const { slug, name, listings } of live) {
   counts.cities++;
   homeStylePage({
     relPath: slug, canonical: `/${slug}/`, pool: listings, activePill: 'all',
-    title: `${listings.length} ${listings.length === 1 ? 'Spa' : 'Spas'} in ${name}, GA | GA Spas`,
+    title: `${listings.length} ${listings.length === 1 ? 'Spa' : 'Spas'} in ${name}, GA | Georgia Spa Directory`,
     desc: `All ${listings.length} ${listings.length === 1 ? 'spa' : 'spas'} in ${name}, GA — day spas, med spas & massage. Compare ratings & reviews${listings.some(s => s.blackOwned) ? ', find Black-owned spas' : ''}, and reach them direct.`,
     heroEyebrow: `Spa directory · ${name}, Georgia`,
     heroH1: `<em>Spas</em><br>in ${name}`,
@@ -1200,6 +1225,7 @@ for (const { slug, name, listings } of live) {
     showBoBand: false, showCities: true, showTesti: false,
     showAll: true, allEyebrow: 'The full list', allH2: `All spas in ${name}`,
     cityScope: 'all', citiesEyebrow: 'Explore', citiesH2: 'Other Georgia cities',
+    intro: areaIntro(listings, `in ${name}, Georgia`),
   });
 
   for (const type of [...new Set(listings.map(s => s.type))]) {
@@ -1207,7 +1233,7 @@ for (const { slug, name, listings } of live) {
     counts.category++;
     homeStylePage({
       relPath: `${slug}/${catSlug(type)}`, canonical: `/${slug}/${catSlug(type)}/`, pool: list, activePill: 'all',
-      title: `${list.length} ${cap(catLabel(type))} in ${name}, GA | GA Spas`,
+      title: `${list.length} ${cap(catLabel(type))} in ${name}, GA | Georgia Spa Directory`,
       desc: `All ${list.length} ${catLabel(type)} in ${name}, GA — compare ratings & reviews, find the right one, and reach them direct.`,
       heroEyebrow: `${cap(catLabel(type))} · ${name}, Georgia`,
       heroH1: `<em>${cap(catLabel(type))}</em><br>in ${name}`,
@@ -1224,7 +1250,7 @@ for (const { slug, name, listings } of live) {
     counts.cityBO++;
     homeStylePage({
       relPath: `${slug}/black-owned`, canonical: `/${slug}/black-owned/`, pool: cityBO, activePill: 'bo',
-      title: `Black-Owned Spas in ${name}, GA | GA Spas`,
+      title: `Black-Owned Spas in ${name}, GA | Georgia Spa Directory`,
       desc: `Black-owned spas and wellness businesses in ${name}, Georgia. Discover, support, and book.`,
       heroEyebrow: 'Community first',
       heroH1: `<em>Black-owned</em> spas<br>in ${name}`,
@@ -1323,10 +1349,10 @@ for (const c of counties) {
 ${GA_HEAD}
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
 <meta http-equiv="Cache-Control" content="no-cache">
-<title>Spas in ${esc(c.name)} County, GA — Directory | GA Spas</title>
+<title>Spas in ${esc(c.name)} County, GA — Directory | Georgia Spa Directory</title>
 <meta name="description" content="Browse ${c.count} spas across ${c.cities.length} ${c.cities.length === 1 ? 'city' : 'cities'} in ${esc(c.name)} County, Georgia — day spas, med spas & massage, with ratings, hours, and directions."/>
 <link rel="canonical" href="${canonical}"/>
-<meta property="og:title" content="Spas in ${esc(c.name)} County, GA | GA Spas"/>
+<meta property="og:title" content="Spas in ${esc(c.name)} County, GA | Georgia Spa Directory"/>
 <meta property="og:description" content="Day spas, med spas & massage across ${esc(c.name)} County, Georgia."/>
 <meta property="og:type" content="website"/>
 <meta property="og:url" content="${canonical}"/>
@@ -1470,7 +1496,7 @@ ${jsonLd}
 ${GA_HEAD}
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
 <meta http-equiv="Cache-Control" content="no-cache">
-<title>Spas by county in Georgia — all ${counties.length} counties | GA Spas</title>
+<title>Spas by county in Georgia — all ${counties.length} counties | Georgia Spa Directory</title>
 <meta name="description" content="Browse spas in every Georgia county — day spas, med spas, and massage across ${counties.length} counties, from Fulton and DeKalb to Chatham and Glynn."/>
 <link rel="canonical" href="${BASE_URL}/counties/"/>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
@@ -1577,7 +1603,7 @@ for (const e of GA_CITIES) {
   if (liveSlugs.has(e.slug)) continue;
   counts.comingSoon++;
   write(e.slug, shell({
-    title: `Spas in ${e.name}, GA | GA Spas`,
+    title: `Spas in ${e.name}, GA | Georgia Spa Directory`,
     desc: `Spas in ${e.name}, Georgia — we're expanding here soon. Explore nearby cities in the meantime.`,
     path: `/${e.slug}/`, noindex: true,
     body: `    <section class="hero">
@@ -1600,7 +1626,7 @@ for (const type of [...new Set(ACTIVE.map(s => s.type))]) {
   counts.statewide++;
   homeStylePage({
     relPath: `category/${catSlug(type)}`, canonical: `/category/${catSlug(type)}/`, pool: list, activePill: 'all',
-    title: `${cap(catLabel(type))} in Georgia | GA Spas`,
+    title: `${cap(catLabel(type))} in Georgia | Georgia Spa Directory`,
     desc: `Browse ${catLabel(type)} across Georgia — ratings, hours, and directions.`,
     heroEyebrow: `${cap(catLabel(type))} across Georgia`,
     heroH1: `<em>${cap(catLabel(type))}</em><br>in Georgia`,
@@ -1674,7 +1700,7 @@ for (const z of ZIP_AREAS) {
   homeStylePage({
     relPath: `zip/${z.zip}`, canonical: `/zip/${z.zip}/`, pool, activePill: 'all',
     noindex: ni, geoPoint: { lat: z.lat, lng: z.lng }, mapRadius: AREA_RADIUS,
-    title: `Spas near ${z.zip} — ${loc} | GA Spas`,
+    title: `Spas near ${z.zip} — ${loc} | Georgia Spa Directory`,
     desc: `Day spas, med spas & massage near zip code ${z.zip} (${loc}) — ratings, hours, and directions, sorted by distance.`,
     heroEyebrow: `Spas near ${z.zip} · ${z.city}, Georgia`,
     heroH1: `<em>Spas near</em><br>${z.zip}`,
@@ -1683,6 +1709,7 @@ for (const z of ZIP_AREAS) {
     featEyebrow: 'Closest to you', featH2: `Top spas near ${z.zip}`, spotPlace: `${z.area} (${z.zip})`,
     showBoBand: false, showCities: false, showTesti: false,
     showAll: true, allEyebrow: 'The full list', allH2: `All spas near ${z.zip}`,
+    intro: areaIntro(pool, `near ${z.zip}`, loc),
   });
 }
 
@@ -1717,7 +1744,7 @@ for (const h of ATL_HOODS) {
   homeStylePage({
     relPath: `atlanta/${h.slug}`, canonical: `/atlanta/${h.slug}/`, pool, activePill: 'all',
     noindex: ni, geoPoint: { lat: h.lat, lng: h.lng }, mapRadius: AREA_RADIUS,
-    title: `Day Spas in ${h.name}, Atlanta, GA | GA Spas`,
+    title: `Day Spas in ${h.name}, Atlanta, GA | Georgia Spa Directory`,
     desc: `Day spas, med spas & massage in ${h.name}, Atlanta, GA — ratings, hours, and directions, sorted by distance.`,
     heroEyebrow: `${h.name} · Atlanta, Georgia`,
     heroH1: `<em>Spas in</em><br>${h.name}`,
@@ -1726,6 +1753,7 @@ for (const h of ATL_HOODS) {
     featEyebrow: 'Hand-picked', featH2: `Top spas in ${h.name}`, spotPlace: `${h.name}, Atlanta`,
     showBoBand: false, showCities: false, showTesti: false,
     showAll: true, allEyebrow: 'The full list', allH2: `All spas in ${h.name}`,
+    intro: areaIntro(pool, `in ${h.name}, Atlanta, GA`, ''),
   });
 }
 
@@ -1743,7 +1771,7 @@ for (const h of ATL_HOODS) {
           `<a class="area-link" href="/zip/${z.zip}/">${z.zip}${z.area !== z.city ? ` · ${esc(z.area)}` : ''} <span>${z.count}</span></a>`).join('')}</div></div>`)
     .join('\n      ');
   write('areas', shell({
-    title: 'Spas near you — by neighborhood & zip code in Georgia | GA Spas',
+    title: 'Spas near you — by neighborhood & zip code in Georgia | Georgia Spa Directory',
     desc: 'Find spas near you in Georgia by neighborhood (Buckhead, Midtown, Sandy Springs) or by zip code. Day spas, med spas & massage sorted by distance.',
     path: '/areas/',
     body: `    <section class="hero"><h1>Spas near you</h1>
@@ -1782,7 +1810,7 @@ write('liked', `<!DOCTYPE html>
 ${GA_HEAD}
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
 <meta name="robots" content="noindex,follow">
-<title>Your saved spas | GA Spas</title>
+<title>Your saved spas | Georgia Spa Directory</title>
 <meta name="description" content="The spas you've saved on GA Spas."/>
 <link rel="canonical" href="${BASE_URL}/liked/"/>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
@@ -1863,7 +1891,7 @@ write('search', `<!DOCTYPE html>
 ${GA_HEAD}
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
 <meta name="robots" content="noindex,follow">
-<title>Search spas across Georgia | GA Spas</title>
+<title>Search spas across Georgia | Georgia Spa Directory</title>
 <meta name="description" content="Search every day spa, med spa, and massage studio in the GA Spas directory by name, city, or service."/>
 <link rel="canonical" href="${BASE_URL}/search/"/>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
@@ -1942,7 +1970,7 @@ write('map', `<!DOCTYPE html>
 ${GA_HEAD}
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
 <meta name="robots" content="noindex,follow">
-<title>Map of spas across Georgia | GA Spas</title>
+<title>Map of spas across Georgia | Georgia Spa Directory</title>
 <meta name="description" content="Every day spa, med spa, and massage studio in the GA Spas directory, plotted on a map with your location."/>
 <link rel="canonical" href="${BASE_URL}/map/"/>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
@@ -2020,10 +2048,10 @@ noindexed.add('/map/');
 <meta charset="UTF-8"/>
 ${GA_HEAD}
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
-<title>Spas Near Me — Day Spas, Med Spas &amp; Massage | GA Spas</title>
+<title>Spas Near Me — Day Spas, Med Spas &amp; Massage | Georgia Spa Directory</title>
 <meta name="description" content="Find spas near me in Georgia — see the closest day spas, med spas &amp; massage instantly, sorted by distance, with ratings, reviews, and directions."/>
 <link rel="canonical" href="${canonical}"/>
-<meta property="og:title" content="Spas near me in Georgia | GA Spas"/>
+<meta property="og:title" content="Spas near me in Georgia | Georgia Spa Directory"/>
 <meta property="og:description" content="The day spas, med spas & massage studios closest to you, across Georgia — sorted by distance."/>
 <meta property="og:type" content="website"/>
 <meta property="og:url" content="${canonical}"/>
@@ -2139,7 +2167,7 @@ ${GA_HEAD}
 <meta property="og:type" content="website"/>
 <meta property="og:url" content="${BASE_URL}${path}"/>
 <meta property="og:image" content="${BASE_URL}/images/og-cover.jpg"/>
-<meta property="og:site_name" content="GA.Spas"/>
+<meta property="og:site_name" content="Georgia Spa Directory"/>
 <meta name="twitter:card" content="summary_large_image"/>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
 <link rel="stylesheet" href="/css/home.css?v=${ASSET_VER}"/>
@@ -2206,7 +2234,7 @@ ${body}
 
 const LEGAL_UPDATED = 'June 1, 2026';
 write('privacy', brandPage({
-  title: 'Privacy Policy | GA Spas',
+  title: 'Privacy Policy | Georgia Spa Directory',
   desc: 'How GA.Spas handles information — a static spa directory with no accounts and no backend.',
   path: '/privacy/',
   body: `    <section class="legal">
@@ -2242,7 +2270,7 @@ write('privacy', brandPage({
 }));
 
 write('terms', brandPage({
-  title: 'Terms of Use | GA Spas',
+  title: 'Terms of Use | Georgia Spa Directory',
   desc: 'The terms for using GA.Spas, a static directory of spas across Georgia.',
   path: '/terms/',
   body: `    <section class="legal">
@@ -2312,7 +2340,7 @@ writeFileSync(join(GA_DIR, '404.html'), `<!DOCTYPE html>
 ${GA_HEAD}
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
 <meta name="robots" content="noindex,follow"/>
-<title>Page not found | GA Spas</title>
+<title>Page not found | Georgia Spa Directory</title>
 <meta name="description" content="That page wandered off. Search Georgia spas or head back to the directory."/>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
 <link rel="stylesheet" href="/css/home.css?v=${ASSET_VER}"/>
