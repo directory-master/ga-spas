@@ -170,6 +170,16 @@ export const CITY_COUNTY = {
   winder: 'Barrow',
   woodstock: 'Cherokee',
   zebulon: 'Pike',
+  // added 2026-06-07 (new importer cities)
+  dublin: 'Laurens',
+  eatonton: 'Putnam',
+  hazlehurst: 'Jeff Davis',
+  monticello: 'Jasper',
+  pelham: 'Mitchell',
+  perry: 'Houston',
+  sandersville: 'Washington',
+  tennille: 'Washington',
+  wrens: 'Jefferson',
 };
 
 // County slug used in URLs: /county/<slug>/  (e.g. "DeKalb" → "dekalb").

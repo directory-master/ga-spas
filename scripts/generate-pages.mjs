@@ -348,6 +348,29 @@ const nearestCities = (slug, n = 3) => {
     .map(o => ({ ...o, mi: milesBetween(c, o) }))
     .sort((a, b) => a.mi - b.mi).slice(0, n);
 };
+// Orphan rescue: a city with < THIN_CITY own listings is too thin to index on its
+// own, so we noindex,follow it AND surface its listings on the nearest BIG city
+// (>= THIN_CITY) within NEARBY_RADIUS. The orphan stays crawlable via that strong
+// page's internal links; the thin page stops competing in the index.
+const THIN_CITY = 3;
+const NEARBY_RADIUS = 25; // miles
+const isThinCity = (p) => p.listings.length < THIN_CITY;
+const bigCentroids = Object.values(cityCentroid).filter(c => c.count >= THIN_CITY);
+const nearbyByCity = {}; // bigCitySlug -> [orphan spa (+ _mi), ...]
+for (const p of live) {
+  if (!isThinCity(p)) continue;
+  for (const s of p.listings) {
+    if (!s.lat || !s.lng) continue;            // no coords → can't place; stays on its own page only
+    let best = null;
+    for (const c of bigCentroids) {
+      const mi = milesBetween(c, s);
+      if (mi <= NEARBY_RADIUS && (!best || mi < best.mi)) best = { slug: c.slug, mi };
+    }
+    if (best) (nearbyByCity[best.slug] ||= []).push({ ...s, _mi: best.mi });
+  }
+}
+for (const k in nearbyByCity) nearbyByCity[k].sort((a, b) => a._mi - b._mi);
+
 // Embedded client-side so "use my location" can route the visitor to the
 // nearest live city PAGE (/<slug>/) — see js/home.js routeToNearestCity.
 const CITY_CENTROIDS_JSON = JSON.stringify(
@@ -419,7 +442,8 @@ function homeStylePage({ relPath, canonical, pool, title, desc, heroEyebrow, her
   showAll = false, allEyebrow = '', allH2 = '', cityScope = 'all', citiesEyebrow = 'Local knowledge', citiesH2 = 'Browse by city', showTesti = true, spotPlace = 'Georgia',
   showCounties = false, countiesEyebrow = 'By county', countiesH2 = 'Browse by county',
   topSpas = [], topSpots = [], topEyebrow = '', topH2 = '', fillCity = '', noindex = false, geoPoint = null, mapRadius = 0,
-  mapEmbed = null, mapMarker = '', mapH2 = '', intro = '' }) {
+  mapEmbed = null, mapMarker = '', mapH2 = '', intro = '',
+  nearbySpas = [], nearbyEyebrow = '', nearbyH2 = '' }) {
   if (noindex) noindexed.add(canonical);
   const boCount = ACTIVE.filter(s => s.blackOwned).length;
   const fmtNbhd = (spa) => esc([spa.neighborhood, cityNameOf(spa) + ', GA', spa.price].filter(Boolean).join(' · '));
@@ -495,6 +519,20 @@ function homeStylePage({ relPath, canonical, pool, title, desc, heroEyebrow, her
       ${restCards.join('\n      ')}
     </div>
     ${restSpas.length > ALL_SHOWN ? `<div class="show-more-wrap"><button class="show-more-btn" type="button" data-show-more>Show more · ${restSpas.length - ALL_SHOWN} more</button></div>` : ''}
+  </div>
+</section>` : '';
+
+  // "Spas near {City}" — orphan listings from thin nearby towns, surfaced on this
+  // bigger city's (indexed) page so they stay crawlable via internal links. Each
+  // card keeps its OWN town name + an "x mi" hint; not added to this page's JSON-LD.
+  const nearbySection = nearbySpas.length ? `<section class="band" style="padding-top:0">
+  <div class="wrap">
+    <div class="sec-head">
+      <div><div class="eyebrow">${nearbyEyebrow}</div><h2 class="serif">${nearbyH2}</h2></div>
+    </div>
+    <div class="feat-grid">
+      ${nearbySpas.map((s, i) => homeCard(freeView(s), i % 2 ? 'p2' : '')).join('\n      ')}
+    </div>
   </div>
 </section>` : '';
 
@@ -773,6 +811,8 @@ ${(showBoBand && boCount) ? `<section class="band" style="padding-top:0">
 ${mapSection}
 
 ${allSection}
+
+${nearbySection}
 
 ${showCities ? `<section class="band" style="padding-top:0">
   <div class="wrap">
@@ -1217,8 +1257,11 @@ noindexed.add('/category/hair-salons/');
 
 for (const { slug, name, listings } of live) {
   counts.cities++;
+  const thin = listings.length < THIN_CITY;     // too few own listings to index
+  if (thin) counts.thinCity = (counts.thinCity || 0) + 1;
+  const nearby = (nearbyByCity[slug] || []).slice(0, 12);  // orphans from thin towns nearby
   homeStylePage({
-    relPath: slug, canonical: `/${slug}/`, pool: listings, activePill: 'all',
+    relPath: slug, canonical: `/${slug}/`, pool: listings, activePill: 'all', noindex: thin,
     title: `${listings.length} ${listings.length === 1 ? 'Spa' : 'Spas'} in ${name}, GA | Georgia Spa Directory`,
     desc: `All ${listings.length} ${listings.length === 1 ? 'spa' : 'spas'} in ${name}, GA — day spas, med spas & massage. Compare ratings & reviews${listings.some(s => s.blackOwned) ? ', find Black-owned spas' : ''}, and reach them direct.`,
     heroEyebrow: `Spa directory · ${name}, Georgia`,
@@ -1230,13 +1273,14 @@ for (const { slug, name, listings } of live) {
     showAll: true, allEyebrow: 'The full list', allH2: `All spas in ${name}`,
     cityScope: 'all', citiesEyebrow: 'Explore', citiesH2: 'Other Georgia cities',
     intro: areaIntro(listings, `in ${name}, Georgia`),
+    nearbySpas: nearby, nearbyEyebrow: 'Worth the short drive', nearbyH2: `Spas near ${name}`,
   });
 
   for (const type of [...new Set(listings.map(s => s.type))]) {
     const list = listings.filter(s => s.type === type);
     counts.category++;
     homeStylePage({
-      relPath: `${slug}/${catSlug(type)}`, canonical: `/${slug}/${catSlug(type)}/`, pool: list, activePill: 'all',
+      relPath: `${slug}/${catSlug(type)}`, canonical: `/${slug}/${catSlug(type)}/`, pool: list, activePill: 'all', noindex: thin,
       title: `${list.length} ${cap(catLabel(type))} in ${name}, GA | Georgia Spa Directory`,
       desc: `All ${list.length} ${catLabel(type)} in ${name}, GA — compare ratings & reviews, find the right one, and reach them direct.`,
       heroEyebrow: `${cap(catLabel(type))} · ${name}, Georgia`,
@@ -1254,7 +1298,7 @@ for (const { slug, name, listings } of live) {
   if (cityBO.length) {
     counts.cityBO++;
     homeStylePage({
-      relPath: `${slug}/black-owned`, canonical: `/${slug}/black-owned/`, pool: cityBO, activePill: 'bo',
+      relPath: `${slug}/black-owned`, canonical: `/${slug}/black-owned/`, pool: cityBO, activePill: 'bo', noindex: thin,
       title: `Black-Owned Spas in ${name}, GA | Georgia Spa Directory`,
       desc: `Black-owned spas and wellness businesses in ${name}, Georgia. Discover, support, and book.`,
       heroEyebrow: 'Community first',

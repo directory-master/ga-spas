@@ -116,6 +116,24 @@ nail directory is ever wanted, re-scrape for it separately.
   URL — that's the whole SEO point; a single dynamic `?zip=` page can't rank).
 - Every page: `LocalBusiness`/`DaySpa` JSON-LD (+ `BreadcrumbList`, `WebPage`
   `areaServed`), canonical, OG/Twitter, geo meta, `<h3>` card names.
+- **Site name is `Georgia Spa Directory`** — must stay identical across `<title>`
+  suffix (`| Georgia Spa Directory`), `og:site_name`, and the home-page `WebSite`
+  + `Organization` schema `name` (with `alternateName: "GA Spas"`). Google derives
+  the SERP site name from these; if they disagree it falls back to the parent
+  domain (`artivicolab.com` → "ArtivicoLab"). Keep them in lockstep.
+- **Carousel `ItemList` needs a UNIQUE `item.url` per entry** (Google rejects
+  duplicates with "identical property values"). Two distinct spas can share a
+  website → the builder dedupes by falling back to the per-spa maps link, then an
+  id-stamped one. Don't reintroduce a raw `s.website || maps` without the guard.
+- **Every static card-list page carries an `areaIntro()` paragraph** (`.area-intro`)
+  right under the hero — real reader-facing prose so Google quotes it instead of
+  scraping card `name · address` lines into a semicolon "address dump" snippet.
+  Returns `''` for example-only pools (e.g. Black-owned pages with no real spas).
+- **Thin-town orphans** (`< THIN_CITY = 3` own listings): the town page +
+  sub-pages are `noindex,follow` (stop competing, stay crawlable), AND each spa is
+  surfaced on the nearest indexed city (`>= THIN_CITY`) within `NEARBY_RADIUS = 25`
+  mi as a **"Spas near {City}"** section. Real cities keep every category facet
+  indexed. `aggregateRating` is only emitted when `reviews > 0`.
 - Build also emits `sitemap.xml` (indexable URLs only), `robots.txt` (→ sitemap),
   `CNAME`, the Google Search Console verification file, and `404.html`.
 - **Generator writes but doesn't prune** removed pages — after an import, diff
