@@ -116,6 +116,14 @@ nail directory is ever wanted, re-scrape for it separately.
   URL — that's the whole SEO point; a single dynamic `?zip=` page can't rank).
 - Every page: `LocalBusiness`/`DaySpa` JSON-LD (+ `BreadcrumbList`, `WebPage`
   `areaServed`), canonical, OG/Twitter, geo meta, `<h3>` card names.
+- **CTR-tuned titles/descriptions.** Card-list `<title>`s use a `Best {industry}
+  in {place}, GA — Top Rated ({YEAR})` formula (`YEAR` = build-time
+  `new Date().getFullYear()`, a freshness hook), and descriptions open with a
+  benefit/action ("Find & compare the best…", "verified ratings, hours &
+  directions to book/plan your visit"). Keep descriptions **≤ ~155 rendered
+  chars** (mind that `&amp;` is 1 rendered char, not 5). Don't revert these to the
+  old flat "Spas in {City} — Directory" / "Browse … ratings, hours, and
+  directions" copy.
 - **Site name is `Georgia Spa Directory`** — must stay identical across `<title>`
   suffix (`| Georgia Spa Directory`), `og:site_name`, and the home-page `WebSite`
   + `Organization` schema `name` (with `alternateName: "GA Spas"`). Google derives

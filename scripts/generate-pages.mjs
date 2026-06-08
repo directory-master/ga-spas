@@ -45,6 +45,7 @@ let SHA = '';
 try { SHA = execSync('git rev-parse --short HEAD', { cwd: ROOT, stdio: ['ignore', 'pipe', 'ignore'] }).toString().trim(); } catch { /* not a git repo */ }
 const BUILD = `v${VERSION}${SHA ? ` · ${SHA}` : ''}`;
 const ASSET_VER = encodeURIComponent(`${VERSION}${SHA ? `.${SHA}` : ''}`); // cache-bust ?v=
+const YEAR = new Date().getFullYear();   // freshness hook in <title> ("Updated 2026")
 
 // PWA: manifest + icons so visitors can install GA.Spas to their home screen
 // (the whole point — if they forget the URL, the icon's right there). Injected
@@ -1273,8 +1274,8 @@ for (const { slug, name, listings } of live) {
   const nearby = (nearbyByCity[slug] || []).slice(0, 12);  // orphans from thin towns nearby
   homeStylePage({
     relPath: slug, canonical: `/${slug}/`, pool: listings, activePill: 'all', noindex: thin,
-    title: `${listings.length} ${listings.length === 1 ? 'Spa' : 'Spas'} in ${name}, GA | Georgia Spa Directory`,
-    desc: `All ${listings.length} ${listings.length === 1 ? 'spa' : 'spas'} in ${name}, GA — day spas, med spas & massage. Compare ratings & reviews${listings.some(s => s.blackOwned) ? ', find Black-owned spas' : ''}, and reach them direct.`,
+    title: `Best Spas in ${name}, GA — Top Rated (${YEAR}) | Georgia Spa Directory`,
+    desc: `Find & compare the best day spas, med spas & massage studios in ${name}, GA — verified ratings, reviews, hours & directions to plan your visit.`,
     heroEyebrow: `Spa directory · ${name}, Georgia`,
     heroH1: `<em>Spas</em><br>in ${name}`,
     heroSub: `Every day spa, med spa, and massage studio in ${name}, Georgia — with ratings, hours, and directions.`,
@@ -1292,8 +1293,8 @@ for (const { slug, name, listings } of live) {
     counts.category++;
     homeStylePage({
       relPath: `${slug}/${catSlug(type)}`, canonical: `/${slug}/${catSlug(type)}/`, pool: list, activePill: 'all', noindex: thin,
-      title: `${list.length} ${cap(catLabel(type))} in ${name}, GA | Georgia Spa Directory`,
-      desc: `All ${list.length} ${catLabel(type)} in ${name}, GA — compare ratings & reviews, find the right one, and reach them direct.`,
+      title: `Best ${cap(catLabel(type))} in ${name}, GA — Top Rated (${YEAR}) | Georgia Spa Directory`,
+      desc: `Find & compare the best ${catLabel(type)} in ${name}, GA — verified ratings, reviews, hours & directions to book your next visit.`,
       heroEyebrow: `${cap(catLabel(type))} · ${name}, Georgia`,
       heroH1: `<em>${cap(catLabel(type))}</em><br>in ${name}`,
       heroSub: `Every ${catLabel(type)} listing in ${name}, Georgia — with ratings, hours, and directions.`,
@@ -1310,8 +1311,8 @@ for (const { slug, name, listings } of live) {
     counts.cityBO++;
     homeStylePage({
       relPath: `${slug}/black-owned`, canonical: `/${slug}/black-owned/`, pool: cityBO, activePill: 'bo', noindex: thin,
-      title: `Black-Owned Spas in ${name}, GA | Georgia Spa Directory`,
-      desc: `Black-owned spas and wellness businesses in ${name}, Georgia. Discover, support, and book.`,
+      title: `Best Black-Owned Spas in ${name}, GA — Top Rated (${YEAR}) | Georgia Spa Directory`,
+      desc: `Discover & support the best Black-owned day spas, med spas & massage studios in ${name}, GA — verified ratings, hours & directions to book.`,
       heroEyebrow: 'Community first',
       heroH1: `<em>Black-owned</em> spas<br>in ${name}`,
       heroSub: `Support Black-owned day spas, med spas, and massage studios in ${name} — verified and featured.`,
@@ -1410,8 +1411,8 @@ for (const c of counties) {
 ${GA_HEAD}
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
 <meta http-equiv="Cache-Control" content="no-cache">
-<title>Spas in ${esc(c.name)} County, GA — Directory | Georgia Spa Directory</title>
-<meta name="description" content="Browse ${c.count} spas across ${c.cities.length} ${c.cities.length === 1 ? 'city' : 'cities'} in ${esc(c.name)} County, Georgia — day spas, med spas & massage, with ratings, hours, and directions."/>
+<title>Best Spas in ${esc(c.name)} County, GA — Top Rated (${YEAR}) | Georgia Spa Directory</title>
+<meta name="description" content="Find & compare the best day spas, med spas & massage in ${esc(c.name)} County, GA — top-rated across ${c.cities.length} ${c.cities.length === 1 ? 'city' : 'cities'}, with hours & directions."/>
 <link rel="canonical" href="${canonical}"/>
 <meta property="og:title" content="Spas in ${esc(c.name)} County, GA | Georgia Spa Directory"/>
 <meta property="og:description" content="Day spas, med spas & massage across ${esc(c.name)} County, Georgia."/>
@@ -1693,8 +1694,8 @@ for (const type of [...new Set(ACTIVE.map(s => s.type))]) {
   counts.statewide++;
   homeStylePage({
     relPath: `category/${catSlug(type)}`, canonical: `/category/${catSlug(type)}/`, pool: list, activePill: 'all',
-    title: `${cap(catLabel(type))} in Georgia | Georgia Spa Directory`,
-    desc: `Browse ${catLabel(type)} across Georgia — ratings, hours, and directions.`,
+    title: `Best ${cap(catLabel(type))} in Georgia — Top Rated (${YEAR}) | Georgia Spa Directory`,
+    desc: `Find & compare the best ${catLabel(type)} across Georgia — verified ratings, reviews, hours & directions to book your next visit.`,
     heroEyebrow: `${cap(catLabel(type))} across Georgia`,
     heroH1: `<em>${cap(catLabel(type))}</em><br>in Georgia`,
     heroSub: `Every ${catLabel(type)} listing across Georgia — with ratings, hours, and directions.`,
@@ -1768,8 +1769,8 @@ for (const z of ZIP_AREAS) {
   homeStylePage({
     relPath: `zip/${z.zip}`, canonical: `/zip/${z.zip}/`, pool, activePill: 'all',
     noindex: ni, geoPoint: { lat: z.lat, lng: z.lng }, mapRadius: AREA_RADIUS,
-    title: `Spas near ${z.zip} — ${loc} | Georgia Spa Directory`,
-    desc: `Day spas, med spas & massage near zip code ${z.zip} (${loc}) — ratings, hours, and directions, sorted by distance.`,
+    title: `Best Spas near ${z.zip} — ${loc} (${YEAR}) | Georgia Spa Directory`,
+    desc: `Find & compare the best day spas, med spas & massage near ${z.zip} (${loc}) — top-rated, sorted by distance, with hours & directions.`,
     heroEyebrow: `Spas near ${z.zip} · ${z.city}, Georgia`,
     heroH1: `<em>Spas near</em><br>${z.zip}`,
     heroSub: `Day spas, med spas, and massage within ${AREA_RADIUS} miles of ${z.area} (${z.zip}), ${z.city}, GA — ratings, hours, and directions.`,
@@ -1812,8 +1813,8 @@ for (const h of ATL_HOODS) {
   homeStylePage({
     relPath: `atlanta/${h.slug}`, canonical: `/atlanta/${h.slug}/`, pool, activePill: 'all',
     noindex: ni, geoPoint: { lat: h.lat, lng: h.lng }, mapRadius: AREA_RADIUS,
-    title: `Day Spas in ${h.name}, Atlanta, GA | Georgia Spa Directory`,
-    desc: `Day spas, med spas & massage in ${h.name}, Atlanta, GA — ratings, hours, and directions, sorted by distance.`,
+    title: `Best Spas in ${h.name}, Atlanta, GA — Top Rated (${YEAR}) | Georgia Spa Directory`,
+    desc: `Find & compare the best day spas, med spas & massage in ${h.name}, Atlanta, GA — top-rated, with hours & directions, sorted by distance.`,
     heroEyebrow: `${h.name} · Atlanta, Georgia`,
     heroH1: `<em>Spas in</em><br>${h.name}`,
     heroSub: `Day spas, med spas, and massage in and around ${h.name}, Atlanta — ratings, hours, and directions.`,
