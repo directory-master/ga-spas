@@ -13,6 +13,10 @@
   <url><loc>https://ga.spas.artivicolab.com/marietta/day-spas/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/marietta/massage/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/marietta/med-spas/</loc></url>
+  <url><loc>https://ga.spas.artivicolab.com/macon/</loc></url>
+  <url><loc>https://ga.spas.artivicolab.com/macon/day-spas/</loc></url>
+  <url><loc>https://ga.spas.artivicolab.com/macon/massage/</loc></url>
+  <url><loc>https://ga.spas.artivicolab.com/macon/med-spas/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/athens/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/athens/massage/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/athens/med-spas/</loc></url>
@@ -49,10 +53,6 @@
   <url><loc>https://ga.spas.artivicolab.com/dalton/day-spas/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/dalton/med-spas/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/dalton/massage/</loc></url>
-  <url><loc>https://ga.spas.artivicolab.com/macon/</loc></url>
-  <url><loc>https://ga.spas.artivicolab.com/macon/day-spas/</loc></url>
-  <url><loc>https://ga.spas.artivicolab.com/macon/massage/</loc></url>
-  <url><loc>https://ga.spas.artivicolab.com/macon/med-spas/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/mcdonough/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/mcdonough/massage/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/mcdonough/day-spas/</loc></url>
@@ -423,6 +423,7 @@
   <url><loc>https://ga.spas.artivicolab.com/county/fayette/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/county/henry/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/county/glynn/</loc></url>
+  <url><loc>https://ga.spas.artivicolab.com/county/bibb/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/county/clayton/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/county/chatham/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/county/clarke/</loc></url>
@@ -431,7 +432,6 @@
   <url><loc>https://ga.spas.artivicolab.com/county/muscogee/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/county/richmond/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/county/whitfield/</loc></url>
-  <url><loc>https://ga.spas.artivicolab.com/county/bibb/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/county/forsyth/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/county/coweta/</loc></url>
   <url><loc>https://ga.spas.artivicolab.com/county/houston/</loc></url>
