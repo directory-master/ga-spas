@@ -66,9 +66,10 @@ after changing data, templates, or assets.
 
 Every spa has `tier: 'free' | 'standard' | 'premium'`. `renderCard` gates by tier;
 **nothing gets more than its tier earns.** Pricing lives at **`/pricing/`** (Free
-$0 / Standard **$49/mo** / Premium **$149/mo**).
+$0 / Standard **$9/mo** / Premium **$20/mo** — discounted from $49/$149, shown
+struck-through on `/pricing/`).
 
-| Feature | Free | Standard $49 | Premium $149 |
+| Feature | Free | Standard $9 | Premium $20 |
 |---|:--:|:--:|:--:|
 | Name, type, city, rating, distance | ✓ | ✓ | ✓ |
 | Photo | — | 1 | up to 6 (gallery) |

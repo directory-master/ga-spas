@@ -276,8 +276,8 @@ ${body}
       <div class="footer-col">
         <h4>For spa owners</h4>
         <a href="/pricing/">List your spa — Free</a>
-        <a href="/pricing/#standard">Standard listing — $49/mo</a>
-        <a href="/pricing/#premium">Premium listing — $149/mo</a>
+        <a href="/pricing/#standard">Standard listing — $9/mo</a>
+        <a href="/pricing/#premium">Premium listing — $20/mo</a>
         <a href="/pricing/">See all plans</a>
       </div>
       <div class="footer-col">
@@ -464,7 +464,7 @@ function homeStylePage({ relPath, canonical, pool, title, desc, heroEyebrow, her
           <div class="claim-eyebrow">Your spa here</div>
           <div class="claim-h serif">This ${spotPlace} spot<br>is available</div>
           <div class="claim-p">This featured placement is unclaimed. Be the first spa in ${spotPlace} at the top of every search.</div>
-          <div class="claim-price">Premium · $149/mo · featured at the top of ${spotPlace} results</div>
+          <div class="claim-price">Premium · $20/mo · featured at the top of ${spotPlace} results</div>
           <a class="claim-btn" href="/pricing/#premium" data-claim-spot data-claim-tier="premium" data-claim-city="${esc(spotPlace)}">Claim this spot →</a>
         </div>
       </article>`;
@@ -473,7 +473,7 @@ function homeStylePage({ relPath, canonical, pool, title, desc, heroEyebrow, her
           <div class="claim-eyebrow">Your spa here</div>
           <div class="claim-h serif">This standard spot<br>is available</div>
           <div class="claim-p">Claim a standard listing in ${spotPlace} — your spa, photos, services, and contact shown on every relevant page.</div>
-          <div class="claim-price">Standard listing · $49/mo · enhanced placement</div>
+          <div class="claim-price">Standard listing · $9/mo · enhanced placement</div>
           <a class="claim-btn" href="/pricing/#standard" data-claim-spot data-claim-tier="standard" data-claim-city="${esc(spotPlace)}">Claim this spot →</a>
         </div>
       </article>`;
@@ -904,8 +904,8 @@ ${showTesti ? `<section class="band testi-band">
       <div class="foot-col">
         <div class="foot-col-h">For owners</div>
         <a href="/pricing/">List free</a>
-        <a href="/pricing/#standard">Standard — $49/mo</a>
-        <a href="/pricing/#premium">Premium — $149/mo</a>
+        <a href="/pricing/#standard">Standard — $9/mo</a>
+        <a href="/pricing/#premium">Premium — $20/mo</a>
         <a href="/pricing/">See all plans</a>
       </div>
       <div class="foot-col">
@@ -1067,8 +1067,8 @@ ${PWA_HEAD}
       <div class="foot-col">
         <div class="foot-col-h">For owners</div>
         <a href="/pricing/">List free</a>
-        <a href="/pricing/#standard">Standard — $49/mo</a>
-        <a href="/pricing/#premium">Premium — $149/mo</a>
+        <a href="/pricing/#standard">Standard — $9/mo</a>
+        <a href="/pricing/#premium">Premium — $20/mo</a>
         <a href="/pricing/">See all plans</a>
       </div>
       <div class="foot-col">
@@ -1136,7 +1136,7 @@ ${GA_HEAD}
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
 <meta http-equiv="Cache-Control" content="no-cache">
 <title>Pricing — list your spa | Georgia Spa Directory</title>
-<meta name="description" content="Simple pricing for Georgia spa owners. Free ghost listing, Standard at $49/mo, Premium at $149/mo. The card is the product — scan, compare, call."/>
+<meta name="description" content="Simple pricing for Georgia spa owners. Free ghost listing, Standard at $9/mo, Premium at $20/mo. The card is the product — scan, compare, call."/>
 <link rel="canonical" href="${BASE_URL}/pricing/"/>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
 <link rel="stylesheet" href="/css/home.css?v=${ASSET_VER}"/>
@@ -1186,9 +1186,9 @@ ${PWA_HEAD}
 
       <article class="tier" id="standard">
         <div class="tier-name">Standard</div>
-        <div class="tier-price">$49<span>/mo</span></div>
+        <div class="tier-price"><s>$49</s> $9<span>/mo</span></div>
         <div class="tier-tag">A complete, professional card. Looks credible.</div>
-        <a class="tier-cta" href="mailto:artivicolab@gmail.com?subject=GASpas%20Standard%20Listing%20(%2449%2Fmo)">Go Standard →</a>
+        <a class="tier-cta" href="mailto:artivicolab@gmail.com?subject=GASpas%20Standard%20Listing%20(%249%2Fmo)">Go Standard →</a>
         <ul class="tier-feats">
           ${tierFeats(STD_FEATS)}
         </ul>
@@ -1197,9 +1197,9 @@ ${PWA_HEAD}
       <article class="tier tier--featured" id="premium">
         <div class="tier-flag">Most popular</div>
         <div class="tier-name">Premium</div>
-        <div class="tier-price">$149<span>/mo</span></div>
+        <div class="tier-price"><s>$149</s> $20<span>/mo</span></div>
         <div class="tier-tag">The full card. Packed. Stands out immediately.</div>
-        <a class="tier-cta" href="mailto:artivicolab@gmail.com?subject=GASpas%20Premium%20Listing%20(%24149%2Fmo)">Go Premium →</a>
+        <a class="tier-cta" href="mailto:artivicolab@gmail.com?subject=GASpas%20Premium%20Listing%20(%2420%2Fmo)">Go Premium →</a>
         <ul class="tier-feats">
           ${tierFeats(PREM_FEATS)}
         </ul>
@@ -1231,8 +1231,8 @@ ${PWA_HEAD}
       <div class="foot-col">
         <div class="foot-col-h">For owners</div>
         <a href="/pricing/">List free</a>
-        <a href="/pricing/#premium">Standard — $49/mo</a>
-        <a href="/pricing/#premium">Premium — $149/mo</a>
+        <a href="/pricing/#premium">Standard — $9/mo</a>
+        <a href="/pricing/#premium">Premium — $20/mo</a>
         <a href="/pricing/">See all plans</a>
       </div>
       <div class="foot-col">
@@ -1357,7 +1357,7 @@ for (const c of counties) {
           <div class="claim-eyebrow">Your spa here</div>
           <div class="claim-h serif">This ${esc(cPlace)}<br>premium spot is open</div>
           <div class="claim-p">Be a featured premium spa in ${esc(cPlace)} — top of every relevant page, full gallery, booking.</div>
-          <div class="claim-price">Premium · $149/mo · featured at the top</div>
+          <div class="claim-price">Premium · $20/mo · featured at the top</div>
           <a class="claim-btn" href="/pricing/#premium" data-claim-spot data-claim-tier="premium" data-claim-city="${esc(cPlace)}">Claim this spot →</a>
         </div>
       </article>`;
@@ -1366,7 +1366,7 @@ for (const c of counties) {
           <div class="claim-eyebrow">Your spa here</div>
           <div class="claim-h serif">This ${esc(cPlace)}<br>standard spot is open</div>
           <div class="claim-p">Claim a standard listing in ${esc(cPlace)} — your photo, services, hours, and website link.</div>
-          <div class="claim-price">Standard · $49/mo · enhanced placement</div>
+          <div class="claim-price">Standard · $9/mo · enhanced placement</div>
           <a class="claim-btn" href="/pricing/#standard" data-claim-spot data-claim-tier="standard" data-claim-city="${esc(cPlace)}">Claim this spot →</a>
         </div>
       </article>`;
@@ -1529,8 +1529,8 @@ ${(() => { const ai = areaIntro(c.listings, `in ${esc(c.name)} County, GA`, '', 
       <div class="foot-col">
         <div class="foot-col-h">For owners</div>
         <a href="/pricing/">List free</a>
-        <a href="/pricing/#standard">Standard — $49/mo</a>
-        <a href="/pricing/#premium">Premium — $149/mo</a>
+        <a href="/pricing/#standard">Standard — $9/mo</a>
+        <a href="/pricing/#premium">Premium — $20/mo</a>
         <a href="/pricing/">See all plans</a>
       </div>
       <div class="foot-col">
@@ -1641,8 +1641,8 @@ ${PWA_HEAD}
       <div class="foot-col">
         <div class="foot-col-h">For owners</div>
         <a href="/pricing/">List free</a>
-        <a href="/pricing/#standard">Standard — $49/mo</a>
-        <a href="/pricing/#premium">Premium — $149/mo</a>
+        <a href="/pricing/#standard">Standard — $9/mo</a>
+        <a href="/pricing/#premium">Premium — $20/mo</a>
         <a href="/pricing/">See all plans</a>
       </div>
       <div class="foot-col">
@@ -2280,8 +2280,8 @@ ${body}
       <div class="foot-col">
         <div class="foot-col-h">For owners</div>
         <a href="/pricing/">List free</a>
-        <a href="/pricing/#standard">Standard — $49/mo</a>
-        <a href="/pricing/#premium">Premium — $149/mo</a>
+        <a href="/pricing/#standard">Standard — $9/mo</a>
+        <a href="/pricing/#premium">Premium — $20/mo</a>
         <a href="/pricing/">See all plans</a>
       </div>
       <div class="foot-col">

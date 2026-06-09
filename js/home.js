@@ -573,8 +573,8 @@ document.querySelectorAll('.card-tags-wrap').forEach((wrap, idx) => {
         </div>
         <form class="cm-form" id="cm-form">
           <div class="cm-plan">
-            <label><input type="radio" name="plan" value="Standard — $49/mo" data-plan="standard" checked> Standard · $49/mo</label>
-            <label><input type="radio" name="plan" value="Premium — $149/mo" data-plan="premium"> Premium · $149/mo</label>
+            <label><input type="radio" name="plan" value="Standard — $9/mo" data-plan="standard" checked> Standard · $9/mo</label>
+            <label><input type="radio" name="plan" value="Premium — $20/mo" data-plan="premium"> Premium · $20/mo</label>
           </div>
 
           <div class="cm-sec-h">Your contact</div>
@@ -594,7 +594,7 @@ document.querySelectorAll('.card-tags-wrap').forEach((wrap, idx) => {
           ${field('Photo link', '<input name="photo" type="url" placeholder="Link to one photo">', 'We can also take it from your site/socials')}
 
           <details class="cm-premium">
-            <summary>Premium add-ons <span>(optional · $149/mo)</span></summary>
+            <summary>Premium add-ons <span>(optional · $20/mo)</span></summary>
             ${field('Full description', '<textarea name="fulldesc" rows="3" placeholder="4–5 sentences, the full story."></textarea>')}
             ${field('Current offer / promo', '<input name="offer" type="text" placeholder="$30 off first visit">')}
             ${field('Booking / appointment link', '<input name="booking" type="url" placeholder="https://">')}

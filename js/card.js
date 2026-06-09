@@ -172,7 +172,7 @@ export function renderCard(spa, opts = {}) {
 
   // slim sand banner pinned to the top of an example card — unmistakably a preview
   const exampleBanner = example
-    ? `<a class="card-example" href="${exAnchor}">✦ ${premium ? 'Premium' : 'Standard'} listing preview — claim this spot · ${premium ? '$149' : '$49'}/mo →</a>` : '';
+    ? `<a class="card-example" href="${exAnchor}">✦ ${premium ? 'Premium' : 'Standard'} listing preview — claim this spot · ${premium ? '$20' : '$9'}/mo →</a>` : '';
 
   return `<article class="card is-${tier}${example ? ' is-example' : ''}${imgs.length ? ' has-photo' : ''}"${imgs.length > 1 ? ' data-carousel' : ''}${cardBg}${dataAttrs}>
         ${exampleBanner}
