@@ -177,6 +177,68 @@ function areaIntro(pool, lead, place = '', closer = CLOSE_DISTANCE) {
   return `Need a spa ${lead}? These ${n} ${mix}${at} ${closer}.`;
 }
 
+// ── Per-page <title>/description variants ──────────────────────────────────
+// One repeated title/description across ~600 card-list pages is a templated
+// footprint AND tells us nothing about which phrasing earns clicks. So each
+// page gets a DETERMINISTIC variant: keyed by its canonical path, it is stable
+// across rebuilds (no diff churn, valid GSC comparison) yet spread across the
+// pool so every formula gets a representative sample. To find the winner:
+// export the GSC Pages report and join URL → variant via data/copy-variants.json,
+// then aggregate CTR per variant index.
+//   `ind` is the industry phrase — title-case for titles ("Spas", "Med Spas"),
+//   lower-case for descriptions ("day spas, med spas & massage studios"); `place`
+//   already carries the state ("Macon, GA"). The "| Georgia Spa Directory" suffix
+//   stays LOCKED on every title — Google derives the SERP site name from it (see
+//   CLAUDE.md), so it must never vary. APPEND new variants, never reorder/remove:
+//   the modulo assignment depends on index, so a reorder reshuffles every page and
+//   resets the experiment. Keep descriptions ≤ ~155 rendered chars (& is 1 char).
+const SITE_SUFFIX = ' | Georgia Spa Directory';
+const TITLE_VARIANTS = [
+  (ind, place) => `Best ${ind} in ${place} — Top Rated (${YEAR})`,
+  (ind, place) => `Top ${ind} in ${place} — Ratings, Hours & Directions`,
+  (ind, place) => `${ind} in ${place}: ${YEAR}'s Best, Rated & Reviewed`,
+  (ind, place) => `Find the Best ${ind} in ${place} (${YEAR})`,
+  (ind, place) => `Best ${ind} in ${place} — Compare ${YEAR}'s Top-Rated`,
+  (ind, place) => `${YEAR}'s Top-Rated ${ind} in ${place}`,
+  (ind, place) => `Best ${ind} Near You — ${place} (${YEAR})`,
+  (ind, place) => `The Best ${ind} in ${place}, Ranked (${YEAR})`,
+  (ind, place) => `Best-Rated ${ind} in ${place} — Hours & Directions`,
+  (ind, place) => `${ind} in ${place} — Best & Top-Rated for ${YEAR}`,
+];
+const DESC_VARIANTS = [
+  (ind, place) => `Find & compare the best ${ind} in ${place} — verified ratings, reviews, hours & directions to plan your visit.`,
+  (ind, place) => `Compare top-rated ${ind} in ${place}: real ratings, reviews, hours & directions, all in one place.`,
+  (ind, place) => `Browse the best ${ind} in ${place} — verified ratings, hours & directions to book your next visit.`,
+  (ind, place) => `Looking for ${ind} in ${place}? Compare the top-rated by ratings, reviews, hours & directions.`,
+  (ind, place) => `The best ${ind} in ${place}, ranked by real reviews — with ratings, hours & directions.`,
+  (ind, place) => `Discover top-rated ${ind} in ${place} — verified ratings, reviews, hours & directions to book.`,
+  (ind, place) => `See & compare ${ind} in ${place} by rating, reviews & hours — maps & directions included.`,
+  (ind, place) => `Top ${ind} in ${place} for ${YEAR} — verified ratings, reviews, hours & directions.`,
+  (ind, place) => `Your guide to the best ${ind} in ${place}: ratings, reviews, hours & directions to book.`,
+  (ind, place) => `Find ${ind} in ${place} you'll love — compare ratings, reviews, hours & directions.`,
+];
+const fnv1a = (s) => { let h = 2166136261; for (let i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 16777619); } return h >>> 0; };
+const copyVariants = [];      // {path,t,d} manifest → data/copy-variants.json
+const copyWarnings = [];      // descriptions over the snippet budget
+// `slot` = cityGeoRank + a per-page-kind offset. The TITLE steps by 3 per slot so
+// geographic neighbours (and a city's own sub-pages) never collide on title — the
+// visible, competing element. The DESCRIPTION is an independent hash of the path,
+// so title and description don't confound and you can read each lever separately.
+// key = canonical path (unique, stable); titleInd title-case, descInd lower-case.
+function titleDesc(key, titleInd, place, descInd, slot) {
+  const t = (3 * slot % TITLE_VARIANTS.length + TITLE_VARIANTS.length) % TITLE_VARIANTS.length;
+  const d = fnv1a(key + ':d') % DESC_VARIANTS.length;
+  const title = TITLE_VARIANTS[t](titleInd, place) + SITE_SUFFIX;
+  const desc = DESC_VARIANTS[d](descInd, place);
+  copyVariants.push({ path: key, t, d });
+  if (desc.length > 155) copyWarnings.push(`${desc.length} chars: ${key}`);
+  return { title, desc };
+}
+// Per-page-kind slot offsets (added to cityGeoRank) so a city's /, /day-spas/,
+// /med-spas/, /massage/ pages each land on a different title too. (Black-owned
+// pages keep their own bespoke "support" copy and stay out of the rotation.)
+const KIND_SLOT = { 'Day Spa': 1, 'Med Spa': 2, 'Massage': 3, 'Brow & Lash': 4 };
+
 // Curated demo seeds (example:true, spa types only) used to SHOW what the Premium
 // and Standard tiers look like on EVERY city/county/zip page — so a tier row is
 // never just empty "spot available" cards. renderCard marks them is-example with
@@ -349,6 +411,21 @@ const nearestCities = (slug, n = 3) => {
     .map(o => ({ ...o, mi: milesBetween(c, o) }))
     .sort((a, b) => a.mi - b.mi).slice(0, n);
 };
+// Geographic rank for copy-variant assignment: order cities by latitude then
+// longitude so spatially-adjacent towns land on (near-)consecutive ranks. The
+// title variant steps by 3 between consecutive ranks, so two of the closest
+// cities never share a title — otherwise neighbors would compete in the same
+// local SERP with identical copy and the experiment would teach us nothing.
+// Cities without coords sort last, by name (still deterministic).
+const cityGeoRank = {};
+[...live].sort((a, b) => {
+  const ca = cityCentroid[a.slug], cb = cityCentroid[b.slug];
+  if (!ca && !cb) return a.name.localeCompare(b.name);
+  if (!ca) return 1;
+  if (!cb) return -1;
+  return ca.lat - cb.lat || ca.lng - cb.lng || a.slug.localeCompare(b.slug);
+}).forEach((p, i) => { cityGeoRank[p.slug] = i; });
+
 // Orphan rescue: a city with < THIN_CITY own listings is too thin to index on its
 // own, so we noindex,follow it AND surface its listings on the nearest BIG city
 // (>= THIN_CITY) within NEARBY_RADIUS. The orphan stays crawlable via that strong
@@ -1272,10 +1349,12 @@ for (const { slug, name, listings } of live) {
   const thin = listings.length < THIN_CITY;     // too few own listings to index
   if (thin) counts.thinCity = (counts.thinCity || 0) + 1;
   const nearby = (nearbyByCity[slug] || []).slice(0, 12);  // orphans from thin towns nearby
+  const rank = cityGeoRank[slug] || 0;
+  const cv = titleDesc(`/${slug}/`, 'Spas', `${name}, GA`, 'day spas, med spas & massage studios', rank);
   homeStylePage({
     relPath: slug, canonical: `/${slug}/`, pool: listings, activePill: 'all', noindex: thin,
-    title: `Best Spas in ${name}, GA — Top Rated (${YEAR}) | Georgia Spa Directory`,
-    desc: `Find & compare the best day spas, med spas & massage studios in ${name}, GA — verified ratings, reviews, hours & directions to plan your visit.`,
+    title: cv.title,
+    desc: cv.desc,
     heroEyebrow: `Spa directory · ${name}, Georgia`,
     heroH1: `<em>Spas</em><br>in ${name}`,
     heroSub: `Every day spa, med spa, and massage studio in ${name}, Georgia — with ratings, hours, and directions.`,
@@ -1291,10 +1370,11 @@ for (const { slug, name, listings } of live) {
   for (const type of [...new Set(listings.map(s => s.type))]) {
     const list = listings.filter(s => s.type === type);
     counts.category++;
+    const cvt = titleDesc(`/${slug}/${catSlug(type)}/`, cap(catLabel(type)), `${name}, GA`, catLabel(type), rank + (KIND_SLOT[type] || 0));
     homeStylePage({
       relPath: `${slug}/${catSlug(type)}`, canonical: `/${slug}/${catSlug(type)}/`, pool: list, activePill: 'all', noindex: thin,
-      title: `Best ${cap(catLabel(type))} in ${name}, GA — Top Rated (${YEAR}) | Georgia Spa Directory`,
-      desc: `Find & compare the best ${catLabel(type)} in ${name}, GA — verified ratings, reviews, hours & directions to book your next visit.`,
+      title: cvt.title,
+      desc: cvt.desc,
       heroEyebrow: `${cap(catLabel(type))} · ${name}, Georgia`,
       heroH1: `<em>${cap(catLabel(type))}</em><br>in ${name}`,
       heroSub: `Every ${catLabel(type)} listing in ${name}, Georgia — with ratings, hours, and directions.`,
@@ -2459,3 +2539,13 @@ console.log(`  live cities ${counts.cities} · city+category ${counts.category} 
 console.log(`  statewide ${counts.statewide} · profiles ${counts.profiles} · home 1`);
 console.log(`  coming-soon cities (noindex until they get listings): ${counts.comingSoon}`);
 console.log(`  total pages: ${urls.length}   sitemap.xml: ${indexed.length} indexable URLs`);
+
+// Copy-variant manifest + distribution. Join the GSC Pages export to this on
+// `path` to read CTR per title/description variant (t = TITLE_VARIANTS index,
+// d = DESC_VARIANTS index). Lives in data/ (not in the sitemap; analysis only).
+if (copyVariants.length) {
+  writeFileSync(join(ROOT, 'data', 'copy-variants.json'), JSON.stringify(copyVariants));
+  const tally = (k, n) => Array.from({ length: n }, (_, i) => copyVariants.filter(v => v[k] === i).length).join('/');
+  console.log(`  copy variants: ${copyVariants.length} pages · titles[0-9] ${tally('t', TITLE_VARIANTS.length)} · descs[0-9] ${tally('d', DESC_VARIANTS.length)} → data/copy-variants.json`);
+  if (copyWarnings.length) console.log(`  ⚠ ${copyWarnings.length} description(s) over 155 chars:\n    ${copyWarnings.slice(0, 8).join('\n    ')}`);
+}

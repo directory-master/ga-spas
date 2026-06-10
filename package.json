@@ -1,6 +1,6 @@
 {
   "name": "spas",
-  "version": "0.27.1",
+  "version": "0.28.1",
   "private": true,
   "type": "module",
   "description": "Static Georgia spa & salon directory.",
