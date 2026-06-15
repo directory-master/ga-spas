@@ -42,6 +42,11 @@ export function renderCard(spa, opts = {}) {
   const dotsHtml = imgs.length > 1
     ? `<div class="ph-dots">${imgs.map((_, i) => `<span class="ph-dot${i === 0 ? ' on' : ''}"></span>`).join('')}</div>` : '';
   const cardBg = imgs.length ? ` style="--card-img:url('${esc(imgs[0])}')"` : '';
+  // Photo credit: imported real-spa photos are pulled from Bing Maps local
+  // listings — attribute them. Local /images/ stock (example seeds) needs none.
+  const fromBing = imgs.some(src => /(^|\.)bing\.com\//.test(String(src)));
+  const photoCredit = fromBing
+    ? '<span class="ph-credit">Photo: <a href="https://www.bing.com/maps" target="_blank" rel="noopener nofollow">Bing</a></span>' : '';
 
   const boRibbon = spa.blackOwned ? '<div class="bo-ribbon"><span>✦ Black-Owned</span></div>' : '';
   // open/closed status: STANDARD + PREMIUM (free shows no hours)
@@ -61,6 +66,7 @@ export function renderCard(spa, opts = {}) {
           ${likeBtn}
           ${distBtn}
           ${dotsHtml}
+          ${photoCredit}
         </div>`;
 
   const ratingBit = spa.rating

@@ -196,6 +196,9 @@ section.band{padding:90px 0}
 .ph-slide{position:absolute;inset:0;background-size:cover;background-position:center;opacity:0;transition:opacity .8s ease}
 .ph-slide.on{opacity:1}
 .ph-dots{position:absolute;bottom:10px;left:50%;transform:translateX(-50%);display:flex;gap:6px;z-index:3}
+.ph-credit{position:absolute;left:8px;bottom:8px;z-index:3;font-family:'Inter';font-size:10px;line-height:1;font-weight:500;color:rgba(255,255,255,.82);background:rgba(46,58,46,.42);-webkit-backdrop-filter:blur(2px);backdrop-filter:blur(2px);border-radius:6px;padding:3px 7px;text-shadow:0 1px 2px rgba(0,0,0,.45)}
+.ph-credit a{color:inherit;text-decoration:underline;text-underline-offset:1px}
+.ph-credit a:hover{color:#fff}
 .ph-dot{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.55);cursor:pointer;transition:all .25s}
 .ph-dot.on{background:#fff;width:16px;border-radius:10px}
 /* like / save heart (top-right of the photo) */
